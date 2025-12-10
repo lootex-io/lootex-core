@@ -1,0 +1,333 @@
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v3.3.32",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [4]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "card",
+      "rotation": [-0.7071068286895752, 0, 0, 0.7071067094802856],
+      "translation": [-309.75, -3.9688711166381836, -216.79452514648438]
+    },
+    {
+      "mesh": 1,
+      "name": "name-chip",
+      "rotation": [-0.7071068286895752, 0, 0, 0.7071067094802856],
+      "translation": [
+        -309.82000732421875, 9.760000228881836, -44.529998779296875
+      ]
+    },
+    {
+      "mesh": 2,
+      "name": "number-chip",
+      "rotation": [-0.7071068286895752, 0, 0, 0.7071067094802856],
+      "translation": [79.25, -12.550000190734863, -217.39041137695312]
+    },
+    {
+      "children": [0, 1, 2],
+      "name": "Card Option 4_Red"
+    },
+    {
+      "children": [3],
+      "name": "Node_0",
+      "scale": [0.20000000298023224, 0.20000000298023224, 0.20000000298023224]
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": false,
+      "alphaMode": "BLEND",
+      "name": "Material.001",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.5,
+        "roughnessFactor": 1
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "Material.002",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "metallicFactor": 0,
+        "roughnessFactor": 0.5
+      }
+    },
+    {
+      "alphaMode": "BLEND",
+      "doubleSided": false,
+      "name": "Material.003",
+      "extensions": {
+        "KHR_materials_transmission": {
+          "transmissionFactor": 0.1
+        },
+        "KHR_materials_ior": {
+          "ior": 1.4500000476837158
+        }
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 2
+        },
+        "metallicFactor": 0,
+        "roughnessFactor": 0.9
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Mesh_2",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0
+        }
+      ]
+    },
+    {
+      "name": "Mesh_1",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 4,
+            "NORMAL": 5,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1
+        }
+      ]
+    },
+    {
+      "name": "Mesh_0",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 8,
+            "NORMAL": 9,
+            "TEXCOORD_0": 10
+          },
+          "indices": 11,
+          "material": 2
+        }
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ],
+  "images": [
+    {
+      "mimeType": "image/png",
+      "name": "bg-2",
+      "uri": "bg-2.png"
+    },
+    {
+      "mimeType": "image/png",
+      "name": "Name Card_BG",
+      "uri": "namecard-default.png"
+    },
+    {
+      "mimeType": "image/png",
+      "name": "bg-04",
+      "uri": "corner-default.png"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 164,
+      "max": [619.5, 0, 0],
+      "min": [0, -434.5, -9.32834243774414],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 164,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 164,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5123,
+      "count": 288,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5126,
+      "count": 273,
+      "max": [245.52999877929688, 0, 0],
+      "min": [0, -151.36000061035156, -9.295832633972168],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 5,
+      "componentType": 5126,
+      "count": 273,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 6,
+      "componentType": 5126,
+      "count": 273,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 7,
+      "componentType": 5123,
+      "count": 456,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 8,
+      "componentType": 5126,
+      "count": 46,
+      "max": [230.5, 0, 0],
+      "min": [0, -72.5, -6.532679557800293],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 9,
+      "componentType": 5126,
+      "count": 46,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 10,
+      "componentType": 5126,
+      "count": 46,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 11,
+      "componentType": 5123,
+      "count": 84,
+      "type": "SCALAR"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 1968,
+      "byteOffset": 0,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1968,
+      "byteOffset": 1968,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1312,
+      "byteOffset": 3936,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 576,
+      "byteOffset": 5248,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 3276,
+      "byteOffset": 5824,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 3276,
+      "byteOffset": 9100,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 2184,
+      "byteOffset": 12376,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 912,
+      "byteOffset": 14560,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 552,
+      "byteOffset": 15472,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 552,
+      "byteOffset": 16024,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 368,
+      "byteOffset": 16576,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 168,
+      "byteOffset": 16944,
+      "target": 34963
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 33071,
+      "wrapT": 33071
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 17112,
+      "uri": "card.bin"
+    }
+  ],
+  "extensionsUsed": ["KHR_materials_transmission", "KHR_materials_ior"]
+}
