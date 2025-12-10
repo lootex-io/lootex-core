@@ -7,6 +7,7 @@ export const lootex = createLootexClient({
       | 'development'
       | 'production') || 'development',
   apiKey: process.env.NEXT_PUBLIC_LOOTEX_API_KEY,
+  baseUrl: process.env.NEXT_PUBLIC_LOOTEX_API_BASE_URL ?? undefined,
 });
 
 export const apiClient = createApiClient({
