@@ -13,6 +13,7 @@
     "build:1gb": "NODE_OPTIONS='--max-old-space-size=1024' nest build",
     "sentry:sourcemaps": "node -e \"require('./package.json'); process.env.SENTRY_RELEASE = require('./package.json').version; require('child_process').execSync('sentry-cli releases files $SENTRY_RELEASE upload-sourcemaps ./dist --ext js --ext map --url-prefix ~/dist --rewrite');\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "dev": "nest start --watch",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
