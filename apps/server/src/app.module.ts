@@ -26,7 +26,6 @@ import { AccountGpModule } from '@/api/v3/account-gp/account-gp.module';
 import { StudioUploadModule } from '@/api/v3/studio/upload/studio-upload.module';
 import { StudioModule } from './api/v3/studio/studio.module';
 import { StudioIpfsModule } from './microservice/studio-ipfs/studio-ipfs.module';
-import { ApiLoggingInterceptor } from './api-logging.interceptor';
 import { HmacModule } from '@/api/v3/hmac/hmac.module';
 
 @Module({
@@ -109,11 +108,6 @@ import { HmacModule } from '@/api/v3/hmac/hmac.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
-    },
-    {
-      // 記錄所有 API 請求
-      provide: APP_INTERCEPTOR,
-      useClass: ApiLoggingInterceptor,
     },
   ],
 })

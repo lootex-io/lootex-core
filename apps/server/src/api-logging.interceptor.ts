@@ -18,7 +18,7 @@ export class ApiLoggingInterceptor implements NestInterceptor {
   constructor(
     private readonly apiLogService: ApiLogService,
     private readonly sdkApiKeyService: SdkApiKeyService,
-  ) { }
+  ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
@@ -33,6 +33,25 @@ export class ApiLoggingInterceptor implements NestInterceptor {
 
     // 是否在IP白名单
     const realIp = requestIp.getClientIp(request);
+    const isDevelopment =
+      process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev';
+    const isLocalhost =
+      realIp === '127.0.0.1' ||
+      realIp === '::1' ||
+      realIp === '::ffff:127.0.0.1';
+
+    // 開發環境且是 localhost 則跳過 API key 檢查
+    if (isDevelopment && isLocalhost) {
+      return next.handle().pipe(
+        map(async (data) => {
+          return data;
+        }),
+        catchError(async (error) => {
+          return throwError(() => error);
+        }),
+      );
+    }
+
     if (!this.sdkApiKeyService.isWhiteIp(realIp)) {
       const referer =
         request.headers.origin ||
