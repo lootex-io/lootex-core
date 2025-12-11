@@ -3,8 +3,6 @@
  * - Gives providers or libraries to access the blockchain
  * - Does not care which chain family, so you use contract yourself
  */
-import * as fcl from '@onflow/fcl';
-import * as solanaWeb3 from '@solana/web3.js';
 import { ethers } from 'ethers';
 import { Injectable } from '@nestjs/common';
 import { ConfigurationService } from '@/configuration';
@@ -18,22 +16,7 @@ export class BlockchainService {
   constructor(
     private readonly configurationService: ConfigurationService,
     private readonly rpcHandlerService: RpcHandlerService,
-  ) {
-    const fclConfig = {
-      'flow.network': this.configurationService.get(
-        'FLOW_MAINNET_CONFIG_FLOW_NETWORK',
-      ),
-      'accessNode.api': this.configurationService.get(
-        'FLOW_MAINNET_CONFIG_ACCESSNODE_API',
-      ),
-      'discovery.wallet': this.configurationService.get(
-        'FLOW_MAINNET_CONFIG_DISCOVERY_WALLET',
-      ),
-    };
-    fcl.config(fclConfig);
-    this.fclConfig = fclConfig;
-    // this.fclInstance = fcl;
-  }
+  ) {}
 
   /**
    * @function getEthProviderByChainId
@@ -110,32 +93,6 @@ export class BlockchainService {
 
     // return new ethers.providers.StaticJsonRpcProvider(rpcUrl, +chainId);
     return new ethers.providers.JsonRpcProvider(rpcUrl, +chainId);
-  }
-
-  /**
-   * @function getSolConnectionByCluster
-   * @summary gives a solana connection to use, defaults to mainnet-beta
-   * @param {solanaWeb3.Cluster} cluster Solana JSON RPC cluster designation
-   * @return {solanaWeb3.Connection} connection
-   */
-  getSolConnectionByCluster(
-    cluster: solanaWeb3.Cluster = 'mainnet-beta',
-  ): solanaWeb3.Connection {
-    if (!['devnet', 'mainnet-beta', 'testnet'].includes(cluster)) {
-      throw new TypeError(
-        'getSolConnectionByCluster: invalid cluster designation',
-      );
-    }
-    return new solanaWeb3.Connection(solanaWeb3.clusterApiUrl(cluster));
-  }
-
-  /**
-   * @function getFlowLibraryConfig
-   * @summary returns the current FCL instance config for outside usage
-   * @return fclConfig
-   */
-  getFlowLibraryConfig(): Record<string, string> {
-    return this.fclConfig;
   }
 
   /**

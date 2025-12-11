@@ -107,41 +107,6 @@ export class AccountController {
     return this.accountService.getProfile(user.username);
   }
 
-  @UseGuards(AuthJwtGuardOptional)
-  @UseInterceptors(ReferralAccountList)
-  @Get('/accounts/referral')
-  async getReferralAccounts(
-    @CurrentUser() user: Account,
-    @Query() query: GetAccountReferralDTO,
-  ) {
-    return await this.accountService.getReferralAccounts(
-      user,
-      query.limit,
-      query.page,
-    );
-  }
-
-  @UseGuards(AuthJwtGuardOptional)
-  @Get('/accounts/referral/status')
-  async getReferralStatus(@CurrentUser() user: Account) {
-    return await this.accountService.getReferralStatus(user);
-  }
-
-  @UseGuards(AuthJwtGuard)
-  @Put('/accounts/referrer')
-  async updateReferrer(
-    @CFIp() ip: string,
-    @CurrentUser() user: Account,
-    @Query('referralCode') referralCode: string,
-  ) {
-    if (user.referralCode === referralCode) {
-      throw SimpleException.fail({
-        debug: 'You cannot use your own referral code',
-      });
-    }
-    return await this.authService.updateReferral(user.id, referralCode, ip);
-  }
-
   @UseInterceptors(AccountInterceptor)
   @Get('/accounts/:username')
   async getUserProfile(
@@ -387,11 +352,5 @@ export class AccountController {
     } catch (err) {
       throw new HttpException(err.message, 400);
     }
-  }
-
-  @UseGuards(AuthJwtGuardOptional)
-  @Get('/accounts/onchain-stats/wallet/summary')
-  async walletSummary(@Query() query) {
-    return this.accountService.walletSummary(query);
   }
 }

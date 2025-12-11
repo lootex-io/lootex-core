@@ -8,17 +8,11 @@ import {
   IsNumber,
 } from 'class-validator';
 import { EMAIL_BLACKLIST, UUID_V4_REGEX } from '@/common/utils/constants';
-import {
-  AptosAddress,
-  EthAddress,
-  FlowAddress,
-  SolAddress,
-} from '@/external/blockchain';
+import { EthAddress } from '@/external/blockchain';
 import { Account } from '@/model/entities/account.entity';
 import { Wallet } from '@/model/entities/wallet.entity';
 import { modifyGmail } from '@/common/utils/modify-gmail';
 import { Transform } from 'class-transformer';
-import { SuiAddress } from '@/external/blockchain/blockchain.sui.interface';
 
 export const ERC1271_MATCH_VALUE = '0x1626ba7e';
 
@@ -50,12 +44,7 @@ export type ResponseWithCookie = Response & {
   ): string;
 };
 
-export type AuthSupportedAddress =
-  | EthAddress
-  | SolAddress
-  | FlowAddress
-  | AptosAddress
-  | SuiAddress;
+export type AuthSupportedAddress = EthAddress;
 
 export enum AuthEntityStatus {
   ACTIVE = 'ACTIVE',

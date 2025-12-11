@@ -60,10 +60,10 @@ async function bootstrap() {
   // };
   // app.enableCors(corsConfig);
 
-  // 启用 CORS，允许所有来源请求，api+domain 规则由 ApiLoggingInterceptor 控制
+  // 启用 CORS，允许所有来源请求
   app.enableCors({
     origin: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: [
       'Content-Type',
       'Authorization',
@@ -76,7 +76,7 @@ async function bootstrap() {
     credentials: true,
     maxAge: 86400,
     preflightContinue: false,
-    optionsSuccessStatus: 204,
+    optionsSuccessStatus: 200,
   });
 
   app.useLogger(app.get(AppLogger));

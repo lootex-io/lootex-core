@@ -10,7 +10,6 @@ import { SendInBlueModule } from '@/external/send-in-blue/send-in-blue.module';
 import { entities } from '@/model/entities';
 import { SequelizeModule } from '@nestjs/sequelize';
 
-import { DiscordStrategy } from './discord.strategy';
 import { AccountService } from '../account/account.service';
 import { ConfigService } from '@nestjs/config';
 import { AssetService } from '../asset/asset.service';
@@ -53,7 +52,6 @@ export class AuthModule {
         ConfigurationService,
         BlockchainService,
 
-        DiscordStrategy,
         OrderService,
         CurrencyService,
         StorageService,

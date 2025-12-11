@@ -23,7 +23,6 @@ import {
 } from './auth.interface';
 import { modifyGmail } from '@/common/utils/modify-gmail';
 import { EMAIL_BLACKLIST } from '@/common/utils';
-import { FlowCompositeSignature } from '@/external/blockchain';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotProfanity } from './auth.decorator';
 import { normaliseTorusVerifier } from '@/common/utils/utils.pure';
@@ -107,11 +106,6 @@ export class AccountAuthBaseDto {
   @IsOptional()
   @IsString()
   publicKey?: string = '';
-
-  // @dev FLOW only, composite signature payload (in array)
-  @IsOptional()
-  @IsArray()
-  compositeSignatures?: Array<FlowCompositeSignature>;
 }
 
 export class AccountSignUpDto extends AccountAuthBaseDto {
