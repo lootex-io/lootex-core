@@ -109,66 +109,16 @@ export class AccountAuthBaseDto {
 }
 
 export class AccountSignUpDto extends AccountAuthBaseDto {
-  // @dev mandatory, otpCode from the one-time email
-  @ApiProperty({ example: '123456', description: 'otpCode' })
-  @IsNotEmpty()
-  @Length(6, 6)
-  otpCode: string;
-
-  // @note The following section documents the mandatory UserAccount fields for
-  //       corresponding Lootex ID logic
-
-  // @dev mandatory, email address
-  @ApiProperty({ example: 'sample@lootex.io', description: 'email' })
-  @IsNotEmpty()
-  @Transform(modifyGmail)
-  @IsEmail({
-    host_blacklist: EMAIL_BLACKLIST,
-  })
-  email: string;
-
-  // @dev mandatory, @username
-  @ApiProperty({ example: 'username', description: 'username' })
-  @IsNotEmpty()
-  @IsString()
-  @IsNotProfanity()
-  @MinLength(3)
-  @MaxLength(16)
-  @Matches(/^[a-z0-9-_]+$/)
-  username: string;
-
   @IsOptional()
   @IsString()
   referralCode?: string;
 }
 
 export class AccountNewWalletSignUpDto extends AccountAuthBaseDto {
-  // @dev mandatory, otpCode from the one-time email
-  @ApiProperty({ example: '123456', description: 'otpCode' })
-  @IsNotEmpty()
-  @Length(6, 6)
-  otpCode: string;
-
-  // @dev mandatory, email address
-  @ApiProperty({ example: 'sample@lootex.io', description: 'email' })
-  @IsNotEmpty()
-  @Transform(modifyGmail)
-  @IsEmail({
-    host_blacklist: EMAIL_BLACKLIST,
-  })
-  email: string;
+  // Fields removed
 }
 
-export class AccountNewWalletSignUpByPrivyDto {
-  // @dev mandatory, email address
-  @ApiProperty({ example: 'sample@lootex.io', description: 'email' })
-  @IsNotEmpty()
-  @Transform(modifyGmail)
-  @IsEmail({
-    host_blacklist: EMAIL_BLACKLIST,
-  })
-  email: string;
-}
+
 
 export class AccountTorusSignUpDto extends AccountAuthBaseDto {
   @ApiProperty({
@@ -187,25 +137,7 @@ export class AccountTorusSignUpDto extends AccountAuthBaseDto {
   @IsNotEmpty()
   verifierId: string;
 
-  // @dev mandatory, email address
-  @ApiProperty({ example: 'sample@lootex.io', description: 'email' })
-  @IsNotEmpty()
-  @Transform(modifyGmail)
-  @IsEmail({
-    host_blacklist: EMAIL_BLACKLIST,
-  })
-  email: string;
-
-  // @dev mandatory, @username
-  @ApiProperty({ example: 'username', description: 'username' })
-  @IsNotEmpty()
-  @IsString()
-  @IsNotProfanity()
-  @MinLength(3)
-  @MaxLength(16)
-  @Matches(/^[a-z0-9-_]+$/)
-  username: string;
-
+  // Username and email removed
   @IsOptional()
   @IsString()
   referralCode?: string;
@@ -243,15 +175,6 @@ export class AccountTorusNewWalletSignUpDto extends AccountAuthBaseDto {
   })
   @IsNotEmpty()
   verifierId: string;
-
-  // @dev mandatory, email address
-  @ApiProperty({ example: 'sample@lootex.io', description: 'email' })
-  @IsNotEmpty()
-  @Transform(modifyGmail)
-  @IsEmail({
-    host_blacklist: EMAIL_BLACKLIST,
-  })
-  email: string;
 }
 
 export class GetChallengeDto {
@@ -299,21 +222,7 @@ export class VerifyChallengePlusDto {
   signature: string;
 }
 
-export class QueryByEmailBaseDto {
-  @ApiProperty({ example: 'sample@lootex.io', description: 'email' })
-  @IsNotEmpty()
-  @Transform(modifyGmail)
-  @IsEmail({
-    host_blacklist: EMAIL_BLACKLIST,
-  })
-  email: string;
 
-  // google reCaptcha token
-  @ApiProperty({ example: 'sampleToken', description: 'reCaptcha token' })
-  @IsOptional()
-  @IsString()
-  recaptchaToken: string;
-}
 
 export class QueryByAddressBaseDto {
   @ApiProperty()
@@ -331,20 +240,7 @@ export class QueryByUsernameBaseDto {
   username: string;
 }
 
-export class VerifyEmailOtpDto {
-  @ApiProperty({ example: 'sample@lootex.io', description: 'email' })
-  @IsNotEmpty()
-  @Transform(modifyGmail)
-  @IsEmail({
-    host_blacklist: EMAIL_BLACKLIST,
-  })
-  email: string;
 
-  @ApiProperty({ example: '123456', description: 'otpCode' })
-  @IsNotEmpty()
-  @Length(6, 6)
-  otpCode: string;
-}
 
 export class IsWalletBoundDto {
   @ApiProperty()

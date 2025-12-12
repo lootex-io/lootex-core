@@ -1,5 +1,5 @@
 import { Module, Global } from '@nestjs/common';
-import { BotDetectionService } from '@/common/services/bot-detection.service';
+
 import { BotDetectionGuard } from '@/common/guards/bot-detection.guard';
 
 /**
@@ -8,7 +8,7 @@ import { BotDetectionGuard } from '@/common/guards/bot-detection.guard';
  */
 @Global()
 @Module({
-  providers: [BotDetectionService, BotDetectionGuard],
-  exports: [BotDetectionService, BotDetectionGuard],
+  providers: [BotDetectionGuard],
+  exports: [BotDetectionGuard],
 })
-export class BotDetectionModule {}
+export class BotDetectionModule { }

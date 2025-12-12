@@ -15,7 +15,6 @@ import { LibsDao } from '@/core/dao/libs-dao';
 import { LibsService } from '@/common/libs/libs.service';
 import { AssetExtraDao } from '@/core/dao/asset-extra-dao';
 import { TraitDao } from '@/core/dao/trait-dao';
-import { SheetAlertChannelService } from '@/core/monitor/sheet-alert-channel-service';
 import { ImportCollectionLogService } from '@/core/import-collection-log/import-collection-log.service';
 import { CWLogService } from '@/core/third-party-api/cloudwatch-log/cw-log.service';
 import { APP_FILTER } from '@nestjs/core';
@@ -25,7 +24,6 @@ import { SeaportOrderHistoryDao } from '@/core/dao/seaport-order-history-dao';
 import { RpcHandlerService } from '@/core/third-party-api/rpc/rpc-handler.service';
 import { OrderDao } from '@/core/dao/order-dao';
 import { DB_SMALL_NAME } from '@/core/small-db/small-constants';
-import { smallEntities } from '@/model-small/entities';
 import { SmallLogService } from '@/core/small-db/small-log.service';
 import { LogService } from '@/core/log/log.service';
 import { OpenSeaApiService } from '@/core/aggregator-core/opensea/opensea-api.service';
@@ -33,7 +31,6 @@ import { OpenSeaHandlerService } from '@/core/aggregator-core/opensea/opensea-ha
 import { providers } from '@/model/providers';
 import { GpDao } from '@/core/dao/gp-dao';
 import { AggregatorCoreDao } from '@/core/aggregator-core/aggregator-core-dao/aggregator-core-dao';
-import { QueueModule } from '@/external/queue/queue.module';
 import { FileBaseService } from '@/core/ipfs/filebase.service';
 import { EventPollerDao } from '@/core/dao/event-poller.dao';
 import { GpPoolDao } from '@/core/dao/gp-pool-dao';
@@ -46,7 +43,6 @@ import { TradeRewardStatsDao } from '@/core/dao/trade-reward/trade-reward-stats-
 import { ApiLogService } from './log/api-log.service';
 import { SdkApiKeyService } from '@/core/sdk/service/sdk-api-key.service';
 import { SdkEnvService } from '@/core/sdk/service/sdk-env.service';
-import { StorageS3Service } from '@/core/storage/storage-s3.service';
 import { BiruPointDao } from '@/core/dao/biru-point-dao';
 import { BullModule } from '@nestjs/bull';
 import { BullQueueModule } from '@/core/bull-queue/bull-queue.module';
@@ -66,7 +62,7 @@ interface CoreOptions {
 export class CoreModule {
   private tag = CoreModule.name;
 
-  constructor() {}
+  constructor() { }
 
   static forRoot(options?: CoreOptions) {
     options = {
@@ -112,6 +108,16 @@ export class CoreModule {
             };
           },
         }),
+        CacheModule.forRootAsync({
+          inject: [ConfigurationService],
+          useFactory: async (config: ConfigurationService) => ({
+            store: redisStore,
+            host: config.get('REDIS_HOST'),
+            port: config.get('REDIS_PORT'),
+            password: config.get('REDIS_PASSWORD'),
+          }),
+        }),
+        HttpModule,
         SequelizeModule.forRootAsync({
           inject: [ConfigurationService],
           useFactory: async (config: ConfigurationService) => ({
@@ -143,41 +149,7 @@ export class CoreModule {
             models: entities,
           }),
         }),
-        SequelizeModule.forRootAsync({
-          name: DB_SMALL_NAME,
-          inject: [ConfigurationService],
-          useFactory: async (config: ConfigurationService) => ({
-            dialect: config.get('SMALL_POSTGRES_DIALECT'),
-            host: config.get('SMALL_POSTGRES_HOST'),
-            port: config.get('SMALL_POSTGRES_PORT'),
-            username: config.get('SMALL_POSTGRES_USERNAME'),
-            password: config.get('SMALL_POSTGRES_PASSWORD'),
-            database: config.get('SMALL_POSTGRES_DATABASE'),
-            // benchmark: true, // this one enables tracking execution time
-            // logQueryParameters: true,
-            logging: false,
-            models: smallEntities,
-            dialectOptions: {
-              ssl: {
-                require: true,
-                rejectUnauthorized: false,
-              },
-            },
-          }),
-        }),
-        CacheModule.forRootAsync({
-          inject: [ConfigurationService],
-          useFactory: async (config: ConfigurationService) => ({
-            store: redisStore,
-            host: config.get('REDIS_HOST'),
-            port: config.get('REDIS_PORT'),
-            password: config.get('REDIS_PASSWORD'),
-          }),
-        }),
-        HttpModule,
-        QueueModule,
         SequelizeModule.forFeature(entities),
-        SequelizeModule.forFeature(smallEntities, DB_SMALL_NAME),
       ],
       providers: [
         {
@@ -201,7 +173,6 @@ export class CoreModule {
         RpcHandlerService,
         GatewayService,
         CurrencyService,
-        SheetAlertChannelService,
         ImportCollectionLogService,
         CWLogService,
         SmallLogService,
@@ -219,7 +190,7 @@ export class CoreModule {
         TradeRewardStatsDao,
         SdkApiKeyService,
         SdkEnvService,
-        StorageS3Service,
+
         BiruPointDao,
         OrderQueueService,
         StakeParamsDao,
@@ -262,7 +233,7 @@ export class CoreModule {
         TradeRewardStatsDao,
         SdkApiKeyService,
         SdkEnvService,
-        StorageS3Service,
+
         BiruPointDao,
         OrderQueueService,
         StakeParamsDao,

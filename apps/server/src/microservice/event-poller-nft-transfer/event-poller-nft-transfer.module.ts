@@ -9,12 +9,9 @@ import { CollectionService } from '@/api/v3/collection/collection.service';
 import { LibsService } from '@/common/libs/libs.service';
 import { ContractService } from '@/api/v3/contract/contract.service';
 import { TraitService } from '@/api/v3/trait/trait.service';
-import { StorageService } from '@/external/storage/storage.service';
-import { CurrencyService } from '@/api/v3/currency/currency.service';
 import { AccountService } from '@/api/v3/account/account.service';
 import { OrderService } from '@/api/v3/order/order.service';
 import { AssetService } from '@/api/v3/asset/asset.service';
-import { QueueService } from '@/external/queue/queue.service';
 import { BlockchainService } from '@/external/blockchain';
 import { AssetExtraService } from '@/api/v3/asset/asset-extra.service';
 import { EventPollerNftTransferService } from './event-poller-nft-transfer.service';
@@ -27,14 +24,11 @@ import { EventPollerNftTransferService } from './event-poller-nft-transfer.servi
   ],
   controllers: [],
   providers: [
-    QueueService,
     ContractService,
     LibsService,
     CollectionService,
     WalletService,
     TraitService,
-    StorageService,
-    CurrencyService,
     AccountService,
     OrderService,
     AssetService,
@@ -44,4 +38,4 @@ import { EventPollerNftTransferService } from './event-poller-nft-transfer.servi
     sequelizeProvider,
   ],
 })
-export class EventPollerNftTransferModule {}
+export class EventPollerNftTransferModule { }

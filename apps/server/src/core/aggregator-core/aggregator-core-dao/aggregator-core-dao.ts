@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Asset, Blockchain, Contract, Currency } from '@/model/entities';
 import { InjectModel } from '@nestjs/sequelize';
 import { Cacheable } from '@/common/decorator/cacheable.decorator';
-import { QueueService } from '@/external/queue/queue.service';
+
 import { AWS_SQS_AGGREGATOR_EVENT_URL, QUEUE_ENV } from '@/common/utils';
 import { ConfigService } from '@nestjs/config';
 
@@ -13,9 +13,8 @@ export class AggregatorCoreDao {
     private assetRepository: typeof Asset,
     @InjectModel(Currency)
     private currencyRepository: typeof Currency,
-    private readonly queueService: QueueService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   /**
    * 查询缓存nft
@@ -73,15 +72,7 @@ export class AggregatorCoreDao {
       },
     ],
   ) {
-    await this.queueService.sendMessageToFifoSqsCacheable({
-      queueUrl: this.configService.get(AWS_SQS_AGGREGATOR_EVENT_URL),
-      payload: {
-        action: 'fulfill',
-        nfts: nfts,
-      },
-      expiredTime: this.configService.get(
-        QUEUE_ENV.QUEUE_AGGREGATOR_EVENT_EXPIRED,
-      ), // 同一个消息300s最多发一次
-    });
+    // Stub: QueueService removed
+    return;
   }
 }

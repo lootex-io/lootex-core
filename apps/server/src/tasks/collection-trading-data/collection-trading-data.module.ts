@@ -12,11 +12,9 @@ import { AssetExtraService } from '@/api/v3/asset/asset-extra.service';
 import { JwtService } from '@nestjs/jwt';
 import { OrderService } from '@/api/v3/order/order.service';
 import { BlockchainService } from '@/external/blockchain';
-import { TraitService } from '@/api/v3/trait/trait.service';
-import { QueueService } from '@/external/queue/queue.service';
-import { StorageModule } from '@/external/storage/storage.module';
-import { CoreModule } from '@/core/core.module';
 import { AccountService } from '@/api/v3/account/account.service';
+import { CoreModule } from '@/core/core.module';
+import { TraitService } from '@/api/v3/trait/trait.service';
 import { CollectionTradingDataService } from './collection-trading-data.service';
 
 @Module({
@@ -24,7 +22,6 @@ import { CollectionTradingDataService } from './collection-trading-data.service'
     CoreModule.forRoot(),
     ScheduleModule.forRoot(),
     CollectionModule,
-    StorageModule,
     SequelizeModule.forFeature(entities),
   ],
   providers: [
@@ -33,15 +30,9 @@ import { CollectionTradingDataService } from './collection-trading-data.service'
     AssetExtraService,
     AccountService,
     CollectionService,
-    QueueService,
-    ContractService,
-    JwtService,
-    LibsService,
-    OrderService,
     BlockchainService,
     TraitService,
-    QueueService,
     sequelizeProvider,
   ],
 })
-export class TasksModule {}
+export class TasksModule { }

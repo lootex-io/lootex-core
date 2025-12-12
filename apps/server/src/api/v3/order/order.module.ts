@@ -16,31 +16,28 @@ import { entities } from '@/model/entities';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CacheModule } from '@/common/cache';
 import { AccountService } from '../account/account.service';
-import { QueueService } from '@/external/queue/queue.service';
-import { StorageService } from '@/external/storage/storage.service';
+
 import { SdkApiKeyService } from '@/core/sdk/service/sdk-api-key.service';
 
 @Module({
   imports: [CacheModule, SequelizeModule.forFeature(entities)],
   controllers: [OrderController],
   providers: [
-    AssetExtraService,
     AssetService,
+    AssetExtraService,
     AccountService,
     BlockchainService,
     CollectionService,
     ContractService,
-    QueueService,
     CurrencyService,
     GatewayService,
     JwtService,
     LibsService,
     OrderService,
     TraitService,
-    StorageService,
     SdkApiKeyService,
     ...providers,
   ],
   exports: [OrderService],
 })
-export class OrderModule {}
+export class OrderModule { }

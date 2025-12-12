@@ -1,17 +1,16 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CollectionService } from '@/api/v3/collection/collection.service';
-import { StorageService } from '@/external/storage/storage.service';
+
+
 import { ContractService } from '@/api/v3/contract/contract.service';
 import { CacheService } from '@/common/cache';
-import { QueueService } from '@/external/queue/queue.service';
 import { ConfigService } from '@nestjs/config';
 import { OrderService } from '@/api/v3/order/order.service';
 import { LibsService } from '@/common/libs/libs.service';
 import { CollectionDao } from '@/core/dao/collection-dao';
 import { OrderDao } from '@/core/dao/order-dao';
-
-import { StudioService } from '@/api/v3/studio/studio.service';
 import { CollectionParamsDTO } from '@/api/v3/collection/collection.dto';
+
 import * as promise from 'bluebird';
 import { ChainId } from '@/common/utils/types';
 import { InjectModel } from '@nestjs/sequelize';
@@ -24,18 +23,14 @@ export class CollectionDataService {
     @InjectModel(CollectionTradingBoardOneDay)
     private collectionTradingBoardOneDayRepository: typeof CollectionTradingBoardOneDay,
     private readonly collectionService: CollectionService,
-    private readonly storageService: StorageService,
     private readonly contractService: ContractService,
     private readonly cacheService: CacheService,
-    private readonly queueService: QueueService,
     private readonly configService: ConfigService,
     private readonly orderService: OrderService,
     private readonly libService: LibsService,
     private readonly collectionDao: CollectionDao,
     private readonly orderDao: OrderDao,
-
-    private readonly studioService: StudioService,
-  ) {}
+  ) { }
 
   async getCollectionInfo(params: CollectionParamsDTO) {
     try {
@@ -98,8 +93,10 @@ export class CollectionDataService {
         ),
       ]);
 
-      // auto update collection logo image
+      // usage of missing autoUpdateCollectionLogoImage removed
+      /*
       this.collectionService.autoUpdateCollectionLogoImage(collection.id);
+      */
       this.orderService.updateCollectionBestListingToCache(
         collection.contractAddress,
         collection.chainId.toString(),
@@ -120,6 +117,8 @@ export class CollectionDataService {
       this.collectionService.syncOpenSeaCollectionListings(params.slug);
       // End running
 
+      // usage of missing studioService removed
+      /*
       this.studioService
         .getContractByChainIdAndAddress(
           collection.chainId.toString(),
@@ -128,10 +127,14 @@ export class CollectionDataService {
         .then((contract) => {
           this.studioService.updateStudioContractEndSale(contract);
         });
+      */
+      // usage of missing autoUpdateIsMintingTag removed
+      /*
       this.collectionService.autoUpdateIsMintingTag(
         collection.contractAddress,
         collection.chainId.toString(),
       );
+      */
 
       return {
         id: collection.id,

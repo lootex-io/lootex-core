@@ -1,4 +1,3 @@
-import { CurrencyService } from '@/api/v3/currency/currency.service';
 import { CurrencyService as ThirdPartyCurrencyService } from '@/core/third-party-api/currency/currency.service';
 import { HealthModule } from '@/common/health/health.module';
 import { ConfigurationService } from '@/configuration';
@@ -20,9 +19,7 @@ import { OrderService } from '@/api/v3/order/order.service';
 import { EventPollerWsService } from '@/microservice/event-poller/service/event-poller-ws.service';
 import { EventPollerRpcService } from '@/microservice/event-poller/service/event-poller-rpc.service';
 import { AccountService } from '@/api/v3/account/account.service';
-import { QueueModule } from '@/external/queue/queue.module';
 import { AssetExtraService } from '@/api/v3/asset/asset-extra.service';
-import { StorageService } from '@/external/storage/storage.service';
 import { WalletService } from '@/api/v3/wallet/wallet.service';
 import { SendInBlueModule } from '@/external/send-in-blue/send-in-blue.module';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
@@ -47,7 +44,6 @@ import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
     ScheduleModule.forRoot(),
     SequelizeModule.forFeature(entities),
     SendInBlueModule,
-    QueueModule,
   ],
   controllers: [],
   providers: [
@@ -59,19 +55,16 @@ import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
     EventPollerService,
     EventPollerWsService,
     ConfigurationService,
-    CurrencyService,
     CollectionService,
     ContractService,
     OrderService,
     BlockchainService,
     EventPollerHandlerService,
     EventPollerRpcService,
-    StorageService,
     WalletService,
-    CurrencyService,
     ThirdPartyCurrencyService,
     GatewayService,
     sequelizeProvider,
   ],
 })
-export class EventPollerModule {}
+export class EventPollerModule { }

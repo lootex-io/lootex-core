@@ -48,7 +48,6 @@ import {
   NftsResp,
   TokenAmountQuery,
 } from '@/core/third-party-api/gateway/gateway.interface';
-import { STUDIO_CONTRACT_ERC1155_ABI } from '@/api/v3/studio/constants';
 
 ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR); // turn off warnings
 
@@ -727,80 +726,7 @@ export class RpcService {
     _tokenId: string,
     rpcSwitch = false,
   ) {
-    this.logService.log(
-      LOG_TYPE.RPC_SERVICE,
-      'getStudioContractGetClaimConditionById',
-      {
-        contractAddress,
-        chainId,
-        _conditionId,
-      },
-    );
-
-    const provider = this.rpcHandlerService.createStaticJsonRpcProvider(
-      +chainId,
-      this.rpcEnd,
-    );
-
-    const contract = new ethers.Contract(
-      contractAddress,
-      STUDIO_CONTRACT_ERC1155_ABI,
-      provider,
-    );
-    const condition = await contract.getClaimConditionById(
-      _conditionId,
-      _tokenId,
-    );
-    // outputs: [
-    //   {
-    //     components: [
-    //       {
-    //         internalType: 'uint256',
-    //         name: 'startTimestamp',
-    //         type: 'uint256',
-    //       },
-    //       {
-    //         internalType: 'uint256',
-    //         name: 'maxClaimableSupply',
-    //         type: 'uint256',
-    //       },
-    //       {
-    //         internalType: 'uint256',
-    //         name: 'supplyClaimed',
-    //         type: 'uint256',
-    //       },
-    //       {
-    //         internalType: 'uint256',
-    //         name: 'quantityLimitPerWallet',
-    //         type: 'uint256',
-    //       },
-    //       {
-    //         internalType: 'bytes32',
-    //         name: 'merkleRoot',
-    //         type: 'bytes32',
-    //       },
-    //       {
-    //         internalType: 'uint256',
-    //         name: 'pricePerToken',
-    //         type: 'uint256',
-    //       },
-    //       {
-    //         internalType: 'address',
-    //         name: 'currency',
-    //         type: 'address',
-    //       },
-    //       {
-    //         internalType: 'string',
-    //         name: 'metadata',
-    //         type: 'string',
-    //       },
-    //     ],
-    //     internalType: 'struct IClaimCondition.ClaimCondition',
-    //     name: 'condition',
-    //     type: 'tuple',
-    //   },
-    // ],
-    return condition;
+    return null;
   }
 
   @logRunDuration(new Logger(RpcService.name))

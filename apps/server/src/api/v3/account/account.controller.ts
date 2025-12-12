@@ -1,4 +1,4 @@
-import { QueueService } from '@/external/queue/queue.service';
+// QueueService removed
 import { CollectionService } from '@/api/v3/collection/collection.service';
 import { AssetService } from '@/api/v3/asset/asset.service';
 import { CacheService } from '@/common/cache';
@@ -44,7 +44,7 @@ import {
   AccountRenameDTO,
 } from '@/api/v3/account/account.dto';
 import { GetAccountsResponse } from '@/api/v3/account/account.interface';
-import { StorageService } from '@/external/storage/storage.service';
+// StorageService removed
 import {
   AccountInterceptor,
   AccountList,
@@ -54,9 +54,7 @@ import {
 } from './account.interceptor';
 
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
-import { RoleGuard } from '../role/role.guard';
-import { Role } from '../role/role.interface';
-import { Roles } from '../role/role.decorator';
+// Roles removed
 import { AuthService } from '../auth/auth.service';
 import { CFIp } from '@/common/decorator/cf-ip.decorator';
 import { SimpleException } from '@/common/utils/simple.util';
@@ -70,35 +68,15 @@ export class AccountController {
   private readonly logger = new Logger(AccountController.name);
 
   constructor(
-    private readonly storageService: StorageService,
     private readonly accountService: AccountService,
     private readonly authService: AuthService,
     private readonly cacheService: CacheService,
     private readonly assetService: AssetService,
     private readonly collectionService: CollectionService,
-    private readonly queueService: QueueService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
-  // TODO: wait for collection pull request merged
-  @Post('/accounts/avatar')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadAccountAvatar(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<UploadFile> {
-    try {
-      // this.logger.debug(file);
-      const url = await this.storageService.uploadImage({
-        content: file.buffer,
-        fileName: file.originalname,
-      });
-      return {
-        url,
-      };
-    } catch (err) {
-      throw new HttpException(err.message, 400);
-    }
-  }
+  // uploadAccountAvatar removed (S3 removal)
 
   @UseInterceptors(AccountPrivateInterceptor)
   @UseGuards(AuthJwtGuard)
@@ -264,9 +242,9 @@ export class AccountController {
     try {
       const { accounts, count } = user
         ? await this.accountService.getUserFollowingAccountsByAccountId(
-            query,
-            user.id,
-          )
+          query,
+          user.id,
+        )
         : await this.accountService.getUserFollowingAccounts(query);
       return {
         accounts,
@@ -288,9 +266,9 @@ export class AccountController {
     try {
       const { accounts, count } = user
         ? await this.accountService.getUserFollowerAccountsByAccountId(
-            query,
-            user.id,
-          )
+          query,
+          user.id,
+        )
         : await this.accountService.getUserFollowerAccounts(query);
       return {
         accounts,

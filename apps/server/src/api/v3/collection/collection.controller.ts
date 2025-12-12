@@ -42,17 +42,17 @@ import {
 import { AssetListResponse } from '@/api/v3/asset/asset.interface';
 import { AssetList } from '@/api/v3/asset/asset.interceptor';
 import { CollectionService } from '@/api/v3/collection/collection.service';
-import { StorageService } from '@/external/storage/storage.service';
 import {
   AuthJwtGuard,
   AuthJwtGuardOptional,
 } from '@/api/v3/auth/auth.jwt.guard';
 import { CurrentUser, CurrentWallet } from '@/api/v3/auth/auth.decorator';
 import { Account, Wallet, Collection } from '@/model/entities';
+import { Cacheable } from '@/common/decorator/cacheable.decorator';
+import { ChainId } from '@/common/utils/types';
+import { keywordsBaseQueryDTO } from '../explore/explore.dto';
 import { ContractService } from '@/api/v3/contract/contract.service';
 import { CacheService } from '@/common/cache/cache.service';
-// import { QueueService } from '@/common/queue/queue.service';
-import { QueueService } from '@/external/queue/queue.service';
 import { ConfigService } from '@nestjs/config';
 import {
   QUEUE_STATUS,
@@ -61,17 +61,10 @@ import {
 } from '@/common/utils';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
-import { Role } from '../role/role.interface';
-import { keywordsBaseQueryDTO } from '../explore/explore.dto';
-import { pagination } from '@/common/utils/pagination';
-import { Cacheable } from '@/common/decorator/cacheable.decorator';
-import { ChainId } from '@/common/utils/types';
 import { CollectionDao } from '@/core/dao/collection-dao';
-import { Roles } from '../role/role.decorator';
-import { RoleGuard } from '../role/role.guard';
+// Roles removed
 
 import { OrderDao } from '@/core/dao/order-dao';
-import { StudioService } from '../studio/studio.service';
 import { CollectionProxyService } from '@/api/v3/collection/proxy/collection-proxy.service';
 import { CollectionDataService } from '@/api/v3/collection/proxy/collection-data.service';
 
@@ -83,10 +76,8 @@ export class CollectionController {
 
   constructor(
     private readonly collectionService: CollectionService,
-    private readonly storageService: StorageService,
     private readonly contractService: ContractService,
     private readonly cacheService: CacheService,
-    private readonly queueService: QueueService,
     private readonly configService: ConfigService,
     private readonly orderService: OrderService,
     private readonly libService: LibsService,
@@ -94,91 +85,11 @@ export class CollectionController {
     private readonly collectionProxyService: CollectionProxyService,
     private readonly collectionDataService: CollectionDataService,
     private readonly orderDao: OrderDao,
-
-    private readonly studioService: StudioService,
   ) { }
 
   // ------------------ Upload ------------------
 
-  @Post('collections/upload-banner')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadCollectionBanner(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<UploadFile> {
-    try {
-      // this.logger.debug(file);
-      //TODO: check file size
-      const url = await this.storageService.uploadImage({
-        content: file.buffer,
-        fileName: file.originalname,
-      });
-      return {
-        url,
-      };
-    } catch (err) {
-      throw new HttpException(err.message, 400);
-    }
-  }
-
-  @Post('collections/upload-logo')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadCollectionLogo(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<UploadFile> {
-    try {
-      // this.logger.debug(file);
-      //TODO: check file size
-      const url = await this.storageService.uploadImage({
-        content: file.buffer,
-        fileName: file.originalname,
-      });
-      return {
-        url,
-      };
-    } catch (err) {
-      throw new HttpException(err.message, 400);
-    }
-  }
-
-  @Post('collections/upload-featured-image')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadCollectionFeaturedImage(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<UploadFile> {
-    try {
-      // this.logger.debug(file);
-      //TODO: check file size
-      const url = await this.storageService.uploadImage({
-        content: file.buffer,
-        fileName: file.originalname,
-      });
-      return {
-        url,
-      };
-    } catch (err) {
-      throw new HttpException(err.message, 400);
-    }
-  }
-
-  @Post('collections/upload-featured-video')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadCollectionFeaturedVideo(
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<UploadFile> {
-    try {
-      // this.logger.debug(file);
-      //TODO: check file size
-      const url = await this.storageService.uploadImage({
-        content: file.buffer,
-        fileName: file.originalname,
-      });
-      return {
-        url,
-      };
-    } catch (err) {
-      throw new HttpException(err.message, 400);
-    }
-  }
+  // uploads removed
 
   @Get('collections')
   @UseInterceptors(CollectionListInterceptor)
@@ -205,11 +116,13 @@ export class CollectionController {
   ): Promise<CollectionInfo> {
     try {
       const collection = await this.collectionDao.findOrCreateCollection(body);
+      /*
       this.collectionService.autoUpdateCollectionLogoImage(collection.id);
       this.collectionService.autoUpdateIsMintingTag(
         collection.contractAddress,
         collection.chainId.toString(),
       );
+      */
       return collection;
     } catch (err) {
       throw new HttpException(err.message, 400);
@@ -245,15 +158,7 @@ export class CollectionController {
     }
   }
 
-  @Put('/collections/trading-board')
-  @Roles(Role.Admin)
-  @UseGuards(AuthJwtGuard, RoleGuard)
-  async recordTradingBoard(@Query('time') time: Date) {
-    // 如果漏掉紀錄的話可以用這隻 API 來補
-    // string to Date
-    // 2024-10-09 07:00:00.000000 +00:00
-    await this.collectionService._recordCollectionTradingData(time);
-  }
+  // recordTradingBoard removed
 
   @UseGuards(AuthJwtGuard)
   @Put('collections/:slug')
@@ -273,12 +178,24 @@ export class CollectionController {
         throw new HttpException('collection not found', HttpStatus.BAD_REQUEST);
       }
 
+      /* Role check removed (admin only logic removed or simplified)
+       if (
+        (await this.collectionService.isAccountIsCollectionOwner(
+          user.id,
+          existCollection.id,
+        )) === false
+      ) {
+         throw new HttpException(
+          'you are not contract owner',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      */
       if (
         (await this.collectionService.isAccountIsCollectionOwner(
           user.id,
           existCollection.id,
-        )) === false &&
-        user.roles.includes(Role.Admin) === false
+        )) === false
       ) {
         throw new HttpException(
           'you are not contract owner',
@@ -361,38 +278,7 @@ export class CollectionController {
     }
   }
 
-  @Roles(Role.Admin)
-  @UseGuards(AuthJwtGuard, RoleGuard)
-  @Put('collections/:slug/is-verified')
-  async updateCollectionIsVerified(
-    @Param() params: CollectionParamsDTO,
-    @CurrentUser() user: Account,
-  ): Promise<CollectionInfo> {
-    try {
-      const existCollection: Collection =
-        await this.collectionService.getCollectionBySlug(params.slug);
-
-      if (!existCollection) {
-        throw new HttpException('collection not found', HttpStatus.BAD_REQUEST);
-      }
-
-      existCollection.set('isVerified', !existCollection.isVerified);
-
-      await existCollection.save();
-
-      this.logger.log(
-        `${user.username} set collection ${params.slug} verified ${existCollection.isVerified}`,
-      );
-
-      return existCollection;
-    } catch (err) {
-      if (err instanceof HttpException) {
-        throw err;
-      } else {
-        throw new HttpException(err.message, 400);
-      }
-    }
-  }
+  // updateCollectionIsVerified removed
 
   @UseGuards(AuthJwtGuard)
   @Get('collections/me')
@@ -469,41 +355,7 @@ export class CollectionController {
     }
   }
 
-  @Put('collections/:slug/sync/stats')
-  @Roles(Role.Admin)
-  @UseGuards(AuthJwtGuard, RoleGuard)
-  async syncCollectionStats(
-    @Param() params: CollectionParamsDTO,
-    @CurrentUser() user: Account,
-  ) {
-    try {
-      const collection = await this.collectionService.getCollectionBySlug(
-        params.slug,
-      );
-      if (!collection) {
-        throw new HttpException('collection not found', HttpStatus.BAD_REQUEST);
-      }
-      const owners = await this.collectionService.totalOwners(
-        collection.id,
-        true,
-      );
-      const items = await this.collectionService.totalItems(
-        collection.id,
-        true,
-      );
-      return {
-        message: 'sync success',
-        data: {
-          slug: collection.slug,
-          name: collection.name,
-          totalOwners: owners,
-          totalItems: items,
-        },
-      };
-    } catch (err) {
-      throw new HttpException(err.message, 400);
-    }
-  }
+  // syncCollectionStats removed
 
   //
 
@@ -574,24 +426,8 @@ export class CollectionController {
         };
       }
 
-      await this.queueService.sendMessageToSqs(
-        this.configService.get('AWS_SQS_CONTRACT_ASSETS_URL'),
-        {
-          queueStatus,
-          contractAddress: collection.contractAddress,
-          chainId: query.chainId,
-        },
-      );
-
-      await this.cacheService.setCache(
-        queueKey,
-        {
-          queueStatus,
-          contractAddress: collection.contractAddress,
-          chainId: query.chainId,
-        },
-        this.configService.get(QUEUE_ENV.QUEUE_CONTRACT_ASSETS_EXPIRED),
-      );
+      // Queue push removed
+      // await this.queueService.sendMessageToSqs(...)
 
       return {
         queueStatus,
@@ -620,16 +456,7 @@ export class CollectionController {
     }
   }
 
-  @Put('collections/:slug/traits')
-  @Roles(Role.Admin)
-  @UseGuards(AuthJwtGuard, RoleGuard)
-  async updateCollectionTraits(@Param() params: CollectionParamsDTO) {
-    try {
-      await this.collectionService.updateCollectionTraits(params.slug);
-    } catch (err) {
-      throw new HttpException(err.message, 400);
-    }
-  }
+  // updateCollectionTraits removed
 
   @Get('/collections/:slug/drop')
   @Cacheable({ key: 'collections:drop-info', seconds: 15 })
@@ -637,6 +464,7 @@ export class CollectionController {
     @Param('slug') slug: string,
     @Query('tokenId') tokenId?: string,
   ) {
-    return await this.collectionService.getDropInfo(slug, tokenId);
+    // return await this.collectionService.getDropInfo(slug, tokenId);
+    return null;
   }
 }

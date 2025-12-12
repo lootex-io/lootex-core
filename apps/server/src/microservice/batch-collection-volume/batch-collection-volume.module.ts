@@ -10,7 +10,6 @@ import { entities } from '@/model/entities';
 import { sequelizeProvider } from '@/model/providers';
 import { AssetExtraService } from '@/api/v3/asset/asset-extra.service';
 import { CoreModule } from '@/core/core.module';
-import { StorageService } from '@/external/storage/storage.service';
 
 @Module({
   imports: [
@@ -25,8 +24,7 @@ import { StorageService } from '@/external/storage/storage.service';
     LibsService,
     ContractService,
     AssetExtraService,
-    StorageService,
     sequelizeProvider,
   ],
 })
-export class BatchCollectionVolumeModule {}
+export class BatchCollectionVolumeModule { }

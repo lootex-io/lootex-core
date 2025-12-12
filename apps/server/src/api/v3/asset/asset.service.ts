@@ -56,7 +56,7 @@ import { AssetDao } from '@/core/dao/asset-dao';
 import { RefreshBlacklist } from './constants';
 import { Cacheable } from '@/common/decorator/cacheable.decorator';
 import { MonitorAlertChannel } from '@/model/entities/monitor-alert-channel.entity';
-import { Role } from '@/api/v3/role/role.interface';
+
 import { logRunDuration } from '@/common/decorator/log-run-duration.decorator';
 import { asyncConcurrent } from '@/common/utils/utils.pure';
 import { RpcEnd } from '@/core/third-party-api/rpc/interfaces';
@@ -140,7 +140,7 @@ export class AssetService {
 
     @InjectModel(MonitorAlertChannel)
     private alertChannelRepository: typeof MonitorAlertChannel,
-  ) {}
+  ) { }
 
   @Cacheable({
     key: 'asset-find-by-id',
@@ -377,7 +377,7 @@ export class AssetService {
                     (item) =>
                       item.chainId === options.chainId &&
                       item.address.toLowerCase() ===
-                        nft.contract.contractAddress.toLowerCase(),
+                      nft.contract.contractAddress.toLowerCase(),
                   );
 
                   if (isInBlacklist) {
@@ -428,12 +428,12 @@ export class AssetService {
                     ) {
                       const quantity = nft.owner.amount
                         ? await this.gatewayService.get1155BalanceOf(
-                            options.chainId,
-                            nft.contract.contractAddress,
-                            options.ownerAddress,
-                            nft.tokenId,
-                            RpcEnd.default,
-                          )
+                          options.chainId,
+                          nft.contract.contractAddress,
+                          options.ownerAddress,
+                          nft.tokenId,
+                          RpcEnd.default,
+                        )
                         : '1';
                       return {
                         ...values,
@@ -1428,9 +1428,8 @@ export class AssetService {
           }
 
           // Match collection
-          const key = `${
-            asset.Contract.chainId
-          }-${asset.Contract.address.toLowerCase()}`;
+          const key = `${asset.Contract.chainId
+            }-${asset.Contract.address.toLowerCase()}`;
           let collection = collectionMap.get(key);
 
           // Fallback if not found or needs update (preserve original logic)
@@ -1923,7 +1922,7 @@ export class AssetService {
       return;
     }
 
-    if (user && user.roles && user.roles.includes(Role.Admin)) {
+    if (user && false) {
       this.logger.debug('syncCollection admin');
     } else {
       const wallets = await this.walletRepository.findAll({

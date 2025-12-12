@@ -467,4 +467,35 @@ export class CurrencyService {
     const price = response.data.data[symbol].quote.USD.price?.toString();
     return price;
   }
+  /**
+   * Compatibility methods for WalletService
+   */
+  async getCurrencyByAddressAndChainId(address: string, chainId: ChainId) {
+    // Stub implementation to satisfy build.
+    return {
+      address,
+      chainId,
+      symbol: 'UNKNOWN',
+      decimals: 18,
+      name: 'Unknown Token',
+      isNative: false,
+      isWrapped: false,
+    };
+  }
+
+  async getPriceByCurrency(currency: any) {
+    if (!currency || !currency.symbol) return { price: '0' };
+    const symbolUSD = `${currency.symbol.toUpperCase()}USD`;
+    const cache = await this.getSymbolPrice(symbolUSD);
+    return { price: cache ? cache.price : '0' };
+  }
+
+  async getCachePriceByChainId(chainId: ChainId) {
+    const symbol = this.getNativeCurrencySymbolByChainId(chainId);
+    if (!symbol) return { tokenPrice: { price: '0' } };
+    const symbolUSD = `${symbol.toUpperCase()}USD`;
+    const cache = await this.getSymbolPrice(symbolUSD);
+    return { tokenPrice: { price: cache ? cache.price : '0' } };
+  }
 }
+

@@ -1,10 +1,3 @@
-export interface ContractDraft {
-  schemaName: string;
-  chainId: string;
-  name: string;
-  symbol: string;
-}
-
 export enum ContractStatus {
   Unpublished = 'Unpublished',
   Publishing = 'Publishing',
@@ -39,21 +32,4 @@ export interface LaunchpadContracts {
   collectionChainShortName: string;
   collectionIsMinting: string;
   collectionIsDrop: string;
-}
-
-export interface RevealChallengeInput {
-  walletAddress: string;
-  chainId: string;
-  contractAddress: string;
-  tokenIds: string[];
-}
-
-export interface RevealChallenge {
-  id: string;
-  wallet: string;
-  contractAddress: string;
-  tokenIds: number[];
-  nonce: string;
-  challenge: string;
-  expiresAt: Date;
 }

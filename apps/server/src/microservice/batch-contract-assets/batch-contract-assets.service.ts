@@ -7,7 +7,6 @@ import {
   QUEUE_ENV,
 } from '@/common/utils';
 import { ConfigurationService } from '@/configuration/configuration.service';
-import { QueueService } from '@/external/queue/queue.service';
 import { CacheService } from '@/common/cache/cache.service';
 import { ContractService } from '@/api/v3/contract/contract.service';
 import { logRunDuration } from '@/common/decorator/log-run-duration.decorator';
@@ -18,7 +17,6 @@ export class BatchContractAssetsService {
 
   constructor(
     private readonly configService: ConfigurationService,
-    private readonly queueService: QueueService,
     private readonly cacheService: CacheService,
     private readonly contractService: ContractService,
   ) {
@@ -103,33 +101,16 @@ export class BatchContractAssetsService {
   }
 
   private async updateContractAssetsFromSqs(): Promise<void> {
-    const { Messages: messages } =
-      await this.queueService.receiveMessageFromSqs(
-        this.configService.get('AWS_SQS_CONTRACT_ASSETS_URL'),
-      );
-    this.logger.debug(`messages = ${messages}`);
-
-    if (!messages) {
-      return promise.resolve();
-    }
-
-    await promise.map(messages, async (message) => {
-      this.logger.debug(`message = ${message}`);
-      await this.queueService.deleteMessageFromSqs(
-        this.configService.get('AWS_SQS_CONTRACT_ASSETS_URL'),
-        message?.ReceiptHandle,
-      );
-      await this.getContractAssets(JSON.parse(message.Body));
-    });
+    return promise.resolve();
   }
 
   @Cron('*/20 * * * * *')
   async handleCron() {
-    await this.updateContractAssetsFromSqs();
+    // await this.updateContractAssetsFromSqs();
   }
 
   @Timeout(0)
   async handleTimeout() {
-    await this.updateContractAssetsFromSqs();
+    // await this.updateContractAssetsFromSqs();
   }
 }

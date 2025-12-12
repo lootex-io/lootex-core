@@ -15,11 +15,9 @@ import { LibsService } from '@/common/libs/libs.service';
 import { OrderService } from '../order/order.service';
 import { BlockchainService } from '@/external/blockchain';
 import { TraitService } from '../trait/trait.service';
-import { QueueService } from '@/external/queue/queue.service';
 
-import { CurrencyService as ThirdPartyCurrencyService } from '@/core/third-party-api/currency/currency.service';
-import { CurrencyService } from '../currency/currency.service';
-import { StorageService } from '@/external/storage/storage.service';
+
+import { CurrencyService } from '@/core/third-party-api/currency/currency.service';
 
 @Module({
   imports: [SequelizeModule.forFeature(entities)],
@@ -36,13 +34,11 @@ import { StorageService } from '@/external/storage/storage.service';
     OrderService,
     BlockchainService,
     TraitService,
-    QueueService,
 
-    ThirdPartyCurrencyService,
+
     CurrencyService,
-    StorageService,
     ...providers,
   ],
   controllers: [WalletController],
 })
-export class WalletModule {}
+export class WalletModule { }

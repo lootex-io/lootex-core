@@ -11,7 +11,7 @@ import { providers } from '@/model/providers';
 import { AssetExtraService } from '@/api/v3/asset/asset-extra.service';
 import { entities } from '@/model/entities';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { StorageService } from '@/external/storage/storage.service';
+
 
 @Module({
   imports: [SequelizeModule.forFeature(entities)],
@@ -24,8 +24,8 @@ import { StorageService } from '@/external/storage/storage.service';
     TraitService,
     LibsService,
     CollectionService,
-    StorageService,
+
     ...providers,
   ],
 })
-export class ContractModule {}
+export class ContractModule { }

@@ -26,12 +26,10 @@ import {
   CollectionVolumeSevenDays,
   CollectionVolumeToday,
   AssetExtra,
-  StudioContract,
-  StudioContractDrop,
-  CollectionTradingBoardOneDay,
   CollectionTradingBoardOneHour,
-  CollectionTradingBoardOneMonth,
+  CollectionTradingBoardOneDay,
   CollectionTradingBoardOneWeek,
+  CollectionTradingBoardOneMonth,
   AssetTraits,
   TradingRecordLog,
   CollectionTradingData,
@@ -68,7 +66,6 @@ import escapeString from 'escape-sql-string';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
 import { Cacheable } from '@/common/decorator/cacheable.decorator';
 import { TraitDao } from '@/core/dao/trait-dao';
-import { StorageService } from '@/external/storage/storage.service';
 import axios from 'axios';
 import * as mimeTypes from 'mime-types';
 import { ethers } from 'ethers';
@@ -79,7 +76,6 @@ import {
 import { SimpleException } from '@/common/utils/simple.util';
 import { OrderDao } from '@/core/dao/order-dao';
 import { CollectionTradingBoard } from '@/model/entities/collection-trading-board/collection-trading-board.entity';
-import { ContractStatus } from '../studio/studio.interface';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { AggregatorOpenSeaCollection } from '@/model/entities/aggregator/aggregator-watched-collection';
@@ -153,14 +149,9 @@ export class CollectionService implements OnModuleDestroy {
     @InjectModel(CollectionTradingBoardOneMonth)
     private collectionTradingBoardOneMonthRepository: typeof CollectionTradingBoardOneMonth,
 
-    @InjectModel(Currency)
-    private currencyRepository: typeof Currency,
 
     @InjectModel(SeaportOrder)
     private seaportOrderRepository: typeof SeaportOrder,
-
-    @InjectModel(StudioContract)
-    private studioContractRepository: typeof StudioContract,
 
     @InjectModel(TradingRecordLog)
     private tradingRecordLogRepository: typeof TradingRecordLog,
@@ -171,16 +162,16 @@ export class CollectionService implements OnModuleDestroy {
     @Inject(ProviderTokens.Sequelize)
     private readonly sequelizeInstance: Sequelize,
 
-    private readonly libsService: LibsService,
-    private readonly contractService: ContractService,
-    private readonly configService: ConfigurationService,
-    private readonly cacheService: CacheService,
     private readonly collectionDao: CollectionDao,
     private readonly traitDao: TraitDao,
     private readonly orderDao: OrderDao,
     private readonly gatewayService: GatewayService,
-    private readonly storageService: StorageService,
     private readonly httpService: HttpService,
+    private readonly libsService: LibsService,
+    private readonly contractService: ContractService,
+    private readonly configService: ConfigurationService,
+    private readonly cacheService: CacheService,
+
     @InjectModel(AggregatorOpenSeaCollection)
     private readonly openSeaCollectionRepository: typeof AggregatorOpenSeaCollection,
   ) { }
@@ -1734,94 +1725,8 @@ export class CollectionService implements OnModuleDestroy {
     });
   }
 
-  @Cacheable({ key: 'collection:autoUpdateLogo', seconds: 60 * 60 * 8 })
-  async autoUpdateCollectionLogoImage(collectionId: string) {
-    try {
-      // 查找集合
-      const collection = await this.collectionRepository.findOne({
-        attributes: ['id', 'contractAddress', 'chainId', 'logoImageUrl'],
-        where: { id: collectionId },
-      });
-
-      if (!collection || collection.logoImageUrl) {
-        return;
-      }
-
-      // 查找資產
-      const asset = await this.assetRepository.findOne({
-        attributes: ['id', 'imageUrl'],
-        where: {
-          chainId: collection.chainId,
-          imageUrl: { [Op.not]: null },
-        },
-        include: [
-          {
-            attributes: ['address'],
-            model: Contract,
-            where: {
-              address: collection.contractAddress,
-              chainId: collection.chainId,
-            },
-          },
-        ],
-        order: [['tokenId', 'ASC']],
-        limit: 1,
-      });
-
-      if (!asset) {
-        return;
-      }
-
-      let imageUrl = asset.imageUrl;
-      const mimeType = await this.libsService.parseAnimationType(imageUrl);
-      // console.log(
-      //   `[auto update collection logo] ${imageUrl} mimeType: ${mimeType}`,
-      // );
-      if (!mimeType) {
-        return;
-      }
-      // 確認結尾是有支援的圖片格式
-      const supportedImageTypes = ['jpg', 'png', 'jpeg', 'gif', 'webp'];
-      const isOriginalImageUrlHasMineType = supportedImageTypes.some((ext) =>
-        imageUrl.endsWith(ext),
-      );
-      if (!supportedImageTypes.some((ext) => mimeType.includes(ext))) {
-        return;
-      }
-
-      // 處理 IPFS URL
-      if (imageUrl.includes('ipfs')) {
-        imageUrl = imageUrl.replace(/^ipfs:\/\//i, IPFS_GATEWAY);
-      }
-
-      // 下載圖片並轉為緩衝區
-      const res = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-      const buffer = Buffer.from(res.data, 'binary');
-      // imageUrl 去掉 https
-      // 上傳圖片到 AWS S3
-      const logoImageUrl = await this.storageService.uploadImage({
-        content: buffer,
-        fileName:
-          imageUrl.replace(/^https:\/\//i, '') + isOriginalImageUrlHasMineType
-            ? `.${mimeTypes.extension(mimeType)}`
-            : '',
-      });
-
-      // 更新集合的 logo 圖片
-      await this.collectionRepository.update(
-        { logoImageUrl },
-        { where: { id: collectionId } },
-      );
-
-      return logoImageUrl;
-    } catch (err) {
-      console.error(`Failed to update collection logo image: ${err.message}`);
-      // throw err;
-    }
-  }
-
   // 跟上面的 getCollectionOrderStatistic 一樣，這個理論上在大量訂單的 collection 會有比較好的效能，
-  // 但是��小量訂單的 collection 會比較慢，目前沒必要用
+  // 但是在小量訂單的 collection 會比較慢，目前沒必要用
   async getCollectionOrderStatus(contractAddress: string, chainId: string) {
     const collection = await this.collectionRepository.findOne({
       attributes: ['id', 'slug'],
@@ -2200,133 +2105,6 @@ export class CollectionService implements OnModuleDestroy {
     });
   }
 
-  async getDropInfo(slug: string, tokenId?: string) {
-    const collection = await this.collectionRepository.findOne({
-      attributes: ['id', 'slug', 'contractAddress', 'chainId', 'block'],
-      where: {
-        slug,
-      },
-    });
-
-    if (!collection) {
-      throw SimpleException.fail({ debug: 'collection not found' });
-    }
-
-    if (collection.block === BlockStatus.BLOCKED) {
-      throw SimpleException.fail({ debug: 'collection is blocked' });
-    }
-
-    const contract = await this.studioContractRepository.findOne({
-      attributes: [
-        'id',
-        'name',
-        'address',
-        'dropName',
-        'dropDescription',
-        'dropUrls',
-        'schemaName',
-      ],
-      where: {
-        chainId: collection.chainId,
-        address: collection.contractAddress,
-      },
-      include: [
-        {
-          model: StudioContractDrop,
-          attributes: [
-            'id',
-            'allowlist',
-            'amount',
-            'price',
-            'currencyId',
-            'startTime',
-            'limitPerWallet',
-            'tokenId',
-          ],
-          // 如果有 tokenId 就用 tokenId 查詢
-          where: tokenId ? { tokenId } : {},
-          include: [
-            {
-              model: Currency,
-              attributes: ['symbol', 'address', 'decimals'],
-            },
-          ],
-          order: [['startTime', 'ASC']], // 按 startTime 排序
-          separate: true, // 單獨查詢以實現排序
-        },
-      ],
-    });
-
-    if (!contract) {
-      throw SimpleException.fail({ debug: 'contract not found' });
-    }
-
-    // 如果用戶在拿 collection drop 的時候，drop 還沒開始，就把狀態改成 Sale
-    if (new Date() > contract.drops[0].startTime) {
-      contract.status = ContractStatus.Sale;
-      await contract.save();
-    }
-
-    return {
-      contract,
-    };
-  }
-
-  @Cacheable({ key: 'collection:autoUpdate:isMintingTag', seconds: 60 })
-  async autoUpdateIsMintingTag(contractAddress: string, chainId: string) {
-    const studioContract = await this.studioContractRepository.findOne({
-      attributes: ['id', 'status'],
-      where: {
-        address: contractAddress,
-        chainId,
-      },
-    });
-
-    // 確保不是用 studio 的 contract 不會被影響（像是合作 minting 的 contract）
-    if (!studioContract) {
-      this.logger.debug(
-        `[autoUpdateIsMintingTag] studioContract not found ${contractAddress}:${chainId}`,
-      );
-      return;
-    }
-
-    const collection = await this.collectionRepository.findOne({
-      where: {
-        contractAddress,
-        chainId,
-      },
-    });
-    if (
-      studioContract.status === ContractStatus.Sale &&
-      !collection.isMinting
-    ) {
-      if (!collection) {
-        throw new Error('[autoUpdateIsMintingTag] collection not found');
-      }
-
-      collection.isMinting = true;
-      await collection.save();
-
-      this.logger.debug(
-        `[autoUpdateIsMintingTag] update collection ${collection.id} isMinting to true`,
-      );
-      return;
-    }
-
-    if (studioContract.status !== ContractStatus.Sale && collection.isMinting) {
-      if (!collection) {
-        throw new Error('[autoUpdateIsMintingTag] collection not found');
-      }
-
-      collection.isMinting = false;
-      await collection.save();
-
-      this.logger.debug(
-        `[autoUpdateIsMintingTag] update collection ${collection.id} isMinting to false`,
-      );
-      return;
-    }
-  }
 
   @Cacheable({ key: 'collection:listingPercents', seconds: 60 * 5 })
   async getCollectionListingPercents(collectionId: string) {

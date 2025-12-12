@@ -1,4 +1,3 @@
-import { Role } from '../../api/v3/role/role.interface';
 import { AuthEntityStatus } from '@/api/v3/auth/auth.interface';
 import { IsEmail, IsEnum } from 'class-validator';
 import {
@@ -138,12 +137,6 @@ export class Account extends Model {
   })
   deletedAt: Date;
 
-  @AllowNull(true)
-  @Column({
-    field: 'roles',
-    type: DataType.ARRAY(DataType.STRING),
-  })
-  roles: Array<Role>;
 
   @AllowNull(true)
   @Column({

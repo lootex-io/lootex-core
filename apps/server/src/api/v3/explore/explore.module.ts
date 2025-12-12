@@ -14,9 +14,9 @@ import { entities } from '@/model/entities';
 
 import { JwtService } from '@nestjs/jwt';
 import { BlockchainService } from '@/external/blockchain';
-import { QueueService } from '@/external/queue/queue.service';
+
 import { OrderService } from '../order/order.service';
-import { StorageService } from '@/external/storage/storage.service';
+
 import { ExploreQuestService } from '@/api/v3/explore/explore-quest.service';
 import { ExploreCoreService } from '@/api/v3/explore/explore-core.service';
 import { ExploreConsumer } from '@/api/v3/explore/proxy/explore.consumer';
@@ -38,9 +38,9 @@ import { ExploreProxyService } from '@/api/v3/explore/proxy/explore-proxy.servic
     JwtService,
     LibsService,
     OrderService,
-    QueueService,
+
     TraitService,
-    StorageService,
+
     ExploreConsumer,
     ExploreDataService,
     ExploreProxyService,
@@ -48,4 +48,4 @@ import { ExploreProxyService } from '@/api/v3/explore/proxy/explore-proxy.servic
   ],
   controllers: [ExploreController],
 })
-export class ExploreModule {}
+export class ExploreModule { }

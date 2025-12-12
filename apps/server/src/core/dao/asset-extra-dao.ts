@@ -15,7 +15,6 @@ import { BlockStatus } from '@/model/entities/constant-model';
 import { Category } from '@/api/v3/order/order.interface';
 import { Op, QueryTypes } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { ORDER_PLATFORM_TYPE } from '@/microservice/nft-aggregator/aggregator-constants';
 import { sleep } from 'typescript-retry-decorator/dist/utils';
 
 @Injectable()
@@ -333,18 +332,6 @@ export class AssetExtraDao {
           order.perPrice == bestOrder.per_price
         ) {
           //处理listing相同价格时，优先lootex订单
-          if (
-            order.platformType === ORDER_PLATFORM_TYPE.DEFAULT &&
-            bestOrder.platform_type !== ORDER_PLATFORM_TYPE.DEFAULT
-          ) {
-            if (order.endTime < bestOrder.end_time) {
-              await this._updateBestByOrder({
-                assetId,
-                orderId: order.id,
-                category: order.category,
-              });
-            }
-          }
         }
         continue;
       }
@@ -490,7 +477,7 @@ export class AssetExtraDao {
           : null,
         bestOfferPlatformType:
           orderCurrency?.SeaportOrder?.platformType !== undefined &&
-          orderCurrency.SeaportOrder.platformType !== null
+            orderCurrency.SeaportOrder.platformType !== null
             ? orderCurrency.SeaportOrder.platformType
             : null,
       };
@@ -505,7 +492,7 @@ export class AssetExtraDao {
           : null,
         bestListingPlatformType:
           orderCurrency?.SeaportOrder?.platformType !== undefined &&
-          orderCurrency.SeaportOrder.platformType !== null
+            orderCurrency.SeaportOrder.platformType !== null
             ? orderCurrency.SeaportOrder.platformType
             : null,
       };

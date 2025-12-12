@@ -14,7 +14,7 @@ import {
 import { AssetService } from '@/api/v3/asset/asset.service';
 import { CacheService } from '@/common/cache/cache.service';
 // import { QueueService } from '@/common/queue/queue.service';
-import { QueueService } from '@/external/queue/queue.service';
+
 import { LibsService } from '@/common/libs/libs.service';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -77,11 +77,11 @@ export class AssetController {
     private readonly assetService: AssetService,
     private readonly assetProxyService: AssetProxyService,
     private readonly assetExtraService: AssetExtraService,
-    private readonly queueService: QueueService,
+
     private readonly configService: ConfigService,
     private readonly libsService: LibsService,
     private readonly assetDao: AssetDao,
-  ) {}
+  ) { }
 
   @Get('assets/test/:chainId/:contractAddress/:tokenId')
   async test(
@@ -100,16 +100,15 @@ export class AssetController {
     try {
       const traitsKey = query.traits
         ? query.traits
-            .map((trait) => `${trait.traitType}:${trait.value}`)
-            .join('&')
+          .map((trait) => `${trait.traitType}:${trait.value}`)
+          .join('&')
         : '';
 
       // get your update assets queue in cache
-      const queueKey = `${OWNER_UPDATE_ASSETS_QUEUE}-${
-        query.ownerAddress
-          ? query.ownerAddress.toLowerCase()
-          : query.ownerAddress
-      }-${traitsKey ? traitsKey + '-' : ''}${query.chainId}`;
+      const queueKey = `${OWNER_UPDATE_ASSETS_QUEUE}-${query.ownerAddress
+        ? query.ownerAddress.toLowerCase()
+        : query.ownerAddress
+        }-${traitsKey ? traitsKey + '-' : ''}${query.chainId}`;
       const assetUpdateQueue: AssetUpdateQueue =
         await this.cacheService.getCache(queueKey);
       let queueStatus = assetUpdateQueue?.queueStatus || QUEUE_STATUS.CONFIRM;
@@ -126,10 +125,8 @@ export class AssetController {
         !query.collectionSlug
       ) {
         queueStatus = QUEUE_STATUS.PENDING;
-        // await this.queueService.publish(QUEUE_OWNER_ASSET_NAME, {
-        //   ownerAddress: query.ownerAddress,
-        //   chainId: query.chainId,
-        // });
+        // Queue removed
+        /*
         await this.queueService.sendMessageToSqs(
           this.configService.get('AWS_SQS_OWNER_ASSETS_URL'),
           {
@@ -137,6 +134,7 @@ export class AssetController {
             chainId: query.chainId,
           },
         );
+        */
 
         await this.cacheService.setCache(
           queueKey,
@@ -207,26 +205,20 @@ export class AssetController {
               const queueStatus =
                 assetUpdateQueue?.queueStatus || QUEUE_STATUS.PENDING;
 
-              // publish to queue
-              if (!assetUpdateQueue) {
-                await this.queueService.sendMessageToSqs(
-                  this.configService.get('AWS_SQS_OWNER_ASSETS_URL'),
-                  {
-                    ownerAddress: wallet.address,
-                    chainId: chainId,
-                  },
-                );
+              // Queue removed
+              /*
+              await this.queueService.sendMessageToSqs( ... )
+              */
 
-                await this.cacheService.setCache(
-                  queueKey,
-                  {
-                    queueStatus,
-                    ownerAddress: wallet.address,
-                    chainId: chainId,
-                  },
-                  this.configService.get(QUEUE_ENV.QUEUE_OWNER_ASSETS_EXPIRED),
-                );
-              }
+              await this.cacheService.setCache(
+                queueKey,
+                {
+                  queueStatus,
+                  ownerAddress: wallet.address,
+                  chainId: chainId,
+                },
+                this.configService.get(QUEUE_ENV.QUEUE_OWNER_ASSETS_EXPIRED),
+              );
             }),
           );
         }),
@@ -273,9 +265,8 @@ export class AssetController {
   ): Promise<AssetListResponse> {
     try {
       // get your update assets queue in cache
-      const queueKey = `${OWNER_UPDATE_ASSETS_QUEUE}-${wallet.address.toLowerCase()}-${
-        query.chainId
-      }`;
+      const queueKey = `${OWNER_UPDATE_ASSETS_QUEUE}-${wallet.address.toLowerCase()}-${query.chainId
+        }`;
       const assetUpdateQueue: AssetUpdateQueue =
         await this.cacheService.getCache(queueKey);
       const queueStatus = assetUpdateQueue?.queueStatus || QUEUE_STATUS.PENDING;
@@ -295,13 +286,10 @@ export class AssetController {
         //   ownerAddress: wallet.address,
         //   chainId: query.chainId,
         // });
-        await this.queueService.sendMessageToSqs(
-          this.configService.get('AWS_SQS_OWNER_ASSETS_URL'),
-          {
-            ownerAddress: wallet.address,
-            chainId: query.chainId,
-          },
-        );
+        // Queue removed
+        /*
+        await this.queueService.sendMessageToSqs( ... )
+        */
 
         await this.cacheService.setCache(
           queueKey,
@@ -398,6 +386,8 @@ export class AssetController {
       //   contractAddress: params.contractAddress,
       //   chainId,
       // });
+      // Queue removed
+      /*
       await this.queueService.sendMessageToSqs(
         this.configService.get('AWS_SQS_CONTRACT_ASSETS_URL'),
         {
@@ -406,6 +396,7 @@ export class AssetController {
           chainId,
         },
       );
+      */
 
       await this.cacheService.setCache(
         queueKey,
@@ -485,6 +476,8 @@ export class AssetController {
       if (!cacheData) {
         queueStatus = QUEUE_STATUS.PENDING;
 
+        // Queue removed
+        /*
         await this.queueService.sendMessageToSqs(
           this.configService.get('AWS_SQS_ASSET_METADATA_URL'),
           {
@@ -493,6 +486,7 @@ export class AssetController {
             chainId: query.chainId,
           },
         );
+        */
         await this.cacheService.setCache(
           queueKey,
           {

@@ -8,7 +8,6 @@ import {
   QUEUE_ENV,
 } from '@/common/utils';
 import { ConfigurationService } from '@/configuration/configuration.service';
-import { QueueService } from '@/external/queue/queue.service';
 import { CacheService } from '@/common/cache/cache.service';
 import { AssetService } from '@/api/v3/asset/asset.service';
 import { logRunDuration } from '@/common/decorator/log-run-duration.decorator';
@@ -19,7 +18,6 @@ export class BatchOwnerAssetsService {
 
   constructor(
     private readonly configService: ConfigurationService,
-    private readonly queueService: QueueService,
     private readonly cacheService: CacheService,
     private readonly assetService: AssetService,
   ) {
@@ -107,33 +105,16 @@ export class BatchOwnerAssetsService {
   }
 
   private async updateOwnerAssetsFromSqs(): Promise<void> {
-    const { Messages: messages } =
-      await this.queueService.receiveMessageFromSqs(
-        this.configService.get('AWS_SQS_OWNER_ASSETS_URL'),
-      );
-    // this.logger.debug(`messages = ${JSON.stringify(messages)}`);
-
-    if (!messages) {
-      return promise.resolve();
-    }
-
-    await promise.map(messages, async (message) => {
-      // this.logger.debug(`message = ${message}`);
-      await this.queueService.deleteMessageFromSqs(
-        this.configService.get('AWS_SQS_OWNER_ASSETS_URL'),
-        message?.ReceiptHandle,
-      );
-      await this.getOwnerAssets(JSON.parse(message.Body));
-    });
+    return promise.resolve();
   }
 
   @Cron('*/20 * * * * *')
   async handleCron() {
-    await this.updateOwnerAssetsFromSqs();
+    // await this.updateOwnerAssetsFromSqs();
   }
 
   @Timeout(0)
   async handleTimeout() {
-    await this.updateOwnerAssetsFromSqs();
+    // await this.updateOwnerAssetsFromSqs();
   }
 }

@@ -7,7 +7,6 @@ import {
   ASSET_UPDATE_METADATA_QUEUE_PREFIX,
 } from '@/common/utils';
 import { ConfigurationService } from '@/configuration/configuration.service';
-import { QueueService } from '@/external/queue/queue.service';
 import { CacheService } from '@/common/cache/cache.service';
 import { AssetService } from '@/api/v3/asset/asset.service';
 import { logRunDuration } from '@/common/decorator/log-run-duration.decorator';
@@ -19,7 +18,6 @@ export class BatchAssetMetadataService {
 
   constructor(
     private readonly configService: ConfigurationService,
-    private readonly queueService: QueueService,
     private readonly cacheService: CacheService,
     private readonly assetService: AssetService,
     private readonly assetDao: AssetDao,
@@ -95,37 +93,16 @@ export class BatchAssetMetadataService {
   }
 
   private async updateAssetMetadataFromSqs(): Promise<void> {
-    const { Messages: messages } =
-      await this.queueService.receiveMessageFromSqs(
-        this.configService.get('AWS_SQS_ASSET_METADATA_URL'),
-      );
-    // this.logger.debug(`messages = ${messages}`);
-
-    if (!messages) {
-      return promise.resolve();
-    }
-
-    await promise.map(
-      messages,
-      async (message) => {
-        // this.logger.debug(`message = ${message}`);
-        await this.queueService.deleteMessageFromSqs(
-          this.configService.get('AWS_SQS_ASSET_METADATA_URL'),
-          message?.ReceiptHandle,
-        );
-        await this.getAssetMetadata(JSON.parse(message.Body));
-      },
-      { concurrency: 7 },
-    );
+    return promise.resolve();
   }
 
   @Cron('*/20 * * * * *')
   async handleCron() {
-    await this.updateAssetMetadataFromSqs();
+    // await this.updateAssetMetadataFromSqs();
   }
 
   @Timeout(0)
   async handleTimeout() {
-    await this.updateAssetMetadataFromSqs();
+    // await this.updateAssetMetadataFromSqs();
   }
 }

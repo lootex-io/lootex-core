@@ -2,11 +2,25 @@ import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { InjectModel } from '@nestjs/sequelize';
 
-import {
-  OPENSEA_EVENT_TYPE,
-  ORDER_PLATFORM_TYPE,
-  SEAPORT_EXCHANGE_ADDRESS_16,
-} from '@/microservice/nft-aggregator/aggregator-constants';
+export const OPENSEA_EVENT_TYPE = {
+  ITEM_LISTED: 'item_listed',
+  ITEM_SOLD: 'item_sold',
+  ITEM_TRANSFERRED: 'item_transferred',
+  ITEM_METADATA_UPDATED: 'item_metadata_updated',
+  ITEM_CANCELLED: 'item_cancelled',
+  ITEM_RECEIVED_OFFER: 'item_received_offer',
+  ITEM_RECEIVED_BID: 'item_received_bid',
+  COLLECTION_OFFER: 'collection_offer',
+  TRAIT_OFFER: 'trait_offer',
+};
+export const ORDER_PLATFORM_TYPE = {
+  OPENSEA: 'opensea',
+  LOOKSRARE: 'looksrare',
+  X2Y2: 'x2y2',
+  BLUR: 'blur',
+};
+export const SEAPORT_EXCHANGE_ADDRESS_16 =
+  '0x00000000000000adc04c56bf30ac9d3c0aaf14dc';
 import { ConfigurationService } from '@/configuration';
 import { Promise } from 'bluebird';
 import { OpenSeaApiService } from '@/core/aggregator-core/opensea/opensea-api.service';

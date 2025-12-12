@@ -25,12 +25,11 @@ import {
 } from './wallet.interface';
 import { AuthSupportedWalletProviderEnum } from '../auth/auth.interface';
 import { CurrencyService as ThirdPartyCurrencyService } from '@/core/third-party-api/currency/currency.service';
-import { CurrencyService } from '../currency/currency.service';
+import { CurrencyService } from '@/core/third-party-api/currency/currency.service';
 import { ChainId } from '@/common/utils/types';
 import { SEAPORT_ABI } from '@/microservice/event-poller/constants';
 import { CollectionService } from '../collection/collection.service';
 import { ContractType } from '@/common/utils';
-import { GP_ABI } from '@/microservice/event-poller-gp/constants';
 import BigNumber from 'bignumber.js';
 import { ConfigurationService } from '@/configuration';
 import {
@@ -70,7 +69,7 @@ export class WalletService {
     private thirdPartyCurrencyService: ThirdPartyCurrencyService,
     private rpcHandlerService: RpcHandlerService,
     private sdkEnvService: SdkEnvService,
-  ) {}
+  ) { }
 
   async getWalletsByUsername(username: string): Promise<Wallet[]> {
     try {
@@ -113,7 +112,7 @@ export class WalletService {
       option.chainId ? (orderWhereCondition['chainId'] = option.chainId) : null;
       option.currencyAddress
         ? (orderWhereCondition['currencyAddress'] =
-            option.currencyAddress?.toLowerCase())
+          option.currencyAddress?.toLowerCase())
         : null;
 
       const walletHistories =
@@ -260,7 +259,7 @@ export class WalletService {
       if (
         transactionReceipt.status !== 1 && // 交易失敗
         transactionReceipt.logs[0].topics[0] ==
-          '0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63' && // 交易 data 開頭為 0x1fad948c 代表是發起 bundler 的交易
+        '0x4dfe1bbbcf077ddc3e01291eea2d5c70c2b422b415d95645b9adcfd678cb1d63' && // 交易 data 開頭為 0x1fad948c 代表是發起 bundler 的交易
         transactionReceipt.logs.length == 1 // 交易只有一筆 log
       ) {
         try {
@@ -660,15 +659,15 @@ export class WalletService {
             outAmountUsd:
               seaportFulfilledParsedLog.tag !== WalletHistoryTag.ACCEPT_OFFER
                 ? new BigNumber(
-                    +seaportFulfilledParsedLog.outAmount * +nativeUsdPrice,
-                  ).toString(10)
+                  +seaportFulfilledParsedLog.outAmount * +nativeUsdPrice,
+                ).toString(10)
                 : '0',
             inAmount: seaportFulfilledParsedLog.inAmount,
             inAmountUsd:
               seaportFulfilledParsedLog.tag === WalletHistoryTag.ACCEPT_OFFER
                 ? new BigNumber(
-                    +seaportFulfilledParsedLog.inAmount * +nativeUsdPrice,
-                  ).toString(10)
+                  +seaportFulfilledParsedLog.inAmount * +nativeUsdPrice,
+                ).toString(10)
                 : '0',
             toAddress: seaportFulfilledParsedLog.consider1ToAddress,
             nftAddress: seaportFulfilledParsedLog.nftAddress,
@@ -855,7 +854,7 @@ export class WalletService {
               .filter(
                 (recordWalletHistory) =>
                   recordWalletHistory.event ==
-                    WalletHistoryEvent.ERC20_TOKEN_TRANSFER &&
+                  WalletHistoryEvent.ERC20_TOKEN_TRANSFER &&
                   recordWalletHistory.walletAddress == walletAddress,
               )
               .reduce((acc, cur) => {
@@ -865,7 +864,7 @@ export class WalletService {
             currencyAddress = recordWalletHistories.filter(
               (recordWalletHistory) =>
                 recordWalletHistory.event ==
-                  WalletHistoryEvent.ERC20_TOKEN_TRANSFER &&
+                WalletHistoryEvent.ERC20_TOKEN_TRANSFER &&
                 recordWalletHistory.walletAddress == walletAddress,
             )[0].currencyAddress;
           }
@@ -963,7 +962,7 @@ export class WalletService {
               .filter(
                 (recordWalletHistory) =>
                   recordWalletHistory.event ==
-                    WalletHistoryEvent.ERC20_TOKEN_TRANSFER &&
+                  WalletHistoryEvent.ERC20_TOKEN_TRANSFER &&
                   recordWalletHistory.walletAddress == walletAddress,
               )
               .reduce((acc, cur) => {
@@ -973,7 +972,7 @@ export class WalletService {
             currencyAddress = recordWalletHistories.filter(
               (recordWalletHistory) =>
                 recordWalletHistory.event ==
-                  WalletHistoryEvent.ERC20_TOKEN_TRANSFER &&
+                WalletHistoryEvent.ERC20_TOKEN_TRANSFER &&
                 recordWalletHistory.walletAddress == walletAddress,
             )[0].currencyAddress;
           }
@@ -1025,7 +1024,7 @@ export class WalletService {
             WalletHistoryEvent.ERC20_TOKEN_TRANSFER,
         ).length == 1 &&
         recordWalletHistories[0].contractAddress ==
-          recordWalletHistories[1].contractAddress
+        recordWalletHistories[1].contractAddress
       ) {
         hasErc404Transfer = true;
 
@@ -1059,12 +1058,12 @@ export class WalletService {
             .toFixed(),
           tokenId: hasErc721Transfer
             ? recordWalletHistories
-                .filter(
-                  (recordWalletHistory) =>
-                    recordWalletHistory.event ==
-                    WalletHistoryEvent.ERC721_TOKEN_TRANSFER,
-                )[0]
-                .tokenId?.toString()
+              .filter(
+                (recordWalletHistory) =>
+                  recordWalletHistory.event ==
+                  WalletHistoryEvent.ERC721_TOKEN_TRANSFER,
+              )[0]
+              .tokenId?.toString()
             : null,
           isMainEvent: true,
           logIndex: -1,
@@ -1116,9 +1115,9 @@ export class WalletService {
             .filter(
               (recordWalletHistory) =>
                 recordWalletHistory.event ==
-                  WalletHistoryEvent.ERC721_TOKEN_TRANSFER ||
+                WalletHistoryEvent.ERC721_TOKEN_TRANSFER ||
                 recordWalletHistory.event ==
-                  WalletHistoryEvent.ERC1155_TOKEN_TRANSFER_SINGLE,
+                WalletHistoryEvent.ERC1155_TOKEN_TRANSFER_SINGLE,
             )
             .reduce((acc, cur) => {
               return acc.plus(cur.outAmount);
@@ -1351,7 +1350,7 @@ export class WalletService {
             operatorAddress: '0x' + log.topics[2].slice(26),
             approved:
               log.data ==
-              '0x0000000000000000000000000000000000000000000000000000000000000001'
+                '0x0000000000000000000000000000000000000000000000000000000000000001'
                 ? true
                 : false,
             logIndex: log.logIndex,
@@ -1624,18 +1623,18 @@ export class WalletService {
           const outAmount =
             tag == WalletHistoryTag.PURCHASE
               ? currencies
-                  .reduce((acc, cur) => {
-                    return acc.plus(cur.amount);
-                  }, new BigNumber(0))
-                  .toFixed()
+                .reduce((acc, cur) => {
+                  return acc.plus(cur.amount);
+                }, new BigNumber(0))
+                .toFixed()
               : nfts[0].amount;
           const inAmount =
             tag == WalletHistoryTag.ACCEPT_OFFER
               ? currencies
-                  .reduce((acc, cur) => {
-                    return acc.plus(cur.amount);
-                  }, new BigNumber(0))
-                  .toFixed()
+                .reduce((acc, cur) => {
+                  return acc.plus(cur.amount);
+                }, new BigNumber(0))
+                .toFixed()
               : nfts[0].amount;
 
           seaportFulfilledLogs.push({
@@ -1708,82 +1707,11 @@ export class WalletService {
     chainId: ChainId,
     transactionReceipt: ethers.providers.TransactionReceipt,
   ) {
-    try {
-      const logs = transactionReceipt.logs;
-      const gpTopUpLogs: {
-        contractAddress: string;
-        lootTokenAddress: string;
-        owner: string;
-        to: string;
-        lootAmount: string;
-        gpAmount: string;
-        logIndex: number;
-      }[] = [];
-      const gpTokenDecimal = await this.sdkEnvService.getNumber(
-        SdkEnv.GP_TOKEN_DECIMAL,
-      );
-      const rateLootGp = await this.sdkEnvService.getNumber(
-        SdkEnv.GP_EXCHANGE_LOOT_GP,
-      );
-      logs.forEach((log) => {
-        if (
-          log.address?.toLowerCase() ==
-            CHAINID_GP_ADDRESS[chainId]?.toLowerCase() &&
-          log.topics[0] == GP_TOP_UP_TOPIC0
-        ) {
-          let lootTokenAddress = ethers.constants.AddressZero;
-          for (const innerLog of logs) {
-            // 找出 ERC20 的 transfer
-            if (!(innerLog.topics[0] == TRANSFER_TOPIC0)) {
-              continue;
-            }
-            const fromAddress = '0x' + innerLog.topics[1].slice(26);
-            const toAddress = '0x' + innerLog.topics[2].slice(26);
-
-            if (toAddress == log.address?.toLowerCase()) {
-              lootTokenAddress = innerLog.address?.toLowerCase();
-              break;
-            }
-          }
-
-          const gpInterface = new ethers.utils.Interface(GP_ABI);
-          const gpParsedData = gpInterface.parseLog(log);
-
-          const lootAmount = new BigNumber(
-            gpParsedData.args._lootAmount.toString(),
-          )
-            .shiftedBy(-gpTokenDecimal)
-            .toString(10);
-
-          const gpTokenAmount = Math.floor(
-            new BigNumber(gpParsedData.args._lootAmount.toString())
-              .shiftedBy(-gpTokenDecimal) // /
-              .times(rateLootGp) // x
-              .toNumber(),
-          ).toString();
-
-          gpTopUpLogs.push({
-            contractAddress: log.address?.toLowerCase(),
-            lootTokenAddress,
-            owner: gpParsedData.args._owner?.toLowerCase(),
-            to: gpParsedData.args._to?.toLowerCase(),
-            lootAmount,
-            gpAmount: gpTokenAmount,
-            logIndex: log.logIndex,
-          });
-        }
-      });
-      return {
-        success: true,
-        message: 'success',
-        data: gpTopUpLogs,
-      };
-    } catch (err) {
-      return {
-        success: false,
-        message: err.message,
-      };
-    }
+    return {
+      success: true,
+      message: 'success',
+      data: [],
+    };
   }
 
   async handleSwap(
@@ -1842,7 +1770,7 @@ export class WalletService {
         // Arbitrum Wrapped Swap
         if (
           log.address.toLowerCase() ==
-            '0x82af49447d8a07e3bd95bd0d56f35241523fbab1' &&
+          '0x82af49447d8a07e3bd95bd0d56f35241523fbab1' &&
           chainId == ChainMap.arbitrum.id &&
           log.topics[0] == TRANSFER_TOPIC0 &&
           ('0x' + log.topics[1].slice(26) == ethers.constants.AddressZero ||
@@ -2260,7 +2188,7 @@ export class WalletService {
         }
         if (
           log.address.toLowerCase() ==
-            '0x82af49447d8a07e3bd95bd0d56f35241523fbab1' &&
+          '0x82af49447d8a07e3bd95bd0d56f35241523fbab1' &&
           chainId == ChainMap.arbitrum.id &&
           log.topics[0] == TRANSFER_TOPIC0
         ) {
@@ -2432,7 +2360,9 @@ export class WalletService {
 
       const readableWarpedToken = new BigNumber(warpedToken).dividedBy(1e18);
       const { tokenPrice } =
-        await this.currencyService.getCachePriceByChainId(chainId);
+        await this.currencyService.getCachePriceByChainId(
+          chainId.toString() as ChainId,
+        );
       const balanceUsd = new BigNumber(balance)
         .plus(readableWarpedToken)
         .times((tokenPrice as any).price);

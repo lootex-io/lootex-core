@@ -14,7 +14,6 @@ import { AssetDao } from '@/core/dao/asset-dao';
 import { ChainId } from '@/common/utils/types';
 import { LibsService } from '@/common/libs/libs.service';
 import { RpcEnd } from '@/core/third-party-api/rpc/interfaces';
-import { QueueService } from '@/external/queue/queue.service';
 import { ConfigurationService } from '@/configuration';
 import { ContractType } from '@/common/utils';
 
@@ -47,7 +46,6 @@ export class EventPollerNftTransferService {
 
     private readonly libService: LibsService,
 
-    private readonly queueService: QueueService,
 
     private readonly configService: ConfigurationService,
 
@@ -605,11 +603,11 @@ export class EventPollerNftTransferService {
       fromAddress: assetKey.fromAddress,
       toAddress: assetKey.toAddress,
     };
-    await this.queueService.sendMessageToSqs(
-      this.configService.get('AWS_SQS_ASSET_METADATA_URL'),
-      payload,
-    );
-    console.log('sendSyncAssetToQueue', payload);
+    // await this.queueService.sendMessageToSqs(
+    //   this.configService.get('AWS_SQS_ASSET_METADATA_URL'),
+    //   payload,
+    // );
+    console.log('sendSyncAssetToQueue (QueueService Removed)', payload);
   }
 
   getTaskStatus(name: string): EventTaskStatus {

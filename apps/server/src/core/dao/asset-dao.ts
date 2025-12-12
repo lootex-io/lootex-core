@@ -27,8 +27,6 @@ import { Cacheable } from '@/common/decorator/cacheable.decorator';
 import { RefreshBlacklist } from '@/api/v3/asset/constants';
 import { RpcEnd } from '@/core/third-party-api/rpc/interfaces';
 
-import { AssetMetadataFailure } from '@/model-small/entities/asset-metadata-failure.entity';
-import { CollectionMetadataFailure } from '@/model-small/entities/collection-metadata-failure.entity';
 import { DB_SMALL_NAME } from '@/core/small-db/small-constants';
 
 @Injectable()
@@ -48,10 +46,6 @@ export class AssetDao {
     private blockchainRepository: typeof Blockchain,
     @InjectModel(SeaportOrderAsset)
     private seaportOrderRepository: typeof SeaportOrderAsset,
-    @InjectModel(AssetMetadataFailure, DB_SMALL_NAME)
-    private assetMetadataFailureRepository: typeof AssetMetadataFailure,
-    @InjectModel(CollectionMetadataFailure, DB_SMALL_NAME)
-    private collectionMetadataFailureRepository: typeof CollectionMetadataFailure,
 
     private readonly extraDao: AssetExtraDao,
     private readonly collectionDao: CollectionDao,
@@ -99,23 +93,6 @@ export class AssetDao {
     if (isSuspended) {
       return true;
     }
-
-    // DB Fallback for Permanent Blacklist
-    const collectionFailure =
-      await this.collectionMetadataFailureRepository.findOne({
-        where: {
-          chainId,
-          contractAddress: contractAddress.toLowerCase(),
-          status: 'BLACKLISTED',
-        },
-      });
-
-    if (collectionFailure) {
-      // Refill Redis cache to save DB hits (Permanent cache effectively)
-      await this.cacheService.setCache(key, true, 24 * 60 * 60); // 24 hours
-      return true;
-    }
-
     return false;
   }
 
@@ -124,23 +101,6 @@ export class AssetDao {
     contractAddress: string,
     tokenId: string,
   ): Promise<boolean> {
-    // Check DB for failure record
-    const failure = await this.assetMetadataFailureRepository.findOne({
-      where: {
-        chainId,
-        contractAddress: contractAddress.toLowerCase(),
-        tokenId,
-      },
-    });
-
-    if (failure) {
-      // Increment request count
-      await failure.increment('requestCount');
-
-      if (failure.nextRetryAt && failure.nextRetryAt > new Date()) {
-        return true;
-      }
-    }
     return false;
   }
 
@@ -151,50 +111,6 @@ export class AssetDao {
     error: Error,
     metadataUrl?: string,
   ): Promise<void> {
-    // 1. Upsert Asset Failure Record in DB
-    const now = new Date();
-    let failure = await this.assetMetadataFailureRepository.findOne({
-      where: {
-        chainId,
-        contractAddress: contractAddress.toLowerCase(),
-        tokenId,
-      },
-    });
-
-    // Error Classification
-    let errorReason = 'UNKNOWN_ERROR';
-    if (error) {
-      const msg = error.message || error.toString();
-      if (msg.includes('404')) errorReason = 'METADATA_404';
-      else if (msg.includes('timeout')) errorReason = 'TIMEOUT';
-      else if (msg.includes('image')) errorReason = 'IMAGE_404';
-      else errorReason = msg.substring(0, 255);
-    }
-
-    // Strict Blacklist: 30 Days Backoff
-    const nextRetryDelay = 30 * 24 * 60 * 60 * 1000; // 30 days
-
-    if (!failure) {
-      failure = await this.assetMetadataFailureRepository.create({
-        chainId: Number(chainId),
-        contractAddress: contractAddress.toLowerCase(),
-        tokenId,
-        failCount: 1,
-        lastFailedAt: now,
-        nextRetryAt: new Date(now.getTime() + nextRetryDelay),
-        errorReason,
-        metadataUrl: metadataUrl || null,
-      });
-    } else {
-      await failure.update({
-        failCount: failure.failCount + 1,
-        lastFailedAt: now,
-        nextRetryAt: new Date(now.getTime() + nextRetryDelay),
-        errorReason,
-        metadataUrl: metadataUrl || failure.metadataUrl, // Update if provided, else keep existing
-      });
-    }
-
     // 2. Increment Collection Failure Count (Redis)
     const collectionFailKey = this.getCollectionFailCountKey(
       chainId,
@@ -217,43 +133,9 @@ export class AssetDao {
       // COLLECTION_SUSPEND_TTL = 24 hours (86400 seconds)
       await this.cacheService.setCache(suspendKey, true, 86400);
 
-      // Persist to SmallDB as BLACKLISTED
-      const collectionFailure =
-        await this.collectionMetadataFailureRepository.findOne({
-          where: { chainId, contractAddress: contractAddress.toLowerCase() },
-        });
-
-      if (collectionFailure) {
-        await collectionFailure.update({
-          status: 'BLACKLISTED',
-          totalAssetFailures: newCollectionFail,
-          suspendedAt: new Date(),
-          retryAfter: null, // Permanent, no retry
-        });
-      } else {
-        await this.collectionMetadataFailureRepository.create({
-          chainId: Number(chainId),
-          contractAddress: contractAddress.toLowerCase(),
-          status: 'BLACKLISTED',
-          totalAssetFailures: newCollectionFail,
-          suspendedAt: new Date(),
-          retryAfter: null, // Permanent, no retry
-        });
-      }
-
       this.logger.warn(
         `Collection ${chainId}/${contractAddress} BLACKLISTED due to ${newCollectionFail} failures.`,
       );
-    } else {
-      // Optional: Update totalAssetFailures periodically or on every failure if needed
-      // For performance, we might skip updating DB on every single asset failure unless it hits threshold
-      // But to keep 'total_asset_failures' accurate for reporting, we might want to upsert here.
-      // Let's do a "lazy" upsert or just update when suspending to save DB writes.
-      // User requested "Record it", so let's update it if it exists, or create if not.
-      // To avoid too many DB writes, we can just update it when we suspend.
-      // OR, we can update it every time but that's heavy.
-      // Decision: Only update DB when status changes to SUSPENDED or periodically.
-      // For now, let's stick to updating when suspending to avoid performance regression.
     }
   }
 
@@ -445,7 +327,7 @@ export class AssetDao {
         (item) =>
           item.chainId === options.chainId &&
           item.address.toLowerCase() ===
-            nft.contract.contractAddress.toLowerCase(),
+          nft.contract.contractAddress.toLowerCase(),
       );
 
       if (isInBlacklist) {

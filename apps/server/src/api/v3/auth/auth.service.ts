@@ -12,17 +12,11 @@ import {
 import { CacheService } from '@/common/cache';
 import { ConfigurationService } from '@/configuration/configuration.service';
 import {
-  AUTH_APTOS_SIGNUP_TEMPLATE,
   AUTH_CHALLENGE_CACHE_KEY_TEMPLATE,
-  AUTH_EMAIL_OTP_KEY_TEMPLATE,
 } from '@/common/utils/constants';
 import {
   AccountAuthBaseDto,
-  AccountNewWalletSignUpDto,
-  AccountPrivySignUpDto,
   AccountSignUpDto,
-  AccountTorusNewWalletSignUpDto,
-  AccountTorusSignUpDto,
 } from './auth.dto';
 import {
   AuthSupportedAddress,
@@ -34,18 +28,13 @@ import {
   SocialConnect,
   SocialPlatform,
 } from './auth.interface';
-import {
-  EmailRecipient,
-  EmailSentResult,
-} from '@/external/send-in-blue/send-in-blue.interface';
-import { SendInBlueService } from '@/external/send-in-blue/send-in-blue.service';
+// removed SendInBlueService
 import { Account } from '@/model/entities/account.entity';
 import { Wallet } from '@/model/entities/wallet.entity';
 import { BlockchainService, EthAddress } from '@/external/blockchain';
 import { StringOfLength } from '@/common/utils/utils.interface';
 import { JwtService } from '@nestjs/jwt';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { getOtpEmailHtmlTemplate } from './constants';
 import { AccountReferral, AccountSocialToken } from '@/model/entities';
 import { firstValueFrom } from 'rxjs';
 import { InjectModel } from '@nestjs/sequelize';
@@ -54,7 +43,7 @@ import { BlockStatus } from '@/model/entities/constant-model';
 import { AccountService } from '../account/account.service';
 import { PrivyClient, WalletWithMetadata } from '@privy-io/server-auth';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const Torus = require('@toruslabs/torus-embed');
+
 // import { verifyMessage } from '@mysten/sui.js';
 import {
   createSmartAccountClient,
@@ -112,10 +101,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
 
     private readonly blockchainService: BlockchainService,
-
-    private readonly sendInBlueService: SendInBlueService,
-
-    private readonly accountService: AccountService,
 
     private readonly gatewayService: GatewayService,
 
@@ -207,10 +192,8 @@ export class AuthService {
    * @return {Promise<[Account, Wallet]>} createdAccountAndWallet
    */
   private async createUserAccountAndWallet(
-    email: string,
-    username: string,
-    transport: AuthSupportedWalletTransport,
-    provider: AuthSupportedWalletProviderEnum,
+    transport: AuthSupportedWalletProviderEnum,
+    provider: AuthSupportedWalletProviderEnum, // Wait, transport is AuthSupportedWalletTransport
     chainFamily: AuthSupportedChainFamily,
     address: AuthSupportedAddress,
     option?: {
@@ -219,6 +202,9 @@ export class AuthService {
       area?: string;
     },
   ): Promise<[Account, Wallet]> {
+    // Auto-generate username from address if not provided
+    const username = `user_${address.slice(2, 8)}`;
+    const email = null;
     try {
       return await this.sequelizeInstance.transaction(
         async (t: Transaction) => {
@@ -236,7 +222,7 @@ export class AuthService {
           const newWallet: Wallet = await this.walletsRepository.create(
             {
               accountId: newAccount.id,
-              transport,
+              transport: transport as any, // Fix type mismatch if any
               provider,
               chainFamily,
               address,
@@ -471,60 +457,7 @@ export class AuthService {
   //   );
   // }
 
-  /**
-   * @async
-   * @function generateOtpAndSendEmail
-   * @summary generates a single OTP passcode, and then send the email for you
-   * @param {String} email the email address to request the OTP code
-   * @return {Promise<EmailSentResult>} EmailSentResult
-   */
-  async generateOtpAndSendEmail(email: string): Promise<EmailSentResult> {
-    const n: string = this.getSecureRandomNumberStr();
-    const recipient: EmailRecipient = new EmailRecipient(
-      email,
-      'Lootex ID User',
-    );
-    const _startTime = new Date().getTime();
-    const emailRes = await this.sendInBlueService.sendPlainEmail(
-      recipient,
-      `[Lootex] Your 6-Digit One-Time Authorization Code: ${n}`,
-      getOtpEmailHtmlTemplate(n),
-    );
-    const _endTime = new Date().getTime();
-    this.logger.log(
-      `sendEmailOTP sendEmail time ${email.replace(/(.{2})(.*)(@.*)/, '$1***$3')} ${(_endTime - _startTime) / 1000}s`,
-    );
-    return this.cacheService
-      .setCache(AUTH_EMAIL_OTP_KEY_TEMPLATE.replace('%a', email), n, 3600)
-      .then(() => ({
-        ...emailRes,
-      }));
-  }
-
-  /**
-   * @async
-   * @function verifyEmailOTP
-   * @summary verified the email's OTP code and return bool for result. clears the cache too
-   * @param {String} email the email address to request verification
-   * @param {String | Number} otpCode code to verify with
-   * @param {Boolean} clearCache (optional) clear the cache if valid?
-   * @return {Promise<Boolean>} result
-   */
-  async verifyEmailOTP(
-    email: string,
-    otpCode: string | number,
-    clearCache = true,
-  ): Promise<boolean> {
-    const toMatch = typeof otpCode === 'number' ? String(otpCode) : otpCode;
-    const cacheKey = AUTH_EMAIL_OTP_KEY_TEMPLATE.replace('%a', email);
-    const n = String(await this.cacheService.getCache(cacheKey));
-    if (!n) throw new TypeError('verifyEmailOTP: code not found');
-    if (n === toMatch) {
-      if (clearCache) await this.cacheService.setCache(cacheKey, '', 1);
-      return true;
-    }
-    return false;
-  }
+  // verifyEmailOTP removed
 
   // ==========================================================================
   // Sign Up Section
@@ -543,15 +476,7 @@ export class AuthService {
     area?: string,
   ): Promise<[Account, Wallet]> {
     // @note Refer to STORY-090215 for spec.
-    // 1. OTP Code verification
-    if (
-      !(await this.verifyEmailOTP(
-        accountSignUpDto.email,
-        accountSignUpDto.otpCode,
-      ))
-    )
-      throw new TypeError('handleSignUpEth: invalid OTP code');
-    // 2. Signature verification
+    // 1. Signature verification
     if (accountSignUpDto.isErc1271Wallet) {
       // ERC-1271 Contract Wallet Standard
       if (
@@ -562,7 +487,7 @@ export class AuthService {
         ))
       ) {
         this.logger.debug(
-          `handleBindWalletAndSignInEth: ${accountSignUpDto.address} ERC1271 invalid`,
+          `handleSignUpEth: ${accountSignUpDto.address} ERC1271 invalid`,
         );
         if (
           !(await this.verifyOneTimeChallengeEthErc6492(
@@ -572,10 +497,10 @@ export class AuthService {
           ))
         ) {
           this.logger.debug(
-            `handleBindWalletAndSignInEth: ${accountSignUpDto.address} ERC6492 invalid`,
+            `handleSignUpEth: ${accountSignUpDto.address} ERC6492 invalid`,
           );
           throw new TypeError(
-            'handleBindWalletAndSignInEth: invalid signature',
+            'handleSignUpEth: invalid signature',
           );
         }
       }
@@ -589,26 +514,18 @@ export class AuthService {
       )
         throw new TypeError('handleSignUpEth: invalid signature');
     }
-    // 3. Unique field verification
-    if (
-      await this.isEmailOrUsernameAlreadyUsed(
-        accountSignUpDto.email,
-        accountSignUpDto.username,
-      )
-    )
-      throw new TypeError('handleSignUpEth: email or username not unique');
-    // 3.5 Wallet Verification
+
+    // 2. Wallet Verification
     if (
       await this.walletsRepository.findOne({
         where: { address: accountSignUpDto.address },
       })
     )
       throw new TypeError('handleSignUpEth: wallet exists, sign in instead');
-    // 4. Create new UserAccount & UserWallet for the caller
+
+    // 3. Create new UserAccount & UserWallet for the caller
     return this.createUserAccountAndWallet(
-      accountSignUpDto.email,
-      accountSignUpDto.username,
-      accountSignUpDto.transport,
+      accountSignUpDto.transport as any,
       accountSignUpDto.provider,
       accountSignUpDto.chainFamily,
       accountSignUpDto.address,
@@ -760,89 +677,7 @@ export class AuthService {
    * @param {AccountNewWalletSignUpDto} accountSignUpDto payload, sign up format
    * @return {Promise<[Account,Wallet]>} newWallet
    */
-  async handleBindWalletAndSignInEth(
-    accountSignUpDto: AccountNewWalletSignUpDto,
-  ): Promise<[Account, Wallet]> {
-    // @note Refer to STORY-090215 for spec.
-    // 1. OTP Code verification
-    if (
-      !(await this.verifyEmailOTP(
-        accountSignUpDto.email,
-        accountSignUpDto.otpCode,
-      ))
-    )
-      throw new TypeError('handleBindWalletAndSignInEth: invalid OTP code');
-    // 2. Signature verification
-    if (accountSignUpDto.isErc1271Wallet) {
-      // ERC-1271 Contract Wallet Standard
-      this.logger.debug('handleBindWalletAndSignInEth: ERC-1271 Wallet');
-      if (
-        !(await this.verifyOneTimeChallengeEthErc1271(
-          accountSignUpDto.address as EthAddress,
-          accountSignUpDto.signature,
-          accountSignUpDto.chainId,
-        ))
-      ) {
-        this.logger.debug(
-          `handleBindWalletAndSignInEth: ${accountSignUpDto.address} ERC1271 invalid`,
-        );
-        if (
-          !(await this.verifyOneTimeChallengeEthErc6492(
-            accountSignUpDto.address as EthAddress,
-            accountSignUpDto.signature,
-            accountSignUpDto.message,
-          ))
-        ) {
-          this.logger.debug(
-            `handleBindWalletAndSignInEth: ${accountSignUpDto.address} ERC6492 invalid`,
-          );
-          throw new TypeError(
-            'handleBindWalletAndSignInEth: invalid signature',
-          );
-        }
-      }
-    } else {
-      // Normal Signature Recovery Method
-      if (
-        !(await this.verifyOneTimeChallengeEth(
-          accountSignUpDto.address as EthAddress,
-          accountSignUpDto.signature,
-        ))
-      )
-        throw new TypeError('handleBindWalletAndSignInEth: invalid signature');
-    }
-    // 3. Verify that the target UserAccount exists
-    const currentAccount: Account = await this.accountRepository.findOne({
-      where: {
-        email: accountSignUpDto.email,
-      },
-    });
-    if (!currentAccount) {
-      throw new TypeError(
-        'handleBindWalletAndSignInEth: account does not exist',
-      );
-    }
-    this._checkAccountOrThrowException(currentAccount);
-    // 4. Create new UserWallet for the user
-    let matchingWallet: Wallet = await this.walletsRepository.findOne({
-      where: {
-        address: accountSignUpDto.address,
-      },
-    });
-    if (!matchingWallet) {
-      matchingWallet = await this.walletsRepository.create({
-        accountId: currentAccount.id,
-        transport: accountSignUpDto.transport,
-        provider: accountSignUpDto.provider,
-        chainFamily: accountSignUpDto.chainFamily,
-        address: accountSignUpDto.address,
-        isMainWallet: false,
-      });
-    }
-    return [currentAccount, matchingWallet];
-  }
-
-  _checkAccountOrThrowException(account: Account) {
+  private _checkAccountOrThrowException(account: Account) {
     if (account.block === BlockStatus.BLOCKED) {
       throw new HttpException('Account FORBIDDEN', HttpStatus.FORBIDDEN);
     }
@@ -873,11 +708,11 @@ export class AuthService {
   }
 
   async isWalletAddressRegistered(address: string): Promise<boolean> {
-    address = address?.toLowerCase();
+    const walletAddress = address?.toLowerCase();
     const wallet = await this.walletsRepository.findOne({
       attributes: ['id'],
       where: {
-        address,
+        address: walletAddress,
       },
     });
 

@@ -9,8 +9,6 @@ import { HttpModule } from '@nestjs/axios';
 import { CollectionService } from './collection.service';
 import { CollectionController } from './collection.controller';
 import { ContractService } from '@/api/v3/contract/contract.service';
-import { StorageModule } from '@/external/storage/storage.module';
-import { QueueService } from '@/external/queue/queue.service';
 
 import { providers } from '@/model/providers';
 import { BlockchainService } from '@/external/blockchain';
@@ -19,23 +17,16 @@ import { entities } from '@/model/entities';
 import { SequelizeModule } from '@nestjs/sequelize';
 
 import { AccountService } from '../account/account.service';
-import { StorageService } from '@/external/storage/storage.service';
-import { StudioService } from '../studio/studio.service';
-import { StudioUploadService } from '../studio/upload/service/studio-upload.service';
-import { CollectionConsumer } from '@/api/v3/collection/proxy/collection.consumer';
 import { CollectionDataService } from '@/api/v3/collection/proxy/collection-data.service';
 import { CollectionProxyService } from '@/api/v3/collection/proxy/collection-proxy.service';
 import { AuthService } from '../auth/auth.service';
 import { SendInBlueModule } from '@/external/send-in-blue/send-in-blue.module';
 
-import { CurrencyService } from '../currency/currency.service';
 
 @Module({
   imports: [
-    StorageModule,
     SequelizeModule.forFeature(entities),
     HttpModule,
-    SendInBlueModule,
   ],
   providers: [
     AssetService,
@@ -48,20 +39,14 @@ import { CurrencyService } from '../currency/currency.service';
     OrderService,
     BlockchainService,
     TraitService,
-    QueueService,
 
-    StorageService,
-    StudioService,
-    StudioUploadService,
-    CollectionConsumer,
     CollectionDataService,
     CollectionProxyService,
     AuthService,
 
-    CurrencyService,
     ...providers,
   ],
   controllers: [CollectionController],
   exports: [CollectionService],
 })
-export class CollectionModule {}
+export class CollectionModule { }

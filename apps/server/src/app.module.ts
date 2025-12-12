@@ -10,23 +10,16 @@ import { AuthModule } from '@/api/v3/auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { HealthModule } from '@/common/health/health.module';
-import { StorageModule } from '@/external/storage/storage.module';
 import { AccountModule } from '@/api/v3/account/account.module';
 import { LibsModule } from '@/common/libs/libs.module';
-import { CurrencyModule } from '@/api/v3/currency/currency.module';
-import { PinataModule } from '@/external/pinata/pinata.module';
-import { QueueModule } from './external/queue/queue.module';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+
+import { APP_GUARD } from '@nestjs/core';
 import { WalletModule } from '@/api/v3/wallet/wallet.module';
-import { ExploreModule } from './api/v3/explore/explore.module';
+import { ExploreModule } from '@/api/v3/explore/explore.module';
 import { CoreModule } from '@/core/core.module';
 import { PreviewReqInfoMiddleware } from '@/common/middleware/preview-req-info.middleware';
-import { AggregatorApiModule } from '@/api/v3/aggregator-api/aggregator.module';
-import { AccountGpModule } from '@/api/v3/account-gp/account-gp.module';
-import { StudioUploadModule } from '@/api/v3/studio/upload/studio-upload.module';
-import { StudioModule } from './api/v3/studio/studio.module';
-import { StudioIpfsModule } from './microservice/studio-ipfs/studio-ipfs.module';
-import { HmacModule } from '@/api/v3/hmac/hmac.module';
+import { PinataModule } from '@/external/pinata/pinata.module';
+import { StudioModule } from '@/api/v3/studio/studio.module';
 
 @Module({
   imports: [
@@ -82,26 +75,18 @@ import { HmacModule } from '@/api/v3/hmac/hmac.module';
     //     }),
     //   },
     // }),
-    HmacModule,
     AccountModule,
     AssetModule,
     CollectionModule,
     ContractModule,
-    CurrencyModule,
     ExploreModule,
 
     LibsModule,
     OrderModule,
     PinataModule,
-    QueueModule,
-    StorageModule,
 
     WalletModule,
-    AggregatorApiModule,
-    AccountGpModule,
-    StudioUploadModule,
     StudioModule,
-    StudioIpfsModule,
   ],
   controllers: [AppController],
   providers: [

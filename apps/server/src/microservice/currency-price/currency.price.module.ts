@@ -3,7 +3,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { HealthModule } from '@/common/health/health.module';
 import { CurrencyTasksService } from '@/microservice/currency-price/currency.price.service';
 import { CurrencyService as ThirdPartyCurrencyService } from '@/core/third-party-api/currency/currency.service';
-import { CurrencyService } from '@/api/v3/currency/currency.service';
 import { ConfigurationService } from '@/configuration';
 import { CoreModule } from '@/core/core.module';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -29,9 +28,8 @@ import { providers } from '@/model/providers';
   ],
   providers: [
     CurrencyTasksService,
-    CurrencyService,
     ThirdPartyCurrencyService,
     ...providers,
   ],
 })
-export class CurrencyPriceModule {}
+export class CurrencyPriceModule { }

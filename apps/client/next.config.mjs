@@ -15,10 +15,11 @@ const nextConfig = {
     ],
   },
   logging: {
-    fetches: {
+    fetched: {
       fullUrl: true,
     },
   },
+  transpilePackages: ['lootex'],
 };
 
 export default nextConfig

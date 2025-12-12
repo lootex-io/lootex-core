@@ -7,7 +7,7 @@ import {
   Badge,
   Wallet,
 } from '@/model/entities';
-import { Role } from '../role/role.interface';
+
 
 export interface UploadFile {
   url?: string;
@@ -39,7 +39,6 @@ export interface ReturnAccountResponse {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
-  roles: Array<Role>;
 
   badgeId: string;
   avatarDecorationId: string;
@@ -114,7 +113,6 @@ export const AccountAttributes = [
   'createdAt',
   'updatedAt',
   'externalLinks',
-  'roles',
   'referralCode',
   'block',
 ];

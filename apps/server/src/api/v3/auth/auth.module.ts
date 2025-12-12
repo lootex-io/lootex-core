@@ -18,11 +18,9 @@ import { TraitService } from '../trait/trait.service';
 import { LibsService } from '@/common/libs/libs.service';
 import { CollectionService } from '../collection/collection.service';
 import { ContractService } from '../contract/contract.service';
-import { QueueService } from '@/external/queue/queue.service';
 
 import { OrderService } from '../order/order.service';
-import { CurrencyService } from '../currency/currency.service';
-import { StorageService } from '@/external/storage/storage.service';
+import { CurrencyService } from '@/core/third-party-api/currency/currency.service';
 
 @Module({})
 export class AuthModule {
@@ -46,7 +44,6 @@ export class AuthModule {
         LibsService,
         CollectionService,
         ContractService,
-        QueueService,
 
         AuthService,
         ConfigurationService,
@@ -54,7 +51,6 @@ export class AuthModule {
 
         OrderService,
         CurrencyService,
-        StorageService,
 
         ...providers,
       ],

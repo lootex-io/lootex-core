@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   SetMetadata,
 } from '@nestjs/common';
-import { BotDetectionService } from '@/common/services/bot-detection.service';
 
 /**
  * 跳過爬蟲檢測的元數據鍵
@@ -30,8 +29,7 @@ export const BotOnly = () => SetMetadata(BOT_ONLY, true);
  */
 export const IsSearchEngineBot = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): boolean => {
-    const request = ctx.switchToHttp().getRequest();
-    return request['isSearchEngineBot'] || false;
+    return false;
   },
 );
 
@@ -40,8 +38,7 @@ export const IsSearchEngineBot = createParamDecorator(
  */
 export const IsGoogleBot = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): boolean => {
-    const request = ctx.switchToHttp().getRequest();
-    return request['isGoogleBot'] || false;
+    return false;
   },
 );
 
@@ -50,8 +47,7 @@ export const IsGoogleBot = createParamDecorator(
  */
 export const BotType = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): string | null => {
-    const request = ctx.switchToHttp().getRequest();
-    return request['botType'] || null;
+    return null;
   },
 );
 
@@ -73,19 +69,6 @@ export const ShouldSkipOperation = createParamDecorator(
     operationType: 'database' | 'sync' | 'aggregator' = 'database',
     ctx: ExecutionContext,
   ): boolean => {
-    const request = ctx.switchToHttp().getRequest();
-    const userAgent = request['userAgent'] || '';
-    const botDetection = new BotDetectionService();
-
-    switch (operationType) {
-      case 'database':
-        return botDetection.shouldSkipDatabaseOperations(userAgent);
-      case 'sync':
-        return botDetection.shouldSkipSyncOperations(userAgent);
-      case 'aggregator':
-        return botDetection.shouldSkipAggregatorOperations(userAgent);
-      default:
-        return botDetection.shouldSkipDatabaseOperations(userAgent);
-    }
+    return false; // Never skip
   },
 );

@@ -18,7 +18,6 @@ import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
 import { ChainId } from '@/common/utils/types';
 import { ethers } from 'ethers';
 import { ChainIdMappingSymbol } from '@/common/libs/libs.service';
-import { ORDER_PLATFORM_TYPE } from '@/microservice/nft-aggregator/aggregator-constants';
 import { AssetExtraDao } from '@/core/dao/asset-extra-dao';
 import { Op, QueryTypes } from 'sequelize';
 import {
@@ -439,7 +438,7 @@ export class OrderDao {
             option &&
             option.eventTime &&
             option.fromAddress.toLowerCase() !=
-              orderAsset.SeaportOrder.offerer &&
+            orderAsset.SeaportOrder.offerer &&
             orderAsset.SeaportOrder.startTime < option.eventTime
           ) {
             // do nothing
@@ -554,61 +553,7 @@ export class OrderDao {
    * 清理系统中os的非native/ wrap native token订单
    */
   async cleanNonNativeOrders() {
-    const orderAssets = await this.seaportOrderAssetRepository.findAll({
-      attributes: ['id', 'seaportOrderId', 'assetId'],
-      where: {
-        assetId: {
-          [Op.eq]: null,
-        },
-      },
-      include: [
-        {
-          attributes: ['symbol'],
-          model: Currency,
-          required: true,
-        },
-        {
-          attributes: ['chainId'],
-          model: SeaportOrder,
-          where: {
-            isFillable: true,
-            platformType: ORDER_PLATFORM_TYPE.OPENSEA,
-          },
-          required: true,
-        },
-      ],
-    });
-    for (const orderAsset of orderAssets) {
-      const nativeSymbol =
-        ChainIdMappingSymbol[orderAsset.SeaportOrder.chainId].toLowerCase();
-      if (
-        orderAsset.Currency.symbol
-          .toLowerCase()
-          .indexOf(nativeSymbol.toLowerCase()) > -1
-      ) {
-        // console.log(`${orderAsset.Currency.symbol} ${nativeSymbol} success`);
-      } else {
-        const assetId = (
-          await this.seaportOrderAssetRepository.findOne({
-            attributes: ['assetId'],
-            where: {
-              seaportOrderId: orderAsset.seaportOrderId,
-              assetId: {
-                [Op.ne]: null,
-              },
-            },
-          })
-        ).assetId;
-        console.log(
-          `${assetId} ${orderAsset.seaportOrderId} ${orderAsset.Currency.symbol} ${nativeSymbol} fail `,
-        );
-        await this.seaportOrderRepository.update(
-          { isFillable: false },
-          { where: { id: orderAsset.seaportOrderId } },
-        );
-        await this.assetExtraDao.updateAssetExtraBestOrderByAssetId(assetId);
-      }
-    }
+    return;
   }
 
   async getOrderServiceFeeInfo(
@@ -643,8 +588,8 @@ export class OrderDao {
 
       const symbolUsd = currency.symbol
         ? await this.currencyService.getSymbolPrice(
-            currency.symbol.replace(/^W/i, '') + 'USD',
-          )
+          currency.symbol.replace(/^W/i, '') + 'USD',
+        )
         : null;
       const symbolUsdPrice = symbolUsd ? symbolUsd.price : 0;
       serviceFeeUsdPrice = serviceFeePrice.multipliedBy(symbolUsdPrice);
@@ -699,7 +644,7 @@ export class OrderDao {
         log.address.toLowerCase() == params.contractAddress.toLowerCase() &&
         log.topics[0] === ERC1155_TRANSFER_SINGLE_TOPIC0 &&
         ethers.BigNumber.from(log.data.slice(0, 66)).toString() ===
-          params.tokenId
+        params.tokenId
       ) {
         fromAddress = '0x' + log.topics[2].slice(26);
         toAddress = '0x' + log.topics[3].slice(26);

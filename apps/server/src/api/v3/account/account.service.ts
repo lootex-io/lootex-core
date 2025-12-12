@@ -40,9 +40,9 @@ import { HttpService } from '@nestjs/axios';
 import { BlockStatus } from '@/model/entities/constant-model';
 import { ProviderTokens } from '@/model/providers';
 import * as promise from 'bluebird';
-import {} from './account.dto';
+import { } from './account.dto';
 import { CacheKeys, CacheService } from '@/common/cache';
-import { QueueService } from '@/external/queue/queue.service';
+
 import { ConfigService } from '@nestjs/config';
 import { AssetOwnersUpdateQueue } from '@/api/v3/asset/asset.interface';
 import {
@@ -118,10 +118,8 @@ export class AccountService {
 
     private readonly cacheService: CacheService,
 
-    private readonly queueService: QueueService,
-
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   async getOwners(options: GetAccountsQuery): Promise<GetAccountsResponse> {
     if (options.chainId && options.contractAddress && options.tokenId) {
@@ -380,8 +378,8 @@ export class AccountService {
             model: Wallet,
             where: query.walletAddress
               ? {
-                  address: query.walletAddress.toLowerCase(),
-                }
+                address: query.walletAddress.toLowerCase(),
+              }
               : {},
             attributes: ['address', 'isMainWallet', 'chainFamily', 'provider'],
           },
@@ -392,16 +390,16 @@ export class AccountService {
         ],
         where: query.email
           ? {
-              email: query.email,
-            }
+            email: query.email,
+          }
           : query.username
             ? {
-                username: query.username,
-              }
+              username: query.username,
+            }
             : query.referralCode
               ? {
-                  referralCode: query.referralCode,
-                }
+                referralCode: query.referralCode,
+              }
               : {},
       });
     } catch (err) {
