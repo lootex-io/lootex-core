@@ -38,7 +38,6 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tanstack/react-query": "^5.90.11",
     "@tanstack/react-table": "^8.20.6",
-    "@vercel/analytics": "^1.5.0",
     "@wagmi/core": "^3.0.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",

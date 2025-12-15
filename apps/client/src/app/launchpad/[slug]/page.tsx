@@ -1,5 +1,5 @@
 import { LaunchpadPage } from '@/features/launchpad/launchpad-page';
-import {  serverSideApiClient } from '@/lib/lootex';
+import { serverSideApiClient } from '@/lib/lootex';
 import { populateMetadata } from '@/utils/metadata';
 import type { LootexCollection } from 'lootex/collection';
 import { notFound } from 'next/navigation';
