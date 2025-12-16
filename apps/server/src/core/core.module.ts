@@ -23,15 +23,12 @@ import { AppLogger } from '@/core/log/app-log';
 import { SeaportOrderHistoryDao } from '@/core/dao/seaport-order-history-dao';
 import { RpcHandlerService } from '@/core/third-party-api/rpc/rpc-handler.service';
 import { OrderDao } from '@/core/dao/order-dao';
-import { DB_SMALL_NAME } from '@/core/small-db/small-constants';
-import { SmallLogService } from '@/core/small-db/small-log.service';
 import { LogService } from '@/core/log/log.service';
-import { OpenSeaApiService } from '@/core/aggregator-core/opensea/opensea-api.service';
-import { OpenSeaHandlerService } from '@/core/aggregator-core/opensea/opensea-handler.service';
+
 import { providers } from '@/model/providers';
 import { GpDao } from '@/core/dao/gp-dao';
 import { AggregatorCoreDao } from '@/core/aggregator-core/aggregator-core-dao/aggregator-core-dao';
-import { FileBaseService } from '@/core/ipfs/filebase.service';
+
 import { EventPollerDao } from '@/core/dao/event-poller.dao';
 import { GpPoolDao } from '@/core/dao/gp-pool-dao';
 import { MoralisNftApiService } from '@/core/third-party-api/moralis/moralis-nft-api.service';
@@ -40,7 +37,7 @@ import { NftscanNftApiService } from '@/core/third-party-api/nftscan/nftscan-nft
 import { TradeRewardRuleDao } from '@/core/dao/trade-reward/trade-reward-rule-dao';
 import { TradeRewardHistoryDao } from '@/core/dao/trade-reward/trade-reward-history-dao';
 import { TradeRewardStatsDao } from '@/core/dao/trade-reward/trade-reward-stats-dao';
-import { ApiLogService } from './log/api-log.service';
+
 import { SdkApiKeyService } from '@/core/sdk/service/sdk-api-key.service';
 import { SdkEnvService } from '@/core/sdk/service/sdk-env.service';
 import { BiruPointDao } from '@/core/dao/biru-point-dao';
@@ -175,14 +172,10 @@ export class CoreModule {
         CurrencyService,
         ImportCollectionLogService,
         CWLogService,
-        SmallLogService,
         LogService,
-        ApiLogService,
         AggregatorCoreDao,
-        OpenSeaApiService,
-        OpenSeaHandlerService,
         GpDao,
-        FileBaseService,
+
         EventPollerDao,
         GpPoolDao,
         TradeRewardRuleDao,
@@ -216,15 +209,12 @@ export class CoreModule {
         ImportCollectionLogService,
         CWLogService,
         LogService,
-        ApiLogService,
         MoralisNftApiService,
         AlchemyNftApiService,
         NftscanNftApiService,
-        OpenSeaApiService,
-        OpenSeaHandlerService,
         GpDao,
         AggregatorCoreDao,
-        FileBaseService,
+
         EventPollerDao,
         EventPollerDao,
         GpPoolDao,

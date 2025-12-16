@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { SmallLogService } from '@/core/small-db/small-log.service';
 
 @Injectable()
 export class LogService {
-  constructor(private smallLogService: SmallLogService) {}
+  constructor() { }
   async log(type: string, action: string, args?: { [key: string]: any }) {
     if (type === LOG_TYPE.COMMON) {
-      await this.smallLogService.log(type, action, args);
+      // await this.smallLogService.log(type, action, args);
     }
   }
 
   async common(action: string, args?: { [key: string]: any }) {
-    await this.smallLogService.log(LOG_TYPE.COMMON, action, args);
+    // await this.smallLogService.log(LOG_TYPE.COMMON, action, args);
   }
 }
 

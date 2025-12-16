@@ -9,6 +9,7 @@ import { ChainUtil } from '@/common/utils/chain.util';
 import { withTimeout } from '@/common/utils/utils.pure';
 import { RpcEnd } from '@/core/third-party-api/rpc/interfaces';
 import { CacheService } from '@/common/cache';
+import { ActiveChainConfig } from '@/common/utils/chain.config';
 
 @Injectable()
 export class RpcHandlerService {
@@ -28,30 +29,16 @@ export class RpcHandlerService {
     private cacheService: CacheService,
   ) {
     this.logger.debug('constructor');
-    const chainNames = Object.values(SupportedChains);
-    chainNames.push(Chain.HOLESKY);
-    for (const chainName of chainNames) {
-      const rpcName = ChainMap[chainName].RPC;
-      const chainId = +ChainMap[chainName].id;
+    this.logger.debug('constructor');
 
-      const mainUrlStr = this.configService.get(`RPC_ENDPOINT_MAIN_${rpcName}`);
-      const mainUrls = mainUrlStr?.split(',').map((e) => e.trim()) ?? [];
+    const chainId = ActiveChainConfig.id;
+    const mainUrls = ActiveChainConfig.rpc.main;
+    const eventPollerUrls = ActiveChainConfig.rpc.eventPoller;
+    const publicUrls = ActiveChainConfig.rpc.backup;
 
-      const eventPollerUrlStr = this.configService.get(
-        `RPC_ENDPOINT_EVENT_POLLER_${rpcName}`,
-      );
-      const eventPollerUrls =
-        eventPollerUrlStr?.split(',').map((e) => e.trim()) ?? [];
-
-      const publicUrlStr = this.configService.get(
-        `RPC_ENDPOINT_BACKUP_${rpcName}`,
-      );
-      const publicUrls = publicUrlStr?.split(',').map((e) => e.trim()) ?? [];
-
-      this.mainRpcMaps.set(chainId, [...mainUrls, ...publicUrls]);
-      this.publicRpcMaps.set(chainId, [...publicUrls, ...mainUrls]);
-      this.eventPollerRpcMaps.set(chainId, [...eventPollerUrls, ...publicUrls]);
-    }
+    this.mainRpcMaps.set(chainId, [...mainUrls, ...publicUrls]);
+    this.publicRpcMaps.set(chainId, [...publicUrls, ...mainUrls]);
+    this.eventPollerRpcMaps.set(chainId, [...eventPollerUrls, ...publicUrls]);
   }
 
   getRpcUrl(chainId: number, rpcEnd = RpcEnd.default) {
@@ -100,8 +87,7 @@ export class RpcHandlerService {
     const rpcIndex = this._getRpcIndex(chainId, rpcEnd);
     this._setRpcIndex(chainId, rpcIndex + 1, rpcEnd);
     this.logger.log(
-      `switchRpcIndex chainId ${chainId} index ${rpcEnd} ${
-        rpcIndex + 1
+      `switchRpcIndex chainId ${chainId} index ${rpcEnd} ${rpcIndex + 1
       } : ${this.getRpcUrl(chainId, rpcEnd)}`,
     );
   }

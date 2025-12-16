@@ -59,19 +59,14 @@ import { SimpleException, SimpleJson } from '@/common/utils/simple.util';
 import { RpcHandlerService } from '@/core/third-party-api/rpc/rpc-handler.service';
 
 import { BiruDiscordWallet } from '@/model/entities/biru/biru-wallet-discord.entity';
-import { createAuth, LoginPayload } from 'thirdweb/auth';
-import { createThirdwebClient, ThirdwebClient } from 'thirdweb';
-import { privateKeyToAccount } from 'thirdweb/wallets';
-import { Account as ThirdwebAccount } from 'thirdweb/wallets';
+
 
 @Injectable()
 export class AuthService {
   private readonly ERC1271_MATCH_VALUE = '0x1626ba7e';
   private readonly logger = new Logger(AuthService.name);
 
-  private readonly thirdwebClient: ThirdwebClient;
-  private readonly thirdwebAdminAccount: ThirdwebAccount;
-  private readonly thirdwebAuth: ReturnType<typeof createAuth>;
+
 
   constructor(
     @InjectModel(Account)
@@ -109,25 +104,7 @@ export class AuthService {
     // this.testGenerateJwtToken('icesimon', '180d').then((res) =>
     //   console.log('jwt-token ', res),
     // );
-    this.thirdwebClient = createThirdwebClient({
-      clientId:
-        configurationService.get<string>('BIRU_THIRDWEB_CLIENT_ID') || '',
-    });
 
-    this.thirdwebAdminAccount = privateKeyToAccount({
-      client: this.thirdwebClient,
-      privateKey:
-        configurationService.get<string>('BIRU_THIRDWEB_PRIVATE_KEY') || '',
-    });
-
-    this.thirdwebAuth = createAuth({
-      domain:
-        configurationService.get<string>('NODE_ENV') == 'development'
-          ? 'preview.lootex.dev'
-          : 'lootex.io',
-      client: this.thirdwebClient,
-      adminAccount: this.thirdwebAdminAccount,
-    });
   }
 
   async testGenerateJwtToken(username: string, expiresIn = '4h') {
@@ -680,30 +657,6 @@ export class AuthService {
   private _checkAccountOrThrowException(account: Account) {
     if (account.block === BlockStatus.BLOCKED) {
       throw new HttpException('Account FORBIDDEN', HttpStatus.FORBIDDEN);
-    }
-  }
-
-  async verifyLoginChallenge(signature: string, loginPayload: LoginPayload) {
-    try {
-      const payload = await this.thirdwebAuth.verifyPayload({
-        payload: loginPayload,
-        signature: signature,
-      });
-
-      if (!payload) {
-        throw SimpleException.fail({
-          message: 'Invalid signature or payload',
-        });
-      }
-
-      // Here you can handle the login logic, e.g., create or update user in the database
-      // For now, we just return the payload
-      return payload.valid;
-    } catch (error) {
-      this.logger.error('Verify Login Challenge failed:', error);
-      throw SimpleException.fail({
-        message: 'Verify Login Challenge failed',
-      });
     }
   }
 

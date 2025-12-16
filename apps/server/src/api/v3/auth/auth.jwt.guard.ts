@@ -33,7 +33,7 @@ export class AuthJwtGuard implements CanActivate {
     private readonly jwtService: JwtService,
 
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   /**
    * @private
@@ -145,7 +145,7 @@ export class AuthJwtGuardOptional implements CanActivate {
     private readonly jwtService: JwtService,
 
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   /**
    * @private

@@ -21,7 +21,6 @@ import { EventPollerRpcService } from '@/microservice/event-poller/service/event
 import { AccountService } from '@/api/v3/account/account.service';
 import { AssetExtraService } from '@/api/v3/asset/asset-extra.service';
 import { WalletService } from '@/api/v3/wallet/wallet.service';
-import { SendInBlueModule } from '@/external/send-in-blue/send-in-blue.module';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
 
 @Module({
@@ -43,7 +42,6 @@ import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
     }),
     ScheduleModule.forRoot(),
     SequelizeModule.forFeature(entities),
-    SendInBlueModule,
   ],
   controllers: [],
   providers: [

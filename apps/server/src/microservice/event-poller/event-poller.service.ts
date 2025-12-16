@@ -71,8 +71,7 @@ import {
 } from '@/core/dao/asset-extra-dao';
 import { WalletService } from '@/api/v3/wallet/wallet.service';
 import { EventPollerDao } from '@/core/dao/event-poller.dao';
-import { SendInBlueService } from '@/external/send-in-blue/send-in-blue.service';
-import { EmailRecipient } from '@/external/send-in-blue/send-in-blue.interface';
+
 import { TRANSFER_TOPIC0 } from '@/api/v3/wallet/constants';
 import { TradeRewardHistoryDao } from '@/core/dao/trade-reward/trade-reward-history-dao';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
@@ -150,7 +149,7 @@ export class EventPollerService {
 
     private walletService: WalletService,
 
-    private sendInBlueService: SendInBlueService,
+
 
     private tradeRewardHistoryDao: TradeRewardHistoryDao,
 
@@ -708,7 +707,7 @@ export class EventPollerService {
         if (
           bestCollectionOffer.hasBestCollectionOrder &&
           bestCollectionOffer.bestSeaportOrder.hash?.toLowerCase() ===
-            orderHash?.toLowerCase()
+          orderHash?.toLowerCase()
         ) {
           const newBestCollectionOffer =
             await this.orderService.getBestCollectionOffer(
@@ -910,7 +909,7 @@ export class EventPollerService {
             log.address.toLowerCase() === item.token.toLowerCase() &&
             // to address is in AggregatorAddresses
             '0x' + log.topics[2].slice(26) ===
-              AggregatorAddresses[chainId].toLowerCase() &&
+            AggregatorAddresses[chainId].toLowerCase() &&
             ethers.BigNumber.from(log.topics[3]).eq(item.identifier)
           );
         });
@@ -1035,7 +1034,7 @@ export class EventPollerService {
         if (
           bestCollectionOffer.hasBestCollectionOrder &&
           bestCollectionOffer.bestSeaportOrder?.hash?.toLowerCase() ===
-            orderFulfilledResponse.orderHash?.toLowerCase()
+          orderFulfilledResponse.orderHash?.toLowerCase()
         ) {
           const newBestCollectionOffer =
             await this.orderService.getBestCollectionOffer(
@@ -1263,8 +1262,8 @@ export class EventPollerService {
     // if WETH need to replace to ETH, because CurrencyService don't have warped token price
     const symbolUsd = currencySymbol
       ? await this.thirdPartyCurrencyService.getSymbolPrice(
-          currencySymbol.replace(/^W/i, '') + 'USD',
-        )
+        currencySymbol.replace(/^W/i, '') + 'USD',
+      )
       : null;
     const symbolUsdPrice = symbolUsd ? symbolUsd.price : 0;
     const orderUsdPrice = orderPrice.multipliedBy(symbolUsdPrice);
@@ -1680,7 +1679,7 @@ export class EventPollerService {
       quantity = orderFulfilledResponse.offer[0].amount;
       contractType =
         dbOrder.SeaportOrderAssets[0].itemType === 2 ||
-        dbOrder.SeaportOrderAssets[0].itemType === 4
+          dbOrder.SeaportOrderAssets[0].itemType === 4
           ? ContractType.ERC721
           : ContractType.ERC1155;
     } else if (dbOrder.category === Category.OFFER) {
@@ -1690,7 +1689,7 @@ export class EventPollerService {
       quantity = orderFulfilledResponse.consideration[0].amount;
       contractType =
         dbOrder.SeaportOrderAssets[0].itemType === 2 ||
-        dbOrder.SeaportOrderAssets[0].itemType === 4
+          dbOrder.SeaportOrderAssets[0].itemType === 4
           ? ContractType.ERC721
           : ContractType.ERC1155;
     }
@@ -1857,75 +1856,5 @@ export class EventPollerService {
     }
   }
 
-  async sendSoldEmailToSeller(
-    orderHistory: SeaportOrderHistory,
-  ): Promise<void> {
-    if (this.configService.get('NODE_ENV') != 'development') {
-      return;
-    }
 
-    const asset = await this.assetRepository.findOne({
-      attributes: ['id', 'tokenId', 'name', 'imageUrl'],
-      where: {
-        tokenId: orderHistory.tokenId,
-        chainId: orderHistory.chainId,
-      },
-      include: {
-        attributes: ['address'],
-        model: Contract,
-        where: {
-          address: orderHistory.contractAddress.toLowerCase(),
-        },
-      },
-    });
-
-    const collection = await this.collectionRepository.findOne({
-      attributes: ['id', 'slug', 'chainShortName', 'name', 'contractAddress'],
-      where: {
-        contractAddress: asset.Contract.address,
-        chainId: orderHistory.chainId,
-      },
-    });
-
-    const saleAccount = await this.accountRepository.findOne({
-      attributes: ['email'],
-      include: {
-        attributes: ['id', 'address'],
-        model: Wallet,
-        where: {
-          address: orderHistory.fromAddress,
-        },
-      },
-    });
-
-    const collectionName = collection.name;
-    const chainShortName = collection.chainShortName;
-    const contractAddress = collection.contractAddress;
-    const tokenId = asset.tokenId;
-    const tokenName = asset.name;
-    const tokenImageUrl = asset.imageUrl?.startsWith('ipfs://')
-      ? asset.imageUrl.replace('ipfs://', IPFS_GATEWAY)
-      : asset.imageUrl;
-    const email = saleAccount.email;
-
-    const emailData = getSoldItemEmailHtmlTemplate({
-      collectionName,
-      chainShortName,
-      contractAddress,
-      tokenId,
-      tokenName,
-      tokenImageUrl,
-    });
-
-    const recipient: EmailRecipient = new EmailRecipient(
-      email,
-      'Lootex ID User',
-    );
-
-    const emailRes = await this.sendInBlueService.sendPlainEmail(
-      recipient,
-      `[Lootex] Your item ${collectionName} #${tokenId} has been sold`,
-      emailData,
-    );
-  }
 }

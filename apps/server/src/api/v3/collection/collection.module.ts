@@ -20,7 +20,7 @@ import { AccountService } from '../account/account.service';
 import { CollectionDataService } from '@/api/v3/collection/proxy/collection-data.service';
 import { CollectionProxyService } from '@/api/v3/collection/proxy/collection-proxy.service';
 import { AuthService } from '../auth/auth.service';
-import { SendInBlueModule } from '@/external/send-in-blue/send-in-blue.module';
+
 
 
 @Module({

@@ -6,7 +6,7 @@ import { ConfigurationService } from '@/configuration/configuration.service';
 import { HttpModule } from '@nestjs/axios';
 import { BlockchainService } from '@/external/blockchain/blockchain.service';
 import { providers } from '@/model/providers';
-import { SendInBlueModule } from '@/external/send-in-blue/send-in-blue.module';
+
 import { entities } from '@/model/entities';
 import { SequelizeModule } from '@nestjs/sequelize';
 
@@ -30,7 +30,7 @@ export class AuthModule {
       imports: [
         JwtModule.registerAsync(options),
         HttpModule.registerAsync(options),
-        SendInBlueModule,
+
         SequelizeModule.forFeature(entities),
       ],
       controllers: [AuthController],

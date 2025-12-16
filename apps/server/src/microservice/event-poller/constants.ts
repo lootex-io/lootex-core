@@ -1,75 +1,29 @@
 import { Chain } from '@/common/libs/libs.service';
+import { ActiveChainConfig } from '@/common/utils/chain.config';
 
 // if you want to run new chain, add it here
 export const SupportedChains = [
-  Chain.ETH,
-  Chain.POLYGON,
-  Chain.AVALANCHE,
-  Chain.ARBITRUM,
-  Chain.BSC,
-  Chain.MANTLE,
-  Chain.BASE,
-  Chain.SONEIUM,
-  Chain.SONEIUM_MINATO,
-  // Chain.MUMBAI,
+  ActiveChainConfig.name as Chain,
 ];
 
 export const chainIds = {
-  [Chain.ETH]: 1,
-  [Chain.BSC]: 56,
-  [Chain.POLYGON]: 137,
-  [Chain.AVALANCHE]: 43114,
-  [Chain.ARBITRUM]: 42161,
-  [Chain.MANTLE]: 5000,
-  [Chain.BASE]: 8453,
-  [Chain.MUMBAI]: 80001,
-  [Chain.SONEIUM]: 1868,
-  [Chain.SONEIUM_MINATO]: 1946,
+  [ActiveChainConfig.name]: ActiveChainConfig.id,
 };
 
 // chain blocktime (in milliseconds)
 export const chainBlocktime = {
-  [Chain.ETH]: 2000,
-  [Chain.BSC]: 100,
-  [Chain.POLYGON]: 100,
-  [Chain.AVALANCHE]: 200,
-  [Chain.ARBITRUM]: 30,
-  [Chain.MANTLE]: 30,
-  [Chain.BASE]: 100,
-  [Chain.MUMBAI]: 100,
-  [Chain.SONEIUM]: 100,
-  [Chain.SONEIUM_MINATO]: 100,
+  [ActiveChainConfig.name]: ActiveChainConfig.blockTimeMs,
 };
 
 export const POLLER_CONVERSION_RATE = 1;
 export const POLLER_RETRY_DELAY = 5000;
 export const POLLER_RETRY_LIMIT = 5;
 export const PollingBatch = {
-  [Chain.ETH]: 12,
-  [Chain.BSC]: 36,
-  [Chain.POLYGON]: 60,
-  [Chain.AVALANCHE]: 60,
-  [Chain.ARBITRUM]: 100,
-  [Chain.MANTLE]: 100,
-  [Chain.BASE]: 25,
-  [Chain.SONEIUM]: 150,
-  [Chain.SONEIUM_MINATO]: 30,
-  // Testnet
-  [Chain.MUMBAI]: 18,
+  [ActiveChainConfig.name]: 100, // Default batch size
 };
 
 export const PollingInterval = {
-  [Chain.ETH]: 60000,
-  [Chain.BSC]: 60000,
-  [Chain.POLYGON]: 30000,
-  [Chain.AVALANCHE]: 30000,
-  [Chain.ARBITRUM]: 10000,
-  [Chain.MANTLE]: 10000,
-  [Chain.BASE]: 10000,
-  [Chain.SONEIUM]: 10000,
-  // testnet
-  [Chain.SONEIUM_MINATO]: 2000,
-  [Chain.MUMBAI]: 28000,
+  [ActiveChainConfig.name]: 10000, // Default interval 10s
 };
 
 // export const ChainPerBlockTime = {
@@ -83,66 +37,16 @@ export const PollingInterval = {
 
 // old
 export const SeaportAddress = {
-  [Chain.ETH]: '0xBb7C4d295A1f72e52A2398F6e32A9166C70BfF79', // Saori https://etherscan.io/address/0xbb7c4d295a1f72e52a2398f6e32a9166c70bff79
-  [Chain.BSC]: '0xC64E66041935Be181F94136b9E9e23E95CeDebb0', // Saori https://bscscan.com/address/0xc64e66041935be181f94136b9e9e23e95cedebb0
-  [Chain.POLYGON]: '0xF1abf805788c8607B44D677Bb44031B2e226be2B', // Saori https://polygonscan.com/address/0xf1abf805788c8607b44d677bb44031b2e226be2b
-  [Chain.AVALANCHE]: '0xB1a8c24108fd0Ca271ea332676Ef4ded5e484D23', // Saori https://cchain.explorer.avax.network/address/0xb1a8c24108fd0ca271ea332676ef4ded5e484d23/transactions
-  [Chain.ARBITRUM]: '0xdC246FB0Cc491B94e3cFAFdD659c31b9111b2ED2', // Saori https://arbiscan.io/address/0xdc246fb0cc491b94e3cfafdd659c31b9111b2ed2
-  [Chain.MANTLE]: '0x37507a230Cd7b2180842b46F536410493a923DAB', // Saori https://explorer.mantle.xyz/address/0x37507a230cd7b2180842b46f536410493a923dab/transactions
-  [Chain.BASE]: '0x54E7f9282736e8e965e99CFb7491C31A1f5a00cC', // Saori https://basescan.org/address/0x54e7f9282736e8e965e99cfb7491c31a1f5a00cc#code
-  [Chain.SONEIUM]: '0xa313d4f11e69a320a68167e7aafacea8f3413593',
-  // Testnet
-  [Chain.SONEIUM_MINATO]: '0x804b1e49cdf3cd3cf309f14bf6ccb47dfe64f7bb', //
-  [Chain.MUMBAI]: '0x00000000000001ad428e4906ae43d8f9852d0dd6', // OpenSea Seaport https://mumbai.polygonscan.com/address/0x00000000000001ad428e4906ae43d8f9852d0dd6
+  [ActiveChainConfig.name]: ActiveChainConfig.contracts.seaport[0] || '',
 };
 export const SeaportAddresses: {
   [key: string]: string[];
 } = {
-  [Chain.ETH]: [
-    // '0xBb7C4d295A1f72e52A2398F6e32A9166C70BfF79', // Saori https://etherscan.io/address/0xbb7c4d295a1f72e52a2398f6e32a9166c70bff79
-    '0x5C019E4D86CD7Fa9a8c1C3d9D53FF90b3198705d', // Lootex Seaport 1.6
-  ],
-  [Chain.BSC]: [
-    // '0xC64E66041935Be181F94136b9E9e23E95CeDebb0', // Saori https://bscscan.com/address/0xc64e66041935be181f94136b9e9e23e95cedebb0
-    '0xC8D03c8456B6dd7d32579B4764b01dB2F05B5310', // Lootex Seaport 1.6
-  ],
-  [Chain.POLYGON]: [
-    // '0xF1abf805788c8607B44D677Bb44031B2e226be2B', // Lootex Seaport 1.4
-    '0xED5c25804fB00df98Fe54516509c19531A0fBBe4', // Lootex Seaport 1.6
-  ], // Saori https://polygonscan.com/address/0xf1abf805788c8607b44d677bb44031b2e226be2b
-  [Chain.AVALANCHE]: [
-    // '0xB1a8c24108fd0Ca271ea332676Ef4ded5e484D23', // Saori https://cchain.explorer.avax.network/address/0xb1a8c24108fd0ca271ea332676ef4ded5e484d23/transactions
-    '0x5C019E4D86CD7Fa9a8c1C3d9D53FF90b3198705d', // Lootex Seaport 1.6
-  ],
-  [Chain.ARBITRUM]: [
-    // '0xdC246FB0Cc491B94e3cFAFdD659c31b9111b2ED2', // Saori https://arbiscan.io/address/0xdc246fb0cc491b94e3cfafdd659c31b9111b2ed2
-    '0x5C019E4D86CD7Fa9a8c1C3d9D53FF90b3198705d', // Lootex Seaport 1.6
-  ],
-  [Chain.MANTLE]: [
-    // '0x37507a230Cd7b2180842b46F536410493a923DAB', // Saori https://explorer.mantle.xyz/address/0x37507a230cd7b2180842b46f536410493a923dab/transactions
-    '0x5C019E4D86CD7Fa9a8c1C3d9D53FF90b3198705d', // Lootex Seaport 1.6
-  ],
-  [Chain.BASE]: [
-    // '0x54E7f9282736e8e965e99CFb7491C31A1f5a00cC', // Saori https://basescan.org/address/0x54e7f9282736e8e965e99cfb7491c31a1f5a00cc#code
-    '0x5C019E4D86CD7Fa9a8c1C3d9D53FF90b3198705d', // Lootex Seaport 1.6
-  ],
-  [Chain.SONEIUM]: ['0xa313d4f11e69a320a68167e7aafacea8f3413593'],
-  // Testnet
-  [Chain.MUMBAI]: ['0x00000000000001ad428e4906ae43d8f9852d0dd6'], // OpenSea Seaport https://mumbai.polygonscan.com/address/0x00000000000001ad428e4906ae43d8f9852d0dd6
-  [Chain.SONEIUM_MINATO]: ['0x804b1e49cdf3cd3cf309f14bf6ccb47dfe64f7bb'], // OpenSea Seaport https://mumbai.polygonscan.com/address/0x00000000000001ad428e4906ae43d8f9852d0dd6
+  [ActiveChainConfig.name]: ActiveChainConfig.contracts.seaport,
 };
 
 export const AggregatorAddresses: Record<number, `0x${string}`> = {
-  [1]: '0x8540F503404f89b1B5311c3f8560CD35B13444Ae',
-  [137]: '0x1Cc00Ef9523bD9B9d6cb7f2e0f2AE0F3E6e62074',
-  [56]: '0x18a81B9697d2c7225AA34B3A4F6a6aF929e793a1',
-  [43114]: '0x8fDE23dc92Ab77F82E9De81C45B00afdC7505489',
-  [42161]: '0x18a81B9697d2c7225AA34B3A4F6a6aF929e793a1',
-  [5000]: '0x18a81B9697d2c7225AA34B3A4F6a6aF929e793a1',
-  [5001]: '0x18a81B9697d2c7225AA34B3A4F6a6aF929e793a1',
-  [8453]: '0x18a81B9697d2c7225AA34B3A4F6a6aF929e793a1',
-  [1946]: '0xB0bf3A5f0ec8b192f25D44e086d94383F8967b66',
-  [1868]: '0xCb5367109e9d6b8C03c4DAF71740159fC85BCFce',
+  [ActiveChainConfig.id]: ActiveChainConfig.contracts.aggregator as `0x${string}`,
 };
 
 /**

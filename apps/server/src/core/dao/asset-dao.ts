@@ -27,7 +27,7 @@ import { Cacheable } from '@/common/decorator/cacheable.decorator';
 import { RefreshBlacklist } from '@/api/v3/asset/constants';
 import { RpcEnd } from '@/core/third-party-api/rpc/interfaces';
 
-import { DB_SMALL_NAME } from '@/core/small-db/small-constants';
+
 
 @Injectable()
 export class AssetDao {

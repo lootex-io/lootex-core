@@ -50,7 +50,6 @@ import { AuthService } from './auth.service';
 import {
   AUTH_COOKIE_EXPIRE_DATE,
   WEB3_SUPPORTED_CHAIN_FAMILIES,
-  LOOTEX_PRESET_ACCOUNT_ADDRESSES,
   DEV_ENVIRONMENT_HOST_REGEX,
 } from '@/common/utils/constants';
 import { AuthJwtGuard } from './auth.jwt.guard';
@@ -92,47 +91,7 @@ export class AuthController {
     private readonly cacheService: CacheService,
   ) { }
 
-  // @dev debugJwtCookie: retrieves a JWT cookie for dev environment's preset accounts
-  @Get('/debug/jwt-preset/get')
-  async debugJwtCookie(
-    @Headers() headers,
-    @Query() queryByAddressDto: QueryByAddressBaseDto,
-    @FlexCookieOption() cookieOption: CookieSerializeOptions,
-    @Res({ passthrough: true }) response: ResponseWithCookie,
-  ): Promise<string> {
-    if (!DEV_ENVIRONMENT_HOST_REGEX.test(headers.host))
-      throw new TypeError('debugJwtCookie: invalid origin');
-    const { address } = queryByAddressDto;
-    if (!LOOTEX_PRESET_ACCOUNT_ADDRESSES.includes(address))
-      throw new TypeError('debugJwtCookie: invalid input');
-    const thisWallet: Wallet = await Wallet.findOne({ where: { address } });
-    if (!thisWallet)
-      throw new TypeError('debugJwtCookie: wallet not found, migration?');
-    const thisAccount: Account = await Account.findByPk(thisWallet.accountId);
-    if (!thisAccount)
-      throw new TypeError('debugJwtCookie: account not found, migration?');
-    const payload = new LootexJwtPayload(
-      thisAccount.id,
-      thisAccount.email,
-      thisAccount.username,
-      thisAccount.avatarUrl,
-      thisWallet.id,
-    );
-    const jwtToken: string = await this.jwtService.signAsync(
-      payload.toObject(),
-      {
-        secret: this.configurationService.get('JWT_SECRET'),
-        algorithm: this.configurationService.get('JWT_ALGORITHM'),
-        expiresIn: this.configurationService.get('JWT_EXPIRES_IN'),
-      },
-    );
-    response.cookie(
-      this.configurationService.get('AUTH_JWT_COOKIE_KEY'),
-      jwtToken,
-      cookieOption,
-    );
-    return `OK. Generated a JWT cookie for you (${thisAccount.username}, ${address})`;
-  }
+
 
   // @dev getChallenge: generates a random one-time challenge for the user
   @Get('/challenge/get')

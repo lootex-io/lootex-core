@@ -11,69 +11,55 @@ import { HttpModule } from '@nestjs/axios';
 import { BlockchainService, EthAddress } from '@/external/blockchain';
 import { AuthSupportedChainFamily } from './auth.interface';
 import { ethers } from 'ethers';
-import { SendInBlueModule } from '@/external/send-in-blue/send-in-blue.module';
-import { SequelizeModule } from '@nestjs/sequelize';
 
-describe('AuthService', () => {
-  let service: AuthService;
-  let testingEthAddr: EthAddress;
-  let testingWallet: ethers.Wallet;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        CacheModule.register(),
-        ConfigurationModule,
-        TestSequelizeModule.forRootAsync(entities),
-        SendInBlueModule,
-        JwtModule.register({}),
-        HttpModule.register({}),
-        SequelizeModule.forFeature(entities),
+JwtModule.register({}),
+  HttpModule.register({}),
+  SequelizeModule.forFeature(entities),
       ],
-      providers: [
-        AuthService,
-        BlockchainService,
-        ConfigurationService,
-        ...providers,
-      ],
+providers: [
+  AuthService,
+  BlockchainService,
+  ConfigurationService,
+  ...providers,
+],
     }).compile();
 
-    service = module.get<AuthService>(AuthService);
+service = module.get<AuthService>(AuthService);
 
-    const oneTimePrivateKey = `0x${randomBytes(32).toString('hex')}`;
-    testingWallet = new ethers.Wallet(oneTimePrivateKey);
-    testingEthAddr = (await testingWallet.getAddress()) as EthAddress;
+const oneTimePrivateKey = `0x${randomBytes(32).toString('hex')}`;
+testingWallet = new ethers.Wallet(oneTimePrivateKey);
+testingEthAddr = (await testingWallet.getAddress()) as EthAddress;
   });
 
-  it('should be a defined service instance', () => {
-    expect(service).toBeDefined();
-  });
+it('should be a defined service instance', () => {
+  expect(service).toBeDefined();
+});
 
-  it('should return a randomised number', () => {
-    expect(typeof service.getSecureRandomNumber() === 'number').toBeTruthy();
-  });
+it('should return a randomised number', () => {
+  expect(typeof service.getSecureRandomNumber() === 'number').toBeTruthy();
+});
 
-  it(`should generate different challenge with same ETH address`, () => {
-    expect(
-      service.getOneTimeChallenge(
-        testingEthAddr,
-        'ETH' as AuthSupportedChainFamily,
-      ) ===
-        service.getOneTimeChallenge(
-          testingEthAddr,
-          'ETH' as AuthSupportedChainFamily,
-        ),
-    ).toBeFalsy();
-  });
-
-  it('should verify the challenge correctly (ETH, EOA)', async () => {
-    const challenge = await service.getOneTimeChallenge(
+it(`should generate different challenge with same ETH address`, () => {
+  expect(
+    service.getOneTimeChallenge(
       testingEthAddr,
       'ETH' as AuthSupportedChainFamily,
-    );
-    const signature = await testingWallet.signMessage(challenge);
-    expect(
-      await service.verifyOneTimeChallengeEth(testingEthAddr, signature),
-    ).toBeTruthy();
-  });
+    ) ===
+    service.getOneTimeChallenge(
+      testingEthAddr,
+      'ETH' as AuthSupportedChainFamily,
+    ),
+  ).toBeFalsy();
+});
+
+it('should verify the challenge correctly (ETH, EOA)', async () => {
+  const challenge = await service.getOneTimeChallenge(
+    testingEthAddr,
+    'ETH' as AuthSupportedChainFamily,
+  );
+  const signature = await testingWallet.signMessage(challenge);
+  expect(
+    await service.verifyOneTimeChallengeEth(testingEthAddr, signature),
+  ).toBeTruthy();
+});
 });
