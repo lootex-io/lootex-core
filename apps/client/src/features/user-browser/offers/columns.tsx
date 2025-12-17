@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { PurchaseButton } from '@/features/purchase/purchase-button';
 import { formatRelativeTime } from '@/utils/format';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { LootexOrder } from 'lootex/order';
+import type { LootexOrder } from '@lootex-core/sdk/order';
 import { useConnection } from 'wagmi';
 
 const CustomPriceCell = ({ order }: { order?: LootexOrder }) => {

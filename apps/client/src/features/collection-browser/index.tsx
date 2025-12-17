@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useActiveTab } from '@/hooks/use-active-tab';
 import { useScreenSize } from '@/hooks/use-screen-size';
 import { defaultChain } from '@/lib/wagmi';
-import type { LootexCollection } from 'lootex/collection';
+import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { useEffect } from 'react';
 import { useConnection } from 'wagmi';
 import InstantSellButton from '../accept-offer/instant-sell-button';

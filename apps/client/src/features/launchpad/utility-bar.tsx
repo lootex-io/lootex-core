@@ -8,7 +8,7 @@ import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { apiClient } from '@/lib/lootex';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
-import type { LootexCollection } from 'lootex/collection';
+import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { PackageOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useConnection } from 'wagmi';

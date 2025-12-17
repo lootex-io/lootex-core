@@ -18,7 +18,7 @@ npm install lootex
 First, initialize the Lootex client:
 
 ```ts
-import { createLootexClient } from 'lootex';
+import { createLootexClient } from '@lootex-core/sdk';
 
 const lootex = createLootexClient({
   environment: 'development',
@@ -43,7 +43,7 @@ const { orders } = await lootex.apiClient.getOrders({
 To fulfill orders, create an aggregator instance:
 
 ```ts
-import { createAggregator } from 'lootex/aggregator';
+import { createAggregator } from '@lootex-core/sdk/aggregator';
 
 const aggregator = createAggregator({
   client: lootex,

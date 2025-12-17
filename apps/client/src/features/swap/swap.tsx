@@ -18,7 +18,7 @@ import { defaultChain } from '@/lib/wagmi';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { createSwapClient } from 'lootex/swap';
+import { createSwapClient } from '@lootex-core/sdk/swap';
 import { ArrowUpDown } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';

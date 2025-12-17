@@ -10,7 +10,7 @@ import { defaultChain } from '@/lib/wagmi';
 import { useItemsQuery } from '@/lib/use-items-query';
 import { cn } from '@/lib/utils';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import type { LootexCollection } from 'lootex/collection';
+import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { Loader2, SearchIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';

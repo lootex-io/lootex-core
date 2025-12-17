@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "tsup --watch",
+    "dev": "tsc --watch --noCheck --module es2020 --moduleResolution node --outDir ./dist/esm && printf '{\"type\": \"module\",\"sideEffects\":false}' > ./dist/esm/package.json",
     "build": "npm run build:types && npm run build:cjs && npm run build:esm",
     "build:cjs": "tsc --noCheck --module commonjs --moduleResolution node --outDir ./dist/cjs --verbatimModuleSyntax false && printf '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
     "build:esm": "tsc --noCheck --module es2020 --moduleResolution node --outDir ./dist/esm && printf '{\"type\": \"module\",\"sideEffects\":false}' > ./dist/esm/package.json",

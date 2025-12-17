@@ -10,7 +10,7 @@ import {
 import IconPopover from '@/components/icon-popover';
 
 import type { ColumnDef } from '@tanstack/react-table';
-import type { GetCollectionTradingBoardResponse } from 'lootex/api/endpoints/collection';
+import type { GetCollectionTradingBoardResponse } from '@lootex-core/sdk/api/endpoints/collection';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

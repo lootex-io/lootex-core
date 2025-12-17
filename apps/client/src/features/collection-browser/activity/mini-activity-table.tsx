@@ -4,7 +4,7 @@ import { useModal } from '@/components/modal-manager';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { formatRelativeTime } from '@/utils/format';
-import type { OrderHistory } from 'lootex/api/endpoints/order';
+import type { OrderHistory } from '@lootex-core/sdk/api/endpoints/order';
 import { ArrowRightIcon } from 'lucide-react';
 
 export const MiniActivityTable = ({

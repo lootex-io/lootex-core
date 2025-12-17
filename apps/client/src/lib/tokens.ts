@@ -1,4 +1,4 @@
-import { NATIVE, type Token, WETH9 } from 'lootex/token';
+import { NATIVE, type Token, WETH9 } from '@lootex-core/sdk/token';
 
 export type EnhancedToken = Token & { icon: string; name: string };
 

@@ -5,10 +5,10 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { apiClient } from '@/lib/lootex';
 import { useItemsQuery } from '@/lib/use-items-query';
 import { cn } from '@/lib/utils';
-import type { OrderHistory } from 'lootex/api/endpoints/order';
-import { isErc1155Asset } from 'lootex/asset';
-import type { Asset } from 'lootex/asset';
-import type { LootexCollection } from 'lootex/collection';
+import type { OrderHistory } from '@lootex-core/sdk/api/endpoints/order';
+import { isErc1155Asset } from '@lootex-core/sdk/asset';
+import type { Asset } from '@lootex-core/sdk/asset';
+import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { useState } from 'react';
 import { columns } from './columns';
 

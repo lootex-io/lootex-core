@@ -2,8 +2,8 @@ import { useModal } from '@/components/modal-manager';
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { cn } from '@/lib/utils';
-import type { Asset } from 'lootex/asset';
-import type { LootexCollection } from 'lootex/collection';
+import type { Asset } from '@lootex-core/sdk/asset';
+import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { LayersIcon } from 'lucide-react';
 
 export const MakeOfferButton = ({

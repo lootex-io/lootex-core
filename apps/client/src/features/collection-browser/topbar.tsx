@@ -12,7 +12,7 @@ import { Toggle } from '@/components/ui/toggle';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { cn } from '@/lib/utils';
-import type { LootexCollection } from 'lootex/collection';
+import type { LootexCollection } from '@lootex-core/sdk/collection';
 import {
   ActivityIcon,
   ArrowDownUpIcon,

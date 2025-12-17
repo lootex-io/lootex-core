@@ -2,7 +2,7 @@ import { useModal } from '@/components/modal-manager';
 import { Button } from '@/components/ui/button';
 import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { cn } from '@/lib/utils';
-import type { Asset } from 'lootex/asset';
+import type { Asset } from '@lootex-core/sdk/asset';
 
 export const SellButton = ({
   asset,
