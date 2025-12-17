@@ -48,7 +48,7 @@ import { CurrencyAmount, Fraction } from '@lootex-core/sdk/utils';
 import { ChevronDownIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { useConnection } from 'wagmi';
+import { useConnection, useWalletClient } from 'wagmi';
 import { parseErc6492Signature } from 'viem';
 import { z } from 'zod';
 import { useSelectionStore } from '../collection-browser/selection-store';
@@ -89,6 +89,7 @@ export const SellModal = ({
   setIsOpen: (open: boolean) => void;
 }) => {
   const { address, connector } = useConnection();
+  const { data: walletClient } = useWalletClient();
   const account = address ? { address } : undefined;
   const { mutateAsync: sendTransactionAsync } = useSendTransaction();
   const queryClient = useQueryClient();
@@ -151,7 +152,7 @@ export const SellModal = ({
 
   const prepareCreateOrdersMutation = useMutation({
     mutationFn: async () => {
-      if (!account) {
+      if (!account || !walletClient) {
         throw new Error('No account found');
       }
 
@@ -212,8 +213,7 @@ export const SellModal = ({
           };
         }),
         accountAddress: account.address as `0x${string}`,
-        //@ts-ignore
-        walletClient: account,
+        walletClient,
       });
 
       return execution;

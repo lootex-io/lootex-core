@@ -20,7 +20,6 @@ export class Client {
   readonly isDev?: boolean;
   readonly customHeaders?: Record<string, string>;
   constructor(config: ClientConfig) {
-    console.log('local sdk config', config);
     this.baseUrl =
       config.baseUrl ??
       (config.environment === 'production'
