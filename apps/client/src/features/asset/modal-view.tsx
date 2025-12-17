@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { DialogTitle } from '@radix-ui/react-dialog';
-import type { Asset } from 'lootex/asset';
+import type { Asset } from '@lootex-core/sdk/asset';
 import { AssetTemplate } from '.';
 
 export const AssetModal = ({

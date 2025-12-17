@@ -1,0 +1,321 @@
+export const aggregatorAbi = [
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'bytes4',
+        name: 'methodID',
+        type: 'bytes4',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'oldFeature',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'newFeature',
+        type: 'address',
+      },
+    ],
+    name: 'FeatureFunctionUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferred',
+    type: 'event',
+  },
+  { stateMutability: 'payable', type: 'fallback' },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'address', name: 'nft', type: 'address' },
+          { internalType: 'uint256', name: 'id', type: 'uint256' },
+          { internalType: 'uint256', name: 'amount', type: 'uint256' },
+        ],
+        internalType: 'struct IAggregator.ERC1155Pair[]',
+        name: 'erc1155Pairs',
+        type: 'tuple[]',
+      },
+      {
+        components: [
+          { internalType: 'address', name: 'token', type: 'address' },
+          { internalType: 'uint256', name: 'amount', type: 'uint256' },
+        ],
+        internalType: 'struct IAggregator.ERC20Pair[]',
+        name: 'erc20Pairs',
+        type: 'tuple[]',
+      },
+      { internalType: 'address[]', name: 'dustTokens', type: 'address[]' },
+      { internalType: 'bytes', name: 'tradeBytes', type: 'bytes' },
+    ],
+    name: 'acceptWithERC1155',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'address', name: 'nft', type: 'address' },
+          { internalType: 'uint256', name: 'id', type: 'uint256' },
+        ],
+        internalType: 'struct IAggregator.ERC721Pair[]',
+        name: 'erc721Pairs',
+        type: 'tuple[]',
+      },
+      {
+        components: [
+          { internalType: 'address', name: 'token', type: 'address' },
+          { internalType: 'uint256', name: 'amount', type: 'uint256' },
+        ],
+        internalType: 'struct IAggregator.ERC20Pair[]',
+        name: 'erc20Pairs',
+        type: 'tuple[]',
+      },
+      { internalType: 'address[]', name: 'dustTokens', type: 'address[]' },
+      { internalType: 'bytes', name: 'tradeBytes', type: 'bytes' },
+    ],
+    name: 'acceptWithERC721',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'contract IERC1155', name: 'token', type: 'address' },
+      { internalType: 'address', name: 'operator', type: 'address' },
+      { internalType: 'bool', name: 'approved', type: 'bool' },
+    ],
+    name: 'approveERC1155',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'contract IERC20', name: 'token', type: 'address' },
+      { internalType: 'address', name: 'operator', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+    ],
+    name: 'approveERC20',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'contract IERC721', name: 'token', type: 'address' },
+      { internalType: 'address', name: 'operator', type: 'address' },
+      { internalType: 'bool', name: 'approved', type: 'bool' },
+    ],
+    name: 'approveERC721',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'address', name: 'token', type: 'address' },
+          { internalType: 'uint256', name: 'amount', type: 'uint256' },
+        ],
+        internalType: 'struct IAggregator.ERC20Pair[]',
+        name: 'erc20Pairs',
+        type: 'tuple[]',
+      },
+      { internalType: 'bytes', name: 'tradeBytes', type: 'bytes' },
+      { internalType: 'address[]', name: 'dustTokens', type: 'address[]' },
+    ],
+    name: 'batchBuyWithERC20s',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'bytes', name: 'tradeBytes', type: 'bytes' }],
+    name: 'batchBuyWithETH',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '', type: 'address' },
+      { internalType: 'address', name: '', type: 'address' },
+      { internalType: 'uint256[]', name: '', type: 'uint256[]' },
+      { internalType: 'uint256[]', name: '', type: 'uint256[]' },
+      { internalType: 'bytes', name: '', type: 'bytes' },
+    ],
+    name: 'onERC1155BatchReceived',
+    outputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '', type: 'address' },
+      { internalType: 'address', name: '', type: 'address' },
+      { internalType: 'uint256', name: '', type: 'uint256' },
+      { internalType: 'uint256', name: '', type: 'uint256' },
+      { internalType: 'bytes', name: '', type: 'bytes' },
+    ],
+    name: 'onERC1155Received',
+    outputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '', type: 'address' },
+      { internalType: 'address', name: '', type: 'address' },
+      { internalType: 'uint256', name: '', type: 'uint256' },
+      { internalType: 'bytes', name: '', type: 'bytes' },
+    ],
+    name: 'onERC721Received',
+    outputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: '', type: 'address' },
+      { internalType: 'uint256', name: '', type: 'uint256' },
+      { internalType: 'bytes', name: '', type: 'bytes' },
+    ],
+    name: 'onERC721Received',
+    outputs: [{ internalType: 'bytes4', name: '', type: 'bytes4' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'address', name: 'feature', type: 'address' },
+          { internalType: 'string', name: 'name', type: 'string' },
+          {
+            components: [
+              { internalType: 'bytes4', name: 'methodID', type: 'bytes4' },
+              { internalType: 'string', name: 'methodName', type: 'string' },
+            ],
+            internalType: 'struct LootexSwap.Method[]',
+            name: 'methods',
+            type: 'tuple[]',
+          },
+        ],
+        internalType: 'struct LootexSwap.Feature',
+        name: 'feature',
+        type: 'tuple',
+      },
+    ],
+    name: 'registerFeature',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'address', name: 'feature', type: 'address' },
+          { internalType: 'string', name: 'name', type: 'string' },
+          {
+            components: [
+              { internalType: 'bytes4', name: 'methodID', type: 'bytes4' },
+              { internalType: 'string', name: 'methodName', type: 'string' },
+            ],
+            internalType: 'struct LootexSwap.Method[]',
+            name: 'methods',
+            type: 'tuple[]',
+          },
+        ],
+        internalType: 'struct LootexSwap.Feature[]',
+        name: 'features',
+        type: 'tuple[]',
+      },
+    ],
+    name: 'registerFeatures',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'asset', type: 'address' },
+      { internalType: 'address', name: 'recipient', type: 'address' },
+    ],
+    name: 'rescueERC20',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'asset', type: 'address' },
+      { internalType: 'uint256[]', name: 'ids', type: 'uint256[]' },
+      { internalType: 'address', name: 'recipient', type: 'address' },
+    ],
+    name: 'rescueERC721',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'recipient', type: 'address' }],
+    name: 'rescueETH',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
+    name: 'supportsInterface',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'newOwner', type: 'address' }],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'bytes4[]', name: 'methodIDs', type: 'bytes4[]' }],
+    name: 'unregister',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  { stateMutability: 'payable', type: 'receive' },
+];

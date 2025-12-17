@@ -5,7 +5,7 @@ import { useModal } from '@/components/modal-manager';
 import { Checkbox } from '@/components/ui/checkbox';
 import { formatRelativeTime } from '@/utils/format';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { Asset } from 'lootex/asset';
+import type { Asset } from '@lootex-core/sdk/asset';
 import { PurchaseButton } from '../purchase/purchase-button';
 import { SellButton } from '../sell/sell-button';
 import { useSelectionStore } from './selection-store';

@@ -1,6 +1,6 @@
 import { getBlockExplorerUrl } from '@/utils/block-explorer';
-import type { Asset } from 'lootex/asset';
-import { formatAddress } from 'lootex/utils';
+import type { Asset } from '@lootex-core/sdk/asset';
+import { formatAddress } from '@lootex-core/sdk/utils';
 import { ExternalLinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { AssetAccordion } from './accordion';

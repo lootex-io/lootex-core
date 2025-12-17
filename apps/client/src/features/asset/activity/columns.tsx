@@ -4,7 +4,7 @@ import { AddressCell, ItemCell, PriceCell } from '@/components/data-cells';
 import { ViewTransactionLink } from '@/components/view-transaction-link';
 import { formatRelativeTime } from '@/utils/format';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { GetOrdersHistoryResponse } from 'lootex/api/endpoints/order';
+import type { GetOrdersHistoryResponse } from '@lootex-core/sdk/api/endpoints/order';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import type {
   GetCollectionTradingBoardParams,
   GetCollectionTradingBoardResponse,
-} from 'lootex/api/endpoints/collection';
+} from '@lootex-core/sdk/api/endpoints/collection';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { columns } from './columns';

@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useActiveTab } from '@/hooks/use-active-tab';
 import { useScreenSize } from '@/hooks/use-screen-size';
 import { useToast } from '@/hooks/use-toast';
-import { formatAddress } from 'lootex/utils';
+import { formatAddress } from '@lootex-core/sdk/utils';
 import { Copy } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useConnection } from 'wagmi';

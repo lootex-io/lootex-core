@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator';
 
 import { DropWithStatus } from './mint-schedule';
 import { useState } from 'react';
-import { LootexCollection } from 'lootex/collection';
+import { LootexCollection } from '@lootex-core/sdk/collection';
 
 export type CalendarEventParams = {
   title: string;

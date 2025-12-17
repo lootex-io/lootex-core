@@ -1,4 +1,4 @@
-import { getChain } from 'lootex/chains';
+import { getChain } from '@lootex-core/sdk/chains';
 
 export const extractTransferedTokensFromLogs = (logs: string[]) => {
   const transferLogs = logs.filter(

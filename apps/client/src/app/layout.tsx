@@ -1,7 +1,5 @@
 import { Lato } from 'next/font/google';
 import localFont from 'next/font/local';
-import Script from 'next/script';
-import { Analytics } from '@vercel/analytics/react';
 import './globals.css';
 import { ModalManager } from '@/components/modal-manager';
 import { Toaster } from '@/components/ui/toaster';
@@ -36,25 +34,10 @@ export default async function RootLayout({
     <Providers>
       <html lang="en">
         <body className={`${poetsenOne.variable} ${lato.variable} antialiased`}>
-          <Script
-            id="ga-analytics"
-            strategy="afterInteractive"
-            src="https://www.googletagmanager.com/gtag/js?id=G-F1BF8KT9R6"
-          />
-          <Script id="ga-init" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag() {dataLayer.push(arguments);}
-              window.gtag = gtag;
-              gtag('js', new Date());
-              gtag('config', 'G-F1BF8KT9R6');
-            `}
-          </Script>
           <Header />
           {children}
           <Toaster />
           <ModalManager />
-          <Analytics />
         </body>
       </html>
     </Providers>

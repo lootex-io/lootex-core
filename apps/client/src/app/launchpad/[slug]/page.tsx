@@ -1,7 +1,7 @@
 import { LaunchpadPage } from '@/features/launchpad/launchpad-page';
-import {  serverSideApiClient } from '@/lib/lootex';
+import { serverSideApiClient } from '@/lib/lootex';
 import { populateMetadata } from '@/utils/metadata';
-import type { LootexCollection } from 'lootex/collection';
+import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { notFound } from 'next/navigation';
 
 export const revalidate = 60;

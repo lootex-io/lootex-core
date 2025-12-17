@@ -1,7 +1,7 @@
 import { apiClient } from '@/lib/lootex';
 import { useQuery } from '@tanstack/react-query';
-import type { Asset } from 'lootex/asset';
-import { getChain } from 'lootex/chains';
+import type { Asset } from '@lootex-core/sdk/asset';
+import { getChain } from '@lootex-core/sdk/chains';
 
 export const useGetBestListing = ({
   asset,

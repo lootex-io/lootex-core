@@ -1,5 +1,5 @@
-import { createLootexClient } from 'lootex';
-import { createApiClient } from 'lootex/api';
+import { createLootexClient } from '@lootex-core/sdk';
+import { createApiClient } from '@lootex-core/sdk/api';
 
 export const lootex = createLootexClient({
   environment:
