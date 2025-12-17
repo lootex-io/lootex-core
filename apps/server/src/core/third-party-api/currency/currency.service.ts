@@ -42,6 +42,7 @@ export class CurrencyService {
     chainIdFn: (args) => 1,
   })
   async updateAllPriceToCacheByMulticall(): Promise<void> {
+    this.logger.log('updateAllPriceToCacheByMulticall started');
     const provider = this.rpcHandlerService.createStaticJsonRpcProvider(1);
     const multicall = new Multicall({
       ethersProvider: provider,
@@ -61,9 +62,7 @@ export class CurrencyService {
       const [decimal] = decimals.returnValues;
       const [roundId, anwser] = latestRoundData.returnValues;
       const price = ethers.utils.formatUnits(anwser.hex, decimal);
-      // this.logger.debug(`symbol = ${symbol}`);
-      // this.logger.debug(`decimal = ${decimal}`);
-      // this.logger.debug(`${symbol} price = ${price}`);
+      this.logger.log(`symbol = ${symbol}, decimal = ${decimal}, price = ${price}`);
       const cacheData: CachePrice = {
         symbol,
         price,
@@ -90,6 +89,7 @@ export class CurrencyService {
     await this.updateMJ404PriceToCache();
     await this.updateMYSTCLPriceToCache();
     await this.updateASTRPriceToCache();
+    this.logger.log('updateAllPriceToCacheByMulticall completed');
   }
 
   async getSymbolPrice(symbol: string): Promise<CachePrice> | null {

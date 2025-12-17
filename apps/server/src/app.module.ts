@@ -20,6 +20,7 @@ import { CoreModule } from '@/core/core.module';
 import { PreviewReqInfoMiddleware } from '@/common/middleware/preview-req-info.middleware';
 import { PinataModule } from '@/external/pinata/pinata.module';
 import { StudioModule } from '@/api/v3/studio/studio.module';
+import { CurrencyPriceModule } from '@/microservice/currency-price/currency.price.module';
 
 @Module({
   imports: [
@@ -87,6 +88,7 @@ import { StudioModule } from '@/api/v3/studio/studio.module';
 
     WalletModule,
     StudioModule,
+    CurrencyPriceModule,
   ],
   controllers: [AppController],
   providers: [

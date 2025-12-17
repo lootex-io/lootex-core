@@ -509,11 +509,12 @@ export class OrderService {
           eventCategory = AssetEventCategory.LIST;
         }
         const orderSymbolPrice = +(await price);
-        const symbolUsdPrice = +(
-          await this.currencyService.getSymbolPrice(
-            mainCurrency.symbol.replace(/^W/i, '') + 'USD',
-          )
-        ).price;
+        const symbolPriceCache = await this.currencyService.getSymbolPrice(
+          mainCurrency.symbol.replace(/^W/i, '') + 'USD',
+        );
+        const symbolUsdPrice = symbolPriceCache
+          ? +symbolPriceCache.price
+          : 0;
 
         assets.map((asset) => {
           seaportOrderHistory.push({

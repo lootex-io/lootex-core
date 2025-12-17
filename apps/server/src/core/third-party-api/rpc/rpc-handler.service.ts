@@ -39,6 +39,14 @@ export class RpcHandlerService {
     this.mainRpcMaps.set(chainId, [...mainUrls, ...publicUrls]);
     this.publicRpcMaps.set(chainId, [...publicUrls, ...mainUrls]);
     this.eventPollerRpcMaps.set(chainId, [...eventPollerUrls, ...publicUrls]);
+
+    // Ensure Ethereum Mainnet (Chain ID 1) is available for CurrencyService price feeds
+    if (!this.mainRpcMaps.has(1)) {
+      const ethRpc = ['https://rpc.ankr.com/eth', 'https://eth.llamarpc.com'];
+      this.mainRpcMaps.set(1, ethRpc);
+      this.publicRpcMaps.set(1, ethRpc);
+      this.eventPollerRpcMaps.set(1, ethRpc);
+    }
   }
 
   getRpcUrl(chainId: number, rpcEnd = RpcEnd.default) {
