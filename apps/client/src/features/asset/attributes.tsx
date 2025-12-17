@@ -1,4 +1,4 @@
-import type { Asset, AssetTrait } from 'lootex/asset';
+import type { Asset, AssetTrait } from '@lootex-core/sdk/asset';
 import Link from 'next/link';
 import { AssetAccordion } from './accordion';
 

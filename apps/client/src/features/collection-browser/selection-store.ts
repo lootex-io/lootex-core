@@ -1,4 +1,4 @@
-import type { Asset } from 'lootex/asset';
+import type { Asset } from '@lootex-core/sdk/asset';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 

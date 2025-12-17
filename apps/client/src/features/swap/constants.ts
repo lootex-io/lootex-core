@@ -1,5 +1,5 @@
 import { defaultChain } from '@/lib/wagmi';
-import { NATIVE, type Token, WETH9 } from 'lootex/token';
+import { NATIVE, type Token, WETH9 } from '@lootex-core/sdk/token';
 import { z } from 'zod';
 
 export const tokens: Token[] = [

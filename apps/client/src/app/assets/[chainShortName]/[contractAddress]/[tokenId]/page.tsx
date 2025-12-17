@@ -1,5 +1,5 @@
 import { AssetTemplate } from '@/features/asset';
-import {  serverSideApiClient } from '@/lib/lootex';
+import { serverSideApiClient } from '@/lib/lootex';
 import { populateMetadata } from '@/utils/metadata';
 import { notFound } from 'next/navigation';
 

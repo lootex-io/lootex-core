@@ -5,10 +5,10 @@ import InfiniteScroll from '@/components/ui/infinte-scroll';
 import { apiClient } from '@/lib/lootex';
 import { useItemsQuery } from '@/lib/use-items-query';
 import { cn } from '@/lib/utils';
-import type { OwnerAccount } from 'lootex/account';
-import { type Asset, isErc1155Asset } from 'lootex/asset';
-import { getChain } from 'lootex/chains';
-import type { LootexOrder } from 'lootex/order';
+import type { OwnerAccount } from '@lootex-core/sdk/account';
+import { type Asset, isErc1155Asset } from '@lootex-core/sdk/asset';
+import { getChain } from '@lootex-core/sdk/chains';
+import type { LootexOrder } from '@lootex-core/sdk/order';
 import { Loader2 } from 'lucide-react';
 import { columns } from './columns';
 

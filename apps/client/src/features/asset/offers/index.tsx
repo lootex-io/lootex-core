@@ -2,8 +2,8 @@
 
 import { DataTable } from '@/components/data-table';
 import { cn } from '@/lib/utils';
-import type { OwnerAccount } from 'lootex/account';
-import { type Asset, isErc1155Asset } from 'lootex/asset';
+import type { OwnerAccount } from '@lootex-core/sdk/account';
+import { type Asset, isErc1155Asset } from '@lootex-core/sdk/asset';
 import { useConnection } from 'wagmi';
 import { useGetErc1155Balance } from '../use-get-erc1155-balance';
 import { useGetOffers } from '../use-get-offers';

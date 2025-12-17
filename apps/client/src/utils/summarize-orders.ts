@@ -1,6 +1,6 @@
-import type { LootexOrder } from 'lootex/order';
-import type { Token } from 'lootex/token';
-import { CurrencyAmount } from 'lootex/utils';
+import type { LootexOrder } from '@lootex-core/sdk/order';
+import type { Token } from '@lootex-core/sdk/token';
+import { CurrencyAmount } from '@lootex-core/sdk/utils';
 
 export const summarizeOrders = (orders: LootexOrder[]) => {
   const currencyAmountsByOrders = orders.map((order) => {

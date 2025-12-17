@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiClient, lootex } from '@/lib/lootex';
 import { defaultChain } from '@/lib/wagmi';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { type Asset, batchTransfer } from 'lootex/asset';
+import { type Asset, batchTransfer } from '@lootex-core/sdk/asset';
 import { FlameIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { isAddress } from 'viem';

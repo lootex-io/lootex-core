@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { AcceptOfferButton } from '@/features/accept-offer/accept-offer-button';
 import { formatRelativeTime } from '@/utils/format';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { Asset } from 'lootex/asset';
-import type { LootexOrder } from 'lootex/order';
+import type { Asset } from '@lootex-core/sdk/asset';
+import type { LootexOrder } from '@lootex-core/sdk/order';
 import { useConnection } from 'wagmi';
 
 export const getColumns = ({

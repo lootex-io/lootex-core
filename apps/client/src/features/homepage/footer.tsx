@@ -26,11 +26,11 @@ const menu = [
     links: [
       {
         title: 'Partnership',
-        href: 'https://discord.com/channels/1318880719711244328/1333340002565881897',
+        href: '#',
       },
       {
         title: 'Support',
-        href: 'https://discord.com/channels/1318880719711244328/1333340002565881897',
+        href: '#',
       },
     ],
   },
@@ -39,7 +39,7 @@ const menu = [
     links: [
       {
         title: 'Blog',
-        href: 'https://blog.biru.gg',
+        href: '#',
       },
       {
         title: 'Privacy Policy',

@@ -1,0 +1,2 @@
+export const SERVICE_FEE_ADDRESS = '0x44bC1E612e11d0Acd2c43218Ea55717aC28e3a40';
+export const SERVICE_FEE_RATE = '2';

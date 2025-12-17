@@ -11,7 +11,7 @@ import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { useToast } from '@/hooks/use-toast';
 import { apiClient } from '@/lib/lootex';
 import { useQuery } from '@tanstack/react-query';
-import type { LootexCollection } from 'lootex/collection';
+import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { ZapIcon } from 'lucide-react';
 import { useConnection } from 'wagmi';
 import { useGetMyItems } from '../collection-browser/use-get-my-items';

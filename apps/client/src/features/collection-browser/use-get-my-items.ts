@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/lootex';
 import { useItemsQuery } from '@/lib/use-items-query';
-import type { Asset } from 'lootex/asset';
+import type { Asset } from '@lootex-core/sdk/asset';
 
 export const useGetMyItems = ({
   chainId,
