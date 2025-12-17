@@ -46,7 +46,7 @@ import { AlertCircle } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { parseErc6492Signature, formatUnits } from 'viem';
-import { useConnection, useBalance } from 'wagmi';
+import { useConnection, useBalance, useWalletClient } from 'wagmi';
 import { z } from 'zod';
 import { useSelectionStore } from '../collection-browser/selection-store';
 import { SwapButton } from '../swap/swap-button';
@@ -88,6 +88,7 @@ export const MakeOfferModal = ({
     : asset?.assetImageUrl;
 
   const { address } = useConnection();
+  const { data: walletClient } = useWalletClient();
   const account = address ? { address } : undefined;
   const queryClient = useQueryClient();
   const chain = getChain(
@@ -158,7 +159,7 @@ export const MakeOfferModal = ({
 
   const prepareCreateOrdersMutation = useMutation({
     mutationFn: async () => {
-      if (!account) {
+      if (!account || !walletClient) {
         throw new Error('No account found');
       }
 
@@ -217,8 +218,7 @@ export const MakeOfferModal = ({
           },
         ],
         accountAddress: account.address as `0x${string}`,
-        //@ts-ignore
-        walletClient: account,
+        walletClient,
       });
 
       return execution;
