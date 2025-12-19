@@ -112,17 +112,6 @@ export const Header = ({ data }: { data: LootexCollection }) => {
                 className="max-w-[160px] sm:max-w-[340px] md:max-w-none"
                 showMintingTag
               />
-              {data.isMinting && (
-                <Badge
-                  className="cursor-pointer"
-                  variant="success"
-                  onClick={() => {
-                    router.push(`/launchpad/${data.slug}`);
-                  }}
-                >
-                  Minting
-                </Badge>
-              )}
             </div>
             <Button
               className="md:hidden flex-shrink-0"

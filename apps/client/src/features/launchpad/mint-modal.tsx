@@ -20,7 +20,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import confetti from 'canvas-confetti';
 import type { Asset } from '@lootex-core/sdk/asset';
 import type { LootexCollection } from '@lootex-core/sdk/collection';
-import { type GetDropResult, type PrepareMintResult, mint } from '@lootex-core/sdk/drop';
+import {
+  type GetDropResult,
+  type PrepareMintResult,
+  mint,
+} from '@lootex-core/sdk/drop';
 import type { CurrencyAmount } from '@lootex-core/sdk/utils';
 import { AlertCircle } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';

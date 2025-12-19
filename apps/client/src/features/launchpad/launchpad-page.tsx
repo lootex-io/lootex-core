@@ -2,7 +2,10 @@
 
 import { Button } from '@/components/ui/button';
 import type { GetCollectionDropInfoResponse } from '@lootex-core/sdk/api/endpoints/collection';
-import type { ExternalLink, LootexCollection } from '@lootex-core/sdk/collection';
+import type {
+  ExternalLink,
+  LootexCollection,
+} from '@lootex-core/sdk/collection';
 import { ExternalLinkIcon, GlobeIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 

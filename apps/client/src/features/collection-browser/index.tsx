@@ -15,7 +15,6 @@ import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { useEffect } from 'react';
 import { useConnection } from 'wagmi';
 import InstantSellButton from '../accept-offer/instant-sell-button';
-import UtilityBar from '../launchpad/utility-bar';
 import { MakeOfferButton } from '../make-offer/make-offer-button';
 import { Activity } from './activity/activity';
 import { useUiStore } from './browser-store';
