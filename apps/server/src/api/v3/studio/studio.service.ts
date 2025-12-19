@@ -2,17 +2,22 @@ import {
   Inject,
   Injectable,
 } from '@nestjs/common';
-import { GetLaunchpadListDTO } from './studio.dto';
+import { GetLaunchpadListDTO, BiruMintLogPaginationDto } from './studio.dto';
 import { LaunchpadContracts } from './studio.interface';
 import { ProviderTokens } from '@/model/providers';
 import { Sequelize } from 'sequelize-typescript';
 import { QueryTypes } from 'sequelize';
 
+import { InjectModel } from '@nestjs/sequelize';
+import { BiruPointHistory } from '@/model/entities/biru/biru-point-history.entity';
+import { pagination } from '@/common/utils/pagination';
 @Injectable()
 export class StudioService {
   constructor(
     @Inject(ProviderTokens.Sequelize)
     private readonly sequelizeInstance: Sequelize,
+    @InjectModel(BiruPointHistory)
+    private biruPointHistoryRepository: typeof BiruPointHistory,
   ) { }
 
   async getLaunchpadContracts(
@@ -137,6 +142,25 @@ export class StudioService {
     return {
       rows: launchpadStudioContracts,
       count: count[0].count,
+    };
+  }
+
+  async getContractMintLog(dto: BiruMintLogPaginationDto) {
+    const limit = dto.limit;
+    const offset = (dto.page - 1) * dto.limit;
+    const { rows, count } =
+      await this.biruPointHistoryRepository.findAndCountAll({
+        where: {
+          contractAddress: dto.contractAddress,
+          ...(dto.tokenId && { startTokenId: dto.tokenId }), // 有 startTokenId 才查
+        },
+        limit: limit,
+        offset: offset,
+        order: [['claimedAt', 'desc']],
+      });
+    return {
+      items: rows,
+      pagination: pagination(count, dto.page, limit),
     };
   }
 }

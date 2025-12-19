@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {
   useConnect,
@@ -185,6 +185,11 @@ export const ConnectButton = ({
   const connect = useConnect();
   const disconnect = useDisconnect();
   const [open, setOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleDisconnect = () => {
     disconnect.mutate();
@@ -212,7 +217,7 @@ export const ConnectButton = ({
           ...connectButtonStyle,
         }}
       >
-        {isConnected
+        {isMounted && isConnected
           ? `${address?.slice(0, 6)}...${address?.slice(-4)}`
           : buttonText || 'Connect Wallet'}
       </button>

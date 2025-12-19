@@ -13,7 +13,7 @@ import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { getDrop, prepareMint } from '@lootex-core/sdk/drop';
 import { CurrencyAmount } from '@lootex-core/sdk/utils';
 import { MinusIcon, PlusIcon } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useConnection } from 'wagmi';
 import { MintModal } from './mint-modal';
 
@@ -27,7 +27,13 @@ export const MintBox = ({
   drop?: GetCollectionDropInfoResponse;
 }) => {
   const { address } = useConnection();
-  const account = address ? { address } : undefined;
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const account = isMounted && address ? { address } : undefined;
   const [quantity, setQuantity] = useState(1);
   const [isMintModalOpen, setIsMintModalOpen] = useState(false);
   const queryClient = useQueryClient();

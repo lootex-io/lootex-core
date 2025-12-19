@@ -5,6 +5,7 @@ import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -30,4 +31,14 @@ export class GetLaunchpadListDTO extends BasePaginationDto {
   @IsArray()
   @IsOptional()
   sortOrder: string[];
+}
+
+export class BiruMintLogPaginationDto extends BasePaginationDto {
+  @IsNotEmpty()
+  @IsString()
+  contractAddress: string;
+
+  @IsString()
+  @IsOptional()
+  tokenId: string;
 }
