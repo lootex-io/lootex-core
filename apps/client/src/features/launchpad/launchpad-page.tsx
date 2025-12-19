@@ -173,9 +173,11 @@ export const LaunchpadPage = ({
                 variant="secondary"
               />
               <Link href={`/collections/${collection?.slug}`} target="_blank">
-                <Button className="font-brand" variant="outline">
-                  View Collection
-                  <ExternalLinkIcon className="w-4 h-4" />
+                <Button className="font-brand" variant="outline" asChild>
+                  <span>
+                    View Collection
+                    <ExternalLinkIcon className="ml-2 w-4 h-4" />
+                  </span>
                 </Button>
               </Link>
             </div>

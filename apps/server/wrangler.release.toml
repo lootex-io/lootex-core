@@ -1,0 +1,10 @@
+name = "blue-butterfly-5b7e"
+main = "scripts/routes.js"
+
+account_id = "428f2588ad08b3ef1e44b4a80ca23263"
+workers_dev = true
+compatibility_date = "2024-08-28"
+
+[env.production]
+zone_id = "92bf2623a2cbf8ccc52c649f173f9ba8"
+route = "v3-api.lootex.io/*"

@@ -1,22 +1,25 @@
+import { ConfigurationModule } from './configuration';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from '@/app.controller';
 
 describe('AppController', () => {
   let appController: AppController;
 
+  const buildId = 'test-build-id';
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
+      imports: [ConfigurationModule],
       controllers: [AppController],
-      providers: [AppService],
     }).compile();
 
+    process.env.BUILD_ID = buildId;
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+  describe('getHealth', () => {
+    it('should return "build id"', () => {
+      expect(appController.version()).toStrictEqual({ build: buildId });
     });
   });
 });
