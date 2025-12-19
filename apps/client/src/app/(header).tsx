@@ -57,11 +57,6 @@ export const Header = () => {
               Collections
             </Link>
           </Button>
-          <Button variant="ghost" asChild>
-            <Link href="/launchpad" className="font-brand">
-              Launchpad
-            </Link>
-          </Button>
           <DropdownMenu
             // important! modal mode will block pointer-event when swap modal closed
             modal={false}
@@ -131,15 +126,6 @@ export const Header = () => {
               >
                 <Link href="/collections" className="font-brand">
                   Collections
-                </Link>
-              </Button>
-              <Button
-                variant="ghost"
-                asChild
-                onClick={() => setIsSheetOpen(false)}
-              >
-                <Link href="/launchpad" className="font-brand">
-                  Launchpad
                 </Link>
               </Button>
               <Button

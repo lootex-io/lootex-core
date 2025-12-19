@@ -77,33 +77,6 @@ export const launchpadData = {
       countdown: null,
       live: false,
     },
-    {
-      id: 'Q4ohoNZpTdCilLwVgPfc0A',
-      title: '',
-      description: '',
-      backgroundImage: {
-        url: 'https://www.datocms-assets.com/147800/1750757164-hero-banner_desktop-1.png',
-      },
-      backgroundImageMobile: {
-        url: 'https://www.datocms-assets.com/147800/1750757186-hero-banner_mobile-1.png',
-      },
-      sourceType: 'custom',
-      launchpadSlug: '',
-      actions: [
-        {
-          id: 'ZTsP4kfyQ7SMYDp4YEwgYQ',
-          text: 'Mint Now',
-          url: '/launchpad/soneium:0xb05a0ab9673896e427df4977ce4a9c913a9478de',
-        },
-        {
-          id: 'eMTQjgYfT0O9TlQcYMa6zw',
-          text: 'Play Now ↗ ',
-          url: 'https://lin.ee/P3f0Kqx',
-        },
-      ],
-      countdown: null,
-      live: false,
-    },
   ],
 };
 
@@ -192,33 +165,6 @@ export const homepageData: HomepageType = {
           id: 'fhvbCo_GQyeb6VjOm_e2Wg',
           text: 'Learn More ↗ ',
           url: 'https://blog.biru.gg/fizzpop-game-guide/',
-        },
-      ],
-      countdown: null,
-      live: false,
-    },
-    {
-      id: 'Q4ohoNZpTdCilLwVgPfc0A',
-      title: '',
-      description: '',
-      backgroundImage: {
-        url: 'https://www.datocms-assets.com/147800/1750757164-hero-banner_desktop-1.png',
-      },
-      backgroundImageMobile: {
-        url: 'https://www.datocms-assets.com/147800/1750757186-hero-banner_mobile-1.png',
-      },
-      sourceType: 'custom',
-      launchpadSlug: '',
-      actions: [
-        {
-          id: 'ZTsP4kfyQ7SMYDp4YEwgYQ',
-          text: 'Mint Now',
-          url: '/launchpad/soneium:0xb05a0ab9673896e427df4977ce4a9c913a9478de',
-        },
-        {
-          id: 'eMTQjgYfT0O9TlQcYMa6zw',
-          text: 'Play Now ↗ ',
-          url: 'https://lin.ee/P3f0Kqx',
         },
       ],
       countdown: null,

@@ -15,10 +15,6 @@ const menu = [
         title: 'Collections',
         href: '/collections',
       },
-      {
-        title: 'Launchpad',
-        href: '/launchpad',
-      },
     ],
   },
   {
@@ -53,11 +49,7 @@ const menu = [
   },
 ];
 
-export const Footer = ({
-  homepage,
-}: {
-  homepage: HomepageType;
-}) => {
+export const Footer = ({ homepage }: { homepage: HomepageType }) => {
   const renderTagline = () => (
     <div className="flex flex-col gap-4 md:max-w-[480px]">
       <Image src={biruLogo} alt="Biru" width={120} height={40} />
