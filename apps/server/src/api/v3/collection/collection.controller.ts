@@ -464,7 +464,6 @@ export class CollectionController {
     @Param('slug') slug: string,
     @Query('tokenId') tokenId?: string,
   ) {
-    // return await this.collectionService.getDropInfo(slug, tokenId);
-    return null;
+    return await this.collectionService.getDropInfo(slug, tokenId);
   }
 }

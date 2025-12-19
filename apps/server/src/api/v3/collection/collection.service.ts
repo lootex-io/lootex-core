@@ -33,6 +33,8 @@ import {
   AssetTraits,
   TradingRecordLog,
   CollectionTradingData,
+  StudioContract,
+  StudioContractDrop,
 } from '@/model/entities';
 import { FindResponse } from '@/api/v3/asset/asset.interface';
 import {
@@ -61,6 +63,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ProviderTokens } from '@/model/providers';
 import { logRunDuration } from '@/common/decorator/log-run-duration.decorator';
 import { BlockStatus } from '@/model/entities/constant-model';
+import { ContractStatus } from '@/api/v3/studio/studio.interface';
 import { CollectionDao } from '@/core/dao/collection-dao';
 import escapeString from 'escape-sql-string';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
@@ -158,6 +161,9 @@ export class CollectionService implements OnModuleDestroy {
 
     @InjectModel(CollectionTradingData)
     private collectionTradingDataRepository: typeof CollectionTradingData,
+
+    @InjectModel(StudioContract)
+    private studioContractRepository: typeof StudioContract,
 
     @Inject(ProviderTokens.Sequelize)
     private readonly sequelizeInstance: Sequelize,
@@ -3186,5 +3192,133 @@ export class CollectionService implements OnModuleDestroy {
     }
 
     return null;
+  }
+
+  async getDropInfo(slug: string, tokenId?: string) {
+    const collection = await this.collectionRepository.findOne({
+      attributes: ['id', 'slug', 'contractAddress', 'chainId', 'block'],
+      where: {
+        slug,
+      },
+    });
+
+    if (!collection) {
+      throw SimpleException.fail({ debug: 'collection not found' });
+    }
+
+    if (collection.block === BlockStatus.BLOCKED) {
+      throw SimpleException.fail({ debug: 'collection is blocked' });
+    }
+
+    const contract = await this.studioContractRepository.findOne({
+      attributes: [
+        'id',
+        'name',
+        'address',
+        'dropName',
+        'dropDescription',
+        'dropUrls',
+        'schemaName',
+      ],
+      where: {
+        chainId: collection.chainId,
+        address: collection.contractAddress,
+      },
+      include: [
+        {
+          model: StudioContractDrop,
+          attributes: [
+            'id',
+            'allowlist',
+            'amount',
+            'price',
+            'currencyId',
+            'startTime',
+            'limitPerWallet',
+            'tokenId',
+          ],
+          // 如果有 tokenId 就用 tokenId 查詢
+          where: tokenId ? { tokenId } : {},
+          include: [
+            {
+              model: Currency,
+              attributes: ['symbol', 'address', 'decimals'],
+            },
+          ],
+          order: [['startTime', 'ASC']], // 按 startTime 排序
+          separate: true, // 單獨查詢以實現排序
+        },
+      ],
+    });
+
+    if (!contract) {
+      throw SimpleException.fail({ debug: 'contract not found' });
+    }
+
+    // 如果用戶在拿 collection drop 的時候，drop 還沒開始，就把狀態改成 Sale
+    if (contract.drops && contract.drops.length > 0 && new Date() > contract.drops[0].startTime) {
+      contract.status = ContractStatus.Sale;
+      await contract.save();
+    }
+
+    return {
+      contract,
+    };
+  }
+
+  @Cacheable({ key: 'collection:autoUpdate:isMintingTag', seconds: 60 })
+  async autoUpdateIsMintingTag(contractAddress: string, chainId: string) {
+    const studioContract = await this.studioContractRepository.findOne({
+      attributes: ['id', 'status'],
+      where: {
+        address: contractAddress,
+        chainId,
+      },
+    });
+
+    // 確保不是用 studio 的 contract 不會被影響（像是合作 minting 的 contract）
+    if (!studioContract) {
+      this.logger.debug(
+        `[autoUpdateIsMintingTag] studioContract not found ${contractAddress}:${chainId}`,
+      );
+      return;
+    }
+
+    const collection = await this.collectionRepository.findOne({
+      where: {
+        contractAddress,
+        chainId,
+      },
+    });
+    if (
+      studioContract.status === ContractStatus.Sale &&
+      !collection.isMinting
+    ) {
+      if (!collection) {
+        throw new Error('[autoUpdateIsMintingTag] collection not found');
+      }
+
+      collection.isMinting = true;
+      await collection.save();
+
+      this.logger.debug(
+        `[autoUpdateIsMintingTag] update collection ${collection.id} isMinting to true`,
+      );
+      return;
+    }
+
+    if (studioContract.status !== ContractStatus.Sale && collection.isMinting) {
+      if (!collection) {
+        throw new Error('[autoUpdateIsMintingTag] collection not found');
+      }
+
+      collection.isMinting = false;
+      await collection.save();
+
+      this.logger.debug(
+        `[autoUpdateIsMintingTag] update collection ${collection.id} isMinting to false`,
+      );
+      return;
+    }
   }
 }
