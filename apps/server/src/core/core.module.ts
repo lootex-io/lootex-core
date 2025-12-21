@@ -26,26 +26,18 @@ import { OrderDao } from '@/core/dao/order-dao';
 import { LogService } from '@/core/log/log.service';
 
 import { providers } from '@/model/providers';
-import { GpDao } from '@/core/dao/gp-dao';
 import { AggregatorCoreDao } from '@/core/aggregator-core/aggregator-core-dao/aggregator-core-dao';
 
 import { EventPollerDao } from '@/core/dao/event-poller.dao';
-import { GpPoolDao } from '@/core/dao/gp-pool-dao';
 import { MoralisNftApiService } from '@/core/third-party-api/moralis/moralis-nft-api.service';
 import { AlchemyNftApiService } from '@/core/third-party-api/alchemy/alchemy-nft-api.service';
 import { NftscanNftApiService } from '@/core/third-party-api/nftscan/nftscan-nft-api.service';
-import { TradeRewardRuleDao } from '@/core/dao/trade-reward/trade-reward-rule-dao';
-import { TradeRewardHistoryDao } from '@/core/dao/trade-reward/trade-reward-history-dao';
-import { TradeRewardStatsDao } from '@/core/dao/trade-reward/trade-reward-stats-dao';
 
 import { SdkApiKeyService } from '@/core/sdk/service/sdk-api-key.service';
 import { SdkEnvService } from '@/core/sdk/service/sdk-env.service';
-import { BiruPointDao } from '@/core/dao/biru-point-dao';
 import { BullModule } from '@nestjs/bull';
 import { BullQueueModule } from '@/core/bull-queue/bull-queue.module';
 import { OrderQueueService } from '@/core/bull-queue/queue/order-queue.service';
-import { StakeParamsDao } from '@/core/dao/stake/stake-params-dao';
-import { StakeDao } from '@/core/dao/stake/stake-dao';
 
 interface CoreOptions {
   dbPoolMax?: number;
@@ -59,7 +51,7 @@ interface CoreOptions {
 export class CoreModule {
   private tag = CoreModule.name;
 
-  constructor() { }
+  constructor() {}
 
   static forRoot(options?: CoreOptions) {
     options = {
@@ -174,20 +166,12 @@ export class CoreModule {
         CWLogService,
         LogService,
         AggregatorCoreDao,
-        GpDao,
 
         EventPollerDao,
-        GpPoolDao,
-        TradeRewardRuleDao,
-        TradeRewardHistoryDao,
-        TradeRewardStatsDao,
         SdkApiKeyService,
         SdkEnvService,
 
-        BiruPointDao,
         OrderQueueService,
-        StakeParamsDao,
-        StakeDao,
         // CoreConsumer,
         ...providers,
       ],
@@ -212,22 +196,14 @@ export class CoreModule {
         MoralisNftApiService,
         AlchemyNftApiService,
         NftscanNftApiService,
-        GpDao,
         AggregatorCoreDao,
 
         EventPollerDao,
         EventPollerDao,
-        GpPoolDao,
-        TradeRewardRuleDao,
-        TradeRewardHistoryDao,
-        TradeRewardStatsDao,
         SdkApiKeyService,
         SdkEnvService,
 
-        BiruPointDao,
         OrderQueueService,
-        StakeParamsDao,
-        StakeDao,
       ],
     };
   }

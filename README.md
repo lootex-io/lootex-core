@@ -55,6 +55,11 @@ pnpm build --filter=@lootex-core/client
 pnpm build --filter=@lootex-core/server
 ```
 
+## Database Migration
+```sh
+goose -dir db/migrations postgres "postgres://{app_user}:{app_password}@localhost:5432/dex-mainnet?sslmode=disable" up
+```
+
 ## Scripts
 
 - `pnpm dev` - Start all apps in development mode
@@ -69,3 +74,4 @@ pnpm build --filter=@lootex-core/server
 - **Package Manager**: pnpm
 - **Frontend**: Next.js, React, TypeScript, Tailwind CSS
 - **Backend**: NestJS, TypeScript
+- **Database**: PostgreSql, Goose Migration
