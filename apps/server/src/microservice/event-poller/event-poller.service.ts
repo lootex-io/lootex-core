@@ -73,7 +73,6 @@ import { WalletService } from '@/api/v3/wallet/wallet.service';
 import { EventPollerDao } from '@/core/dao/event-poller.dao';
 
 import { TRANSFER_TOPIC0 } from '@/api/v3/wallet/constants';
-import { TradeRewardHistoryDao } from '@/core/dao/trade-reward/trade-reward-history-dao';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
 import { Cacheable } from '@/common/decorator/cacheable.decorator';
 import { RpcEnd } from '@/core/third-party-api/rpc/interfaces';
@@ -148,10 +147,6 @@ export class EventPollerService {
     private cacheService: CacheService,
 
     private walletService: WalletService,
-
-
-
-    private tradeRewardHistoryDao: TradeRewardHistoryDao,
 
     private gatewayService: GatewayService,
 
@@ -707,7 +702,7 @@ export class EventPollerService {
         if (
           bestCollectionOffer.hasBestCollectionOrder &&
           bestCollectionOffer.bestSeaportOrder.hash?.toLowerCase() ===
-          orderHash?.toLowerCase()
+            orderHash?.toLowerCase()
         ) {
           const newBestCollectionOffer =
             await this.orderService.getBestCollectionOffer(
@@ -909,7 +904,7 @@ export class EventPollerService {
             log.address.toLowerCase() === item.token.toLowerCase() &&
             // to address is in AggregatorAddresses
             '0x' + log.topics[2].slice(26) ===
-            AggregatorAddresses[chainId].toLowerCase() &&
+              AggregatorAddresses[chainId].toLowerCase() &&
             ethers.BigNumber.from(log.topics[3]).eq(item.identifier)
           );
         });
@@ -1034,7 +1029,7 @@ export class EventPollerService {
         if (
           bestCollectionOffer.hasBestCollectionOrder &&
           bestCollectionOffer.bestSeaportOrder?.hash?.toLowerCase() ===
-          orderFulfilledResponse.orderHash?.toLowerCase()
+            orderFulfilledResponse.orderHash?.toLowerCase()
         ) {
           const newBestCollectionOffer =
             await this.orderService.getBestCollectionOffer(
@@ -1262,8 +1257,8 @@ export class EventPollerService {
     // if WETH need to replace to ETH, because CurrencyService don't have warped token price
     const symbolUsd = currencySymbol
       ? await this.thirdPartyCurrencyService.getSymbolPrice(
-        currencySymbol.replace(/^W/i, '') + 'USD',
-      )
+          currencySymbol.replace(/^W/i, '') + 'USD',
+        )
       : null;
     const symbolUsdPrice = symbolUsd ? symbolUsd.price : 0;
     const orderUsdPrice = orderPrice.multipliedBy(symbolUsdPrice);
@@ -1361,16 +1356,6 @@ export class EventPollerService {
           totalServiceFeeUsdPrice =
             totalServiceFeeUsdPrice.plus(serviceFeeUsdPrice);
         }
-      }
-
-      if (totalServiceFeeUsdPrice.toNumber() > 0) {
-        await this.tradeRewardHistoryDao.createHistory({
-          chainId: chainId,
-          txHash: txHash,
-          tradePrice: totalOrderUsdPrice.toNumber(),
-          serviceFeePrice: totalServiceFeeUsdPrice.toNumber(),
-          wallet: toAddress,
-        });
       }
     }
   }
@@ -1679,7 +1664,7 @@ export class EventPollerService {
       quantity = orderFulfilledResponse.offer[0].amount;
       contractType =
         dbOrder.SeaportOrderAssets[0].itemType === 2 ||
-          dbOrder.SeaportOrderAssets[0].itemType === 4
+        dbOrder.SeaportOrderAssets[0].itemType === 4
           ? ContractType.ERC721
           : ContractType.ERC1155;
     } else if (dbOrder.category === Category.OFFER) {
@@ -1689,7 +1674,7 @@ export class EventPollerService {
       quantity = orderFulfilledResponse.consideration[0].amount;
       contractType =
         dbOrder.SeaportOrderAssets[0].itemType === 2 ||
-          dbOrder.SeaportOrderAssets[0].itemType === 4
+        dbOrder.SeaportOrderAssets[0].itemType === 4
           ? ContractType.ERC721
           : ContractType.ERC1155;
     }
@@ -1855,6 +1840,4 @@ export class EventPollerService {
       };
     }
   }
-
-
 }
