@@ -33,7 +33,6 @@ import { MoralisNftApiService } from '@/core/third-party-api/moralis/moralis-nft
 import { AlchemyNftApiService } from '@/core/third-party-api/alchemy/alchemy-nft-api.service';
 import { NftscanNftApiService } from '@/core/third-party-api/nftscan/nftscan-nft-api.service';
 
-import { SdkApiKeyService } from '@/core/sdk/service/sdk-api-key.service';
 import { SdkEnvService } from '@/core/sdk/service/sdk-env.service';
 import { BullModule } from '@nestjs/bull';
 import { BullQueueModule } from '@/core/bull-queue/bull-queue.module';
@@ -168,7 +167,6 @@ export class CoreModule {
         AggregatorCoreDao,
 
         EventPollerDao,
-        SdkApiKeyService,
         SdkEnvService,
 
         OrderQueueService,
@@ -199,8 +197,6 @@ export class CoreModule {
         AggregatorCoreDao,
 
         EventPollerDao,
-        EventPollerDao,
-        SdkApiKeyService,
         SdkEnvService,
 
         OrderQueueService,

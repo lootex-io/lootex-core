@@ -124,7 +124,6 @@ import { getAddress } from 'ethers/lib/utils';
 import { SimpleException } from '@/common/utils/simple.util';
 import { SdkEnvService } from '@/core/sdk/service/sdk-env.service';
 import { SdkEnv } from '@/core/sdk/constants/env-constants';
-import { SdkApiKeyService } from '@/core/sdk/service/sdk-api-key.service';
 import {
   createPublicClient,
   defineChain,
@@ -212,14 +211,12 @@ export class OrderService {
 
     private collectionService: CollectionService,
 
-    private sdkApiKeyService: SdkApiKeyService,
-
     private readonly rpcHandlerService: RpcHandlerService,
 
     private readonly cacheService: CacheService,
 
     private readonly logService: LogService,
-  ) { }
+  ) {}
 
   /**
    * @async
@@ -512,9 +509,7 @@ export class OrderService {
         const symbolPriceCache = await this.currencyService.getSymbolPrice(
           mainCurrency.symbol.replace(/^W/i, '') + 'USD',
         );
-        const symbolUsdPrice = symbolPriceCache
-          ? +symbolPriceCache.price
-          : 0;
+        const symbolUsdPrice = symbolPriceCache ? +symbolPriceCache.price : 0;
 
         assets.map((asset) => {
           seaportOrderHistory.push({
@@ -530,7 +525,6 @@ export class OrderService {
             usdPrice: orderSymbolPrice * symbolUsdPrice,
             fromAddress: order.offerer.toLowerCase(),
             hash: order.hash,
-            sdkApiKeyId: this.sdkApiKeyService.getIdByKey(options.apiKey),
           });
         });
 
@@ -2091,14 +2085,14 @@ export class OrderService {
         },
         include: options.chainId
           ? [
-            {
-              attributes: [],
-              model: Asset,
-              where: {
-                chainId: options.chainId,
+              {
+                attributes: [],
+                model: Asset,
+                where: {
+                  chainId: options.chainId,
+                },
               },
-            },
-          ]
+            ]
           : [],
       })
     ).map((asset) => asset.assetId);
@@ -2244,35 +2238,42 @@ export class OrderService {
         ${options.category ? `AND seaport_order_history.category IN (:category)` : ''}
         ${options.toAddress ? 'AND seaport_order_history.to_address = :toAddress' : ''}
         ${options.fromAddress ? 'AND seaport_order_history.from_address = :fromAddress' : ''}
-        ${options.userAddress
-        ? 'AND (seaport_order_history.to_address = :userAddress OR seaport_order_history.from_address = :userAddress)'
-        : ''
-      }
-        ${options.contractAddress
-        ? 'AND seaport_order_history.contract_address = :contractAddress'
-        : ''
-      }
-        ${options.tokenId
-        ? `AND seaport_order_history.token_id = :tokenId AND seaport_order_history.category != 'collection_offer'`
-        : ''
-      }
+        ${
+          options.userAddress
+            ? 'AND (seaport_order_history.to_address = :userAddress OR seaport_order_history.from_address = :userAddress)'
+            : ''
+        }
+        ${
+          options.contractAddress
+            ? 'AND seaport_order_history.contract_address = :contractAddress'
+            : ''
+        }
+        ${
+          options.tokenId
+            ? `AND seaport_order_history.token_id = :tokenId AND seaport_order_history.category != 'collection_offer'`
+            : ''
+        }
         ${options.chainId ? 'AND seaport_order_history.chain_id = :chainId' : ''}
-        ${options.recentDays
-        ? 'AND seaport_order_history.start_time >= :recentDays'
-        : ''
-      }
-        ${options.startTimeGt
-        ? 'AND seaport_order_history.start_time > :startTimeGt'
-        : ''
-      }
-        ${options.startTimeLt
-        ? 'AND seaport_order_history.start_time < :startTimeLt'
-        : ''
-      }
-        ${options.platformType
-        ? 'AND seaport_order_history.platform_type = :platformType'
-        : ''
-      }
+        ${
+          options.recentDays
+            ? 'AND seaport_order_history.start_time >= :recentDays'
+            : ''
+        }
+        ${
+          options.startTimeGt
+            ? 'AND seaport_order_history.start_time > :startTimeGt'
+            : ''
+        }
+        ${
+          options.startTimeLt
+            ? 'AND seaport_order_history.start_time < :startTimeLt'
+            : ''
+        }
+        ${
+          options.platformType
+            ? 'AND seaport_order_history.platform_type = :platformType'
+            : ''
+        }
       ORDER BY seaport_order_history.created_at DESC
       LIMIT :limit
       OFFSET :offset
@@ -2346,24 +2347,29 @@ export class OrderService {
         ${options.category ? `AND seaport_order_history.category IN (:category)` : ''}
         ${options.toAddress ? 'AND to_address = :toAddress' : ''}
         ${options.fromAddress ? 'AND from_address = :fromAddress' : ''}
-        ${options.userAddress
-        ? 'AND (to_address = :userAddress OR from_address = :userAddress)'
-        : ''
-      }
-        ${options.contractAddress
-        ? 'AND seaport_order_history.contract_address = :contractAddress'
-        : ''
-      }
-        ${options.tokenId
-        ? `AND seaport_order_history.token_id = :tokenId AND seaport_order_history.category != 'collection_offer'`
-        : ''
-      }
-        ${options.chainId ? 'AND seaport_order_history.chain_id = :chainId' : ''
-      }
-        ${options.recentDays
-        ? 'AND seaport_order_history.created_at >= :recentDays'
-        : ''
-      }
+        ${
+          options.userAddress
+            ? 'AND (to_address = :userAddress OR from_address = :userAddress)'
+            : ''
+        }
+        ${
+          options.contractAddress
+            ? 'AND seaport_order_history.contract_address = :contractAddress'
+            : ''
+        }
+        ${
+          options.tokenId
+            ? `AND seaport_order_history.token_id = :tokenId AND seaport_order_history.category != 'collection_offer'`
+            : ''
+        }
+        ${
+          options.chainId ? 'AND seaport_order_history.chain_id = :chainId' : ''
+        }
+        ${
+          options.recentDays
+            ? 'AND seaport_order_history.created_at >= :recentDays'
+            : ''
+        }
     `,
       {
         replacements: {
@@ -2570,17 +2576,17 @@ export class OrderService {
         const isApprovedForAll =
           asset.itemType == 2
             ? await this.gatewayService.nativeGetERC721IsApprovedForAll(
-              chainId,
-              asset.token,
-              dbOrder.offerer,
-              exchangeAddress,
-            )
+                chainId,
+                asset.token,
+                dbOrder.offerer,
+                exchangeAddress,
+              )
             : await this.gatewayService.nativeGetERC1155IsApprovedForAll(
-              chainId,
-              asset.token,
-              dbOrder.offerer,
-              exchangeAddress,
-            );
+                chainId,
+                asset.token,
+                dbOrder.offerer,
+                exchangeAddress,
+              );
         if (!isApprovedForAll) {
           isFillable = false;
           debugMessage.push(
@@ -2591,7 +2597,7 @@ export class OrderService {
         asset.itemType > 1 &&
         dbOrder.platformType == 1 &&
         dbOrder.conduitKey ==
-        '0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000'
+          '0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000'
       ) {
         // NFT
         // item type 2: ERC721
@@ -2599,17 +2605,17 @@ export class OrderService {
         const isApprovedForAll =
           asset.itemType == 2
             ? await this.gatewayService.nativeGetERC721IsApprovedForAll(
-              chainId,
-              asset.token,
-              dbOrder.offerer,
-              '0x1e0049783f008a0085193e00003d00cd54003c71',
-            )
+                chainId,
+                asset.token,
+                dbOrder.offerer,
+                '0x1e0049783f008a0085193e00003d00cd54003c71',
+              )
             : await this.gatewayService.nativeGetERC1155IsApprovedForAll(
-              chainId,
-              asset.token,
-              dbOrder.offerer,
-              '0x1e0049783f008a0085193e00003d00cd54003c71',
-            );
+                chainId,
+                asset.token,
+                dbOrder.offerer,
+                '0x1e0049783f008a0085193e00003d00cd54003c71',
+              );
         if (!isApprovedForAll) {
           isFillable = false;
           debugMessage.push(
@@ -3070,7 +3076,7 @@ export class OrderService {
         if (log.topics[0] == FUSIONX_V3_SWAP_TOPIC0) {
           if (
             log.address.toLowerCase() !==
-            FUSIONX_V3_FRENS_WMNT_POOL_ADDRESS.toLowerCase() &&
+              FUSIONX_V3_FRENS_WMNT_POOL_ADDRESS.toLowerCase() &&
             dto.data.type !== 'swap'
           ) {
             return `unsupported FusionX v3 swap`;
@@ -3433,10 +3439,10 @@ export class OrderService {
       const cacheKey = `collection:best:collection_offer:${slug}`;
       const cache:
         | {
-          hasBestCollectionOrder: boolean;
-          bestSeaportOrder: SeaportOrder;
-          priceSymbol: string;
-        }
+            hasBestCollectionOrder: boolean;
+            bestSeaportOrder: SeaportOrder;
+            priceSymbol: string;
+          }
         | undefined = await this.cacheService.getCache(cacheKey);
 
       if (cache && !force) {
@@ -3747,8 +3753,8 @@ export class OrderService {
     // if WETH need to replace to ETH, because CurrencyService don't have warped token price
     const symbolUsd = currencySymbol
       ? await this.currencyService.getSymbolPrice(
-        currencySymbol.replace(/^W/i, '') + 'USD',
-      )
+          currencySymbol.replace(/^W/i, '') + 'USD',
+        )
       : null;
     const symbolUsdPrice = symbolUsd ? symbolUsd.price : 0;
     const orderUsdPrice = orderPrice.multipliedBy(symbolUsdPrice);
@@ -3970,7 +3976,7 @@ export class OrderService {
         if (
           bestCollectionOffer.hasBestCollectionOrder &&
           bestCollectionOffer.bestSeaportOrder?.hash?.toLowerCase() ===
-          orderFulfilledResponse.orderHash?.toLowerCase()
+            orderFulfilledResponse.orderHash?.toLowerCase()
         ) {
           const newBestCollectionOffer = await this.getBestCollectionOffer(
             collection.slug,
@@ -4150,7 +4156,7 @@ export class OrderService {
         if (
           bestCollectionOffer.hasBestCollectionOrder &&
           bestCollectionOffer.bestSeaportOrder.hash?.toLowerCase() ===
-          orderHash?.toLowerCase()
+            orderHash?.toLowerCase()
         ) {
           const newBestCollectionOffer = await this.getBestCollectionOffer(
             collection.slug,

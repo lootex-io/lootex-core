@@ -17,8 +17,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { CacheModule } from '@/common/cache';
 import { AccountService } from '../account/account.service';
 
-import { SdkApiKeyService } from '@/core/sdk/service/sdk-api-key.service';
-
 @Module({
   imports: [CacheModule, SequelizeModule.forFeature(entities)],
   controllers: [OrderController],
@@ -35,9 +33,8 @@ import { SdkApiKeyService } from '@/core/sdk/service/sdk-api-key.service';
     LibsService,
     OrderService,
     TraitService,
-    SdkApiKeyService,
     ...providers,
   ],
   exports: [OrderService],
 })
-export class OrderModule { }
+export class OrderModule {}
