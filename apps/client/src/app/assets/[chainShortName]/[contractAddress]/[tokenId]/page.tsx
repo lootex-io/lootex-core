@@ -1,5 +1,5 @@
 import { AssetTemplate } from '@/features/asset';
-import { serverSideApiClient } from '@/lib/lootex';
+import { apiClient } from '@/lib/lootex';
 import { populateMetadata } from '@/utils/metadata';
 import { notFound } from 'next/navigation';
 
@@ -9,8 +9,8 @@ export async function generateMetadata({
   params: { chainShortName: string; contractAddress: string; tokenId: string };
 }) {
   try {
-    const data = await serverSideApiClient.assets.getAsset(
-      `${params.chainShortName}/${params.contractAddress}/${params.tokenId}`,
+    const data = await apiClient.assets.getAsset(
+      `${params.chainShortName}/${params.contractAddress}/${params.tokenId}`
     );
     return populateMetadata({
       title: data.assetName,
@@ -30,8 +30,8 @@ export default async function AssetPage({
   params: { chainShortName: string; contractAddress: string; tokenId: string };
 }) {
   try {
-    const asset = await serverSideApiClient.assets.getAsset(
-      `${chainShortName}/${contractAddress}/${tokenId}`,
+    const asset = await apiClient.assets.getAsset(
+      `${chainShortName}/${contractAddress}/${tokenId}`
     );
     return (
       <div className="container mx-auto max-w-screen-xl h-[calc(100dvh-56px)]">

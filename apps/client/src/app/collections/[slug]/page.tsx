@@ -1,5 +1,5 @@
 import CollectionBrowser from '@/features/collection-browser';
-import { serverSideApiClient } from '@/lib/lootex';
+import { apiClient } from '@/lib/lootex';
 import { populateMetadata } from '@/utils/metadata';
 import type { LootexCollection } from '@lootex-core/sdk/collection';
 import { notFound } from 'next/navigation';
@@ -12,9 +12,7 @@ export async function generateMetadata({
   params: { slug: string };
 }) {
   try {
-    const data = await serverSideApiClient.collections.getCollection(
-      params.slug,
-    );
+    const data = await apiClient.collections.getCollection(params.slug);
     return populateMetadata({
       title: data.name,
       description: data.description,
@@ -32,8 +30,8 @@ export default async function CollectionPage({
   params: { slug: string };
 }) {
   try {
-    const data = (await serverSideApiClient.collections.getCollection(
-      params.slug,
+    const data = (await apiClient.collections.getCollection(
+      params.slug
     )) as LootexCollection & {
       isRevealable: boolean;
       canRevealAt: string;

@@ -2,10 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createLootexClient } from '../client/index.js';
 import { createOrders } from './create-orders.js';
 
-const lootex = createLootexClient({
-  apiKey: '',
-  environment: 'development',
-});
+const lootex = createLootexClient({});
 
 describe('create-orders', () => {
   it('should create an order', async () => {

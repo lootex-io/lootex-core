@@ -10,9 +10,7 @@ import { Client } from '../client/index.js';
 import { createAggregator } from './aggregator.js';
 import type { CreateOrderAction } from './types.js';
 
-const lootex = new Client({
-  environment: 'development',
-});
+const lootex = new Client({});
 
 const testAccountAddress = '0xbF6692795A07684147838fC54A2764aa884C440c';
 const testPrivateKey =
@@ -60,7 +58,7 @@ describe('Aggregator', async () => {
     expect(createOrderAction.type).toBe('create');
     expect(
       (await createOrderAction.createOrders({ createOrdersOnOrderbook: false }))
-        .seaportOrders,
+        .seaportOrders
     ).toHaveLength(1);
   });
 

@@ -27,7 +27,6 @@ import { useOrigin } from '@/utils/use-origin';
 import { MintBox } from './mint-box';
 import { MintSchedule } from './mint-schedule';
 import Activity from './tabs/activity';
-import UtilityBar from './utility-bar';
 
 const ExternalLinks = ({
   externalLinks,

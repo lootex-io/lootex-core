@@ -14,11 +14,9 @@ export type RequestOptions = {
 export const createRequest =
   ({
     baseUrl,
-    apiKey,
     customHeaders,
   }: {
     baseUrl: string;
-    apiKey: string;
     customHeaders?: Record<string, string>;
   }) =>
   async <ResponseBody>({
@@ -39,10 +37,6 @@ export const createRequest =
       ..._customHeaders,
     })) {
       headers.append(key, value);
-    }
-
-    if (apiKey) {
-      headers.append('x-api-key', apiKey);
     }
 
     if (authToken) {
@@ -99,7 +93,7 @@ export const stringifyQuery = (query: Record<string, unknown>): string => {
   const encodeKeyValue = (
     key: string,
     value: unknown,
-    prefix?: string,
+    prefix?: string
   ): string => {
     const encodedKey = prefix ? `${prefix}[${key}]` : key;
 
@@ -117,7 +111,7 @@ export const stringifyQuery = (query: Record<string, unknown>): string => {
     if (typeof value === 'object' && value !== null) {
       return Object.entries(value)
         .map(([nestedKey, nestedValue]) =>
-          encodeKeyValue(nestedKey, nestedValue, encodedKey),
+          encodeKeyValue(nestedKey, nestedValue, encodedKey)
         )
         .filter(Boolean) // Remove empty strings
         .join('&');

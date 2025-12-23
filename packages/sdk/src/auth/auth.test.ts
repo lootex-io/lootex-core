@@ -7,9 +7,7 @@ import { polygon } from 'viem/chains';
 import { Client } from '../client/index.js';
 import { createAuth } from './auth.js';
 
-const lootex = new Client({
-  environment: 'development',
-});
+const lootex = new Client({});
 
 const testAccountAddress = '0xbF6692795A07684147838fC54A2764aa884C440c';
 const testPrivateKey =
