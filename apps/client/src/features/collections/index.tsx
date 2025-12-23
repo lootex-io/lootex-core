@@ -31,6 +31,7 @@ export default function Collections({
     chainId: defaultChain.id,
     page: 1,
     limit: 20,
+    isAllCollection: true,
   };
 
   const itemsQuery = useItemsQuery<

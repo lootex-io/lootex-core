@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CollectionService } from '@/api/v3/collection/collection.service';
 
-
 import { ContractService } from '@/api/v3/contract/contract.service';
 import { CacheService } from '@/common/cache';
 import { ConfigService } from '@nestjs/config';
@@ -30,7 +29,7 @@ export class CollectionDataService {
     private readonly libService: LibsService,
     private readonly collectionDao: CollectionDao,
     private readonly orderDao: OrderDao,
-  ) { }
+  ) {}
 
   async getCollectionInfo(params: CollectionParamsDTO) {
     try {
@@ -110,29 +109,6 @@ export class CollectionDataService {
         },
       );
       this.orderService.getBestCollectionOffer(collection.slug, true);
-
-      // Start running
-      this.collectionService.syncOpenSeaCollectionListings(params.slug);
-      // End running
-
-      // usage of missing studioService removed
-      /*
-      this.studioService
-        .getContractByChainIdAndAddress(
-          collection.chainId.toString(),
-          collection.contractAddress,
-        )
-        .then((contract) => {
-          this.studioService.updateStudioContractEndSale(contract);
-        });
-      */
-      // usage of missing autoUpdateIsMintingTag removed
-      /*
-      this.collectionService.autoUpdateIsMintingTag(
-        collection.contractAddress,
-        collection.chainId.toString(),
-      );
-      */
 
       return {
         id: collection.id,
