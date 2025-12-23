@@ -82,22 +82,17 @@ export class ExploreCoreService {
       collections.map(async (c) => {
         try {
           // TODO: 如果有帶 slug 當查詢條件只要查一次，其他都用這次的就好
-          const [
-            bestCollectionOfferOrder,
-            collectionFloorPrice,
-            collectionAllowCurrencies,
-          ] = await Promise.all([
+          const [bestCollectionOfferOrder, collectionFloorPrice] =
+            await Promise.all([
             this.orderService.getBestCollectionOffer(c.slug),
             this.orderService.getCollectionBestListingFromCache(
               c.contractAddress,
               c.chainId.toString(),
             ),
-            this.collectionDao.getAllowCurrenciesByCollectionId(c.id),
           ]);
           return {
             bestCollectionOfferOrder,
             collectionFloorPrice,
-            collectionAllowCurrencies,
             cId: c.id,
           };
         } catch (error) {
@@ -125,7 +120,6 @@ export class ExploreCoreService {
             collectionOrderInfo?.bestCollectionOfferOrder,
           collectionFloorPrice:
             collectionOrderInfo?.collectionFloorPrice?.perPrice || 0,
-          allowCurrencies: collectionOrderInfo?.collectionAllowCurrencies,
         };
       }),
     );

@@ -6,7 +6,6 @@ import {
   Collection,
   CollectionVolumeAllDays,
   Contract,
-  Currency,
   SeaportOrder,
   SeaportOrderAsset,
   Wallet,
@@ -37,8 +36,6 @@ export class CollectionDao {
     private collectionRepository: typeof Collection,
     @InjectModel(Contract)
     private contractRepository: typeof Contract,
-    @InjectModel(Currency)
-    private currencyRepository: typeof Currency,
     @InjectModel(Blockchain)
     private blockchainRepository: typeof Blockchain,
     @InjectModel(Wallet)
@@ -439,50 +436,4 @@ export class CollectionDao {
     }
   }
 
-  @Cacheable({ key: 'collection:allowCurrencies', seconds: 60 * 10 })
-  async getAllowCurrenciesByCollectionId(collectionId: string) {
-    const collection = await this.collectionRepository.findOne({
-      attributes: ['id', 'allowErc20TradeAddresses', 'chainId'],
-      where: {
-        id: collectionId,
-      },
-    });
-
-    if (!collection) {
-      throw new Error('collection not found');
-    }
-
-    if (!collection.allowErc20TradeAddresses) {
-      return [];
-    }
-
-    const currencies = await this.currencyRepository.findAll({
-      // 回傳 object 格式就好，不用整個 Currency 實體
-      attributes: [
-        'id',
-        'symbol',
-        'address',
-        'decimals',
-        'isNative',
-        'isWrapped',
-      ],
-      where: {
-        address: {
-          [Op.in]: collection.allowErc20TradeAddresses,
-        },
-      },
-      include: [
-        {
-          model: Blockchain,
-          attributes: [],
-          required: true,
-          where: {
-            chainId: collection.chainId,
-          },
-        },
-      ],
-    });
-
-    return currencies;
-  }
 }

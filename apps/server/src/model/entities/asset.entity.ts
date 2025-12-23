@@ -44,14 +44,6 @@ export class Asset extends Model {
   })
   id: string;
 
-  @AllowNull(true)
-  @Default(null)
-  @Column({
-    field: 'data',
-    type: DataType.BLOB,
-  })
-  data: string;
-
   @Column({
     field: 'token_id',
     type: DataType.STRING,
@@ -132,13 +124,6 @@ export class Asset extends Model {
   })
   backgroundColor: string;
 
-  @Default('NONE')
-  @Column({
-    field: 'status_on_chain',
-    type: DataType.STRING(6),
-  })
-  statusOnChain: string;
-
   @Default([])
   @Column({
     field: 'traits',
@@ -159,13 +144,6 @@ export class Asset extends Model {
     type: DataType.UUIDV4,
   })
   contractId: string;
-
-  @IsUUID('all')
-  @Column({
-    field: 'owner_eth_account_id',
-    type: DataType.UUIDV4,
-  })
-  ownerEthAccountId: string;
 
   @AllowNull(true)
   @Default(null)

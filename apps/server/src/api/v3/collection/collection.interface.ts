@@ -24,10 +24,8 @@ export interface CollectionInfo {
   description?: string;
   externalLinks?: Array<ExternalLink | any> | string;
   isVerified: boolean;
-  isGoldVerified: boolean;
   isSensitive: boolean;
   isMinting: boolean;
-  isRarity?: boolean;
   isCampaign202408Featured?: boolean;
   isDrop?: boolean;
   serviceFee: number;

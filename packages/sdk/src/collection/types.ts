@@ -22,15 +22,6 @@ export type ExternalLink = {
   url: string;
 };
 
-export type AllowCurrency = {
-  address: `0x${string}`;
-  decimals: number;
-  id: string;
-  isNative: boolean;
-  isWrapped: boolean;
-  symbol: string;
-};
-
 export type LootexCollection = {
   bannerImageUrl: string | null;
   bestCollectionOffer: {
@@ -81,11 +72,7 @@ export type LootexCollection = {
     totalVolume: number;
   };
   isDrop?: boolean;
-  isRarity?: boolean;
   isCreatorFee: boolean;
-  isGoldVerified: boolean;
-  canNativeTrade: boolean;
-  allowCurrencies: AllowCurrency[];
 };
 
 export type LootexCollectionMetadata = Omit<

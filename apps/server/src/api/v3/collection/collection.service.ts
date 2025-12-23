@@ -2153,12 +2153,7 @@ export class CollectionService implements OnModuleDestroy {
   @Cacheable({ key: 'collection:allowCurrencies', seconds: 60 * 10 })
   async getCollectionPriceSymbol(collectionId: string): Promise<string> {
     const collection = await this.collectionRepository.findOne({
-      attributes: [
-        'id',
-        'chainShortName',
-        'canNativeTrade',
-        'allowErc20TradeAddresses',
-      ],
+      attributes: ['id', 'chainShortName'],
       where: {
         id: collectionId,
       },
@@ -2167,21 +2162,9 @@ export class CollectionService implements OnModuleDestroy {
       throw new Error('collection not found');
     }
 
-    if (collection.canNativeTrade) {
-      return await this.libsService.getSymbolFromChainShortName(
-        collection.chainShortName,
-      );
-    } else if (collection.allowErc20TradeAddresses.length > 0) {
-      const allowCurrencies =
-        await this.collectionDao.getAllowCurrenciesByCollectionId(
-          collection.id,
-        );
-      if (allowCurrencies[0]?.symbol) return allowCurrencies[0]?.symbol;
-
-      return await this.libsService.getSymbolFromChainShortName(
-        collection.chainShortName,
-      );
-    }
+    return await this.libsService.getSymbolFromChainShortName(
+      collection.chainShortName,
+    );
   }
 
   async getTradingBoard({

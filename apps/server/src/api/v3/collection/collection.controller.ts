@@ -253,12 +253,6 @@ export class CollectionController {
       if (body.creatorFee > 10) {
         throw new HttpException('creatorFee must be less than 10', 400);
       }
-      if (!existCollection.isGoldVerified && body.creatorFee > 0.5) {
-        throw new HttpException(
-          'creatorFee must be less than 0.5 for non-gold verified collection',
-          400,
-        );
-      }
       existCollection.set('isCreatorFee', body.isCreatorFee);
       existCollection.set('creatorFee', body.creatorFee);
       existCollection.set('creatorFeeAddress', body.creatorFeeAddress);

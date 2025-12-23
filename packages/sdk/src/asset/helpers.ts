@@ -100,6 +100,5 @@ export const collectionFeaturedAssetToAsset = (
     contractTotalSupply: featuredAsset?.Contract?.totalSupply,
     collectionCreatorFeeAddress: collection.creatorFeeAddress,
     collectionIsCreatorFee: collection.isCreatorFee,
-    collectionIsGoldVerified: collection.isGoldVerified,
   };
 };

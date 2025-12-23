@@ -13,7 +13,7 @@ import {
   BeforeCreate,
 } from 'sequelize-typescript';
 
-import { EthAccount, Asset, Wallet } from '@/model/entities';
+import { Asset, Wallet } from '@/model/entities';
 
 @Table({
   tableName: 'asset_as_eth_account',
@@ -68,13 +68,6 @@ export class AssetAsEthAccount extends Model {
   })
   contractId: string;
 
-  @IsUUID('all')
-  @Column({
-    field: 'eth_account_id',
-    type: DataType.UUIDV4,
-  })
-  ethAccountId: string;
-
   @AllowNull(true)
   @Default('0')
   @Column({
@@ -114,13 +107,6 @@ export class AssetAsEthAccount extends Model {
     type: DataType.TIME(),
   })
   deletedAt: string;
-
-  @HasOne(() => EthAccount, {
-    foreignKey: 'id',
-    sourceKey: 'ethAccountId',
-    as: 'Account',
-  })
-  Account: EthAccount;
 
   @HasOne(() => Asset, { foreignKey: 'id', sourceKey: 'assetId', as: 'Asset' })
   Asset: Asset;

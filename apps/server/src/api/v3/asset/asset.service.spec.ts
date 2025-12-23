@@ -246,8 +246,6 @@ describe('AssetService', () => {
             externalUrl: metadata1.externalUrl,
             id: expect.any(String),
             imageUrl: metadata1.imageUrl,
-            ownerEthAccountId: expect.any(String),
-            statusOnChain: 'NONE',
             tokenId: tokenId2,
             tokenUri: tokenUri2,
             totalAmount: '1',
@@ -302,8 +300,6 @@ describe('AssetService', () => {
             externalUrl: metadata1.externalUrl,
             id: expect.any(String),
             imageUrl: metadata1.imageUrl,
-            ownerEthAccountId: expect.any(String),
-            statusOnChain: 'NONE',
             tokenId: tokenId1,
             tokenUri: tokenUri1,
             totalAmount: '1',
@@ -448,8 +444,6 @@ describe('AssetService', () => {
           externalUrl: metadata1.externalUrl,
           imageUrl: metadata1.imageUrl,
           name: '',
-          ownerEthAccountId: user.id,
-          statusOnChain: 'NONE',
           tokenId: tokenId1,
           tokenUri: tokenUri1,
           traits: metadata1.attributes,
@@ -465,7 +459,6 @@ describe('AssetService', () => {
 
       expect(assetAsEth).toMatchObject({
         assetId: assets[0].id,
-        ethAccountId: user.id,
         ownerAddress: ownerAddress1,
         quantity: '56',
       });

@@ -59,7 +59,6 @@ export class CollectionListInterceptor implements NestInterceptor {
               isCampaign202408Featured: collection.isCampaign202408Featured,
               serviceFee: collection.serviceFee,
               creatorFee: collection.creatorFee,
-              isRarity: collection.isRarity,
               createdAt: collection.createdAt,
               updatedAt: collection.updatedAt,
               deletedAt: collection.deletedAt,

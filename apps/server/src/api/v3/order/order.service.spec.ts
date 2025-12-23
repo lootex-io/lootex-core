@@ -150,7 +150,6 @@ const ORDER1_CHAINID = '1';
 const ORDER1_PRICE = 0.97;
 const ASSET = {
   id: 'f876d69b-be17-4891-9b5e-6e597ec9e3cd',
-  data: null,
   tokenId: '3298',
   name: 'BEAST #3298',
   description:
@@ -163,7 +162,6 @@ const ASSET = {
   animationType: 'model/gltf-binary',
   googleImageUrl: '',
   backgroundColor: 'F0F5F8',
-  statusOnChain: 'NONE',
   traits: [
     {
       value: 'Pants',
@@ -220,7 +218,6 @@ const ASSET = {
   ],
   Xtraits: [],
   contractId: '31954d87-2469-4d3d-b83d-e5420742c318',
-  ownerEthAccountId: '3b4cddb6-5ff5-11ec-b6a0-42010a4d0013',
   tokenUri:
     'https://ipfs.moralis.io:2053/ipfs/QmboCxEoxbJDwkq5RgFJsAHXFHYQUjUsSLxSaKtdsqgRbb/3298',
   createdAt: '2023-02-06T02:59:07.591Z',
@@ -249,7 +246,6 @@ const ASSET = {
     {
       id: '18b2f16f-70d3-43d7-967d-9455f4a0adcd',
       assetId: 'f876d69b-be17-4891-9b5e-6e597ec9e3cd',
-      ethAccountId: '3b4cddb6-5ff5-11ec-b6a0-42010a4d0013',
       quantity: '1',
       ownerAddress: '0xb14c95d1844d5d8b00166e46338f5fc9546df9d5',
       createdAt: '2023-02-06T02:59:07.648Z',

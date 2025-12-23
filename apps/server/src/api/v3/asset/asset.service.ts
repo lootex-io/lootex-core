@@ -907,10 +907,6 @@ export class AssetService {
       const assetInfo: any = { ...extra.Asset.toJSON() };
       assetInfo.Contract = extra.Contract;
       assetInfo.Collection = extra.Collection;
-      assetInfo.allowCurrencies =
-        await this.collectionDao.getAllowCurrenciesByCollectionId(
-          extra.Collection.id,
-        );
       assetInfo.collectionOwnerAddress = extra.Collection.ownerAddress;
       // const assetAsEthAccounts = await this.assetAsEthAccountRepository.findAll(
       //   {
@@ -928,20 +924,6 @@ export class AssetService {
 
       assetInfo.viewCount = extra.viewCount;
       assetInfo.rarityRanking = extra.rarityRanking;
-
-      if (extra.Collection.isRarity && assetInfo.traits) {
-        const traits = await this.assetTraitsRepository.findAll({
-          attributes: [
-            'trait_type',
-            'display_type',
-            'value',
-            'rarity_percent',
-            'total_count',
-          ],
-          where: { assetId: assetId },
-        });
-        assetInfo.traits = traits;
-      }
 
       return assetInfo;
     };

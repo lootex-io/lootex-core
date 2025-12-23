@@ -238,8 +238,6 @@ export class NewAssetList implements NestInterceptor {
                             : null,
                       }
                     : null;
-                const allowCurrencies = extra.allowCurrencies ?? [];
-
                 return {
                   contractId: contract.id,
                   contractName: contract.name,
@@ -279,11 +277,8 @@ export class NewAssetList implements NestInterceptor {
                   collectionLogoImageUrl: collection?.logoImageUrl,
                   collectionExternalLinks: collection?.externalLinks,
                   collectionIsVerified: collection?.isVerified,
-                  collectionIsGoldVerified: collection?.isGoldVerified,
                   collectionIsCampaign202408Featured:
                     collection?.isCampaign202408Featured,
-                  collectionCanNativeTrade: collection?.canNativeTrade,
-                  collectionAllowCurrencies: allowCurrencies,
                   order: order,
                   collectionFloorPrice: extra.collectionFloorPrice,
                 };
@@ -372,11 +367,8 @@ export class AssetInfo implements NestInterceptor {
         collectionIsCreatorFee: data.Collection?.isCreatorFee,
         collectionOwnerAddress: data.collectionOwnerAddress,
         collectionIsVerified: data.Collection?.isVerified,
-        collectionIsGoldVerified: data.Collection?.isGoldVerified,
         collectionIsCampaign202408Featured:
           data.Collection?.isCampaign202408Featured,
-        collectionCanNativeTrade: data.Collection?.canNativeTrade,
-        collectionAllowCurrencies: data.allowCurrencies,
         owners: data.AssetAsEthAccount?.map((owner) => {
           return {
             username: owner.Wallet?.Account?.username,

@@ -1,4 +1,3 @@
-import type { AllowCurrency } from '../collection/types.js';
 import type { LootexOrderSimple } from '../order/types.js';
 
 export type AssetTrait = {
@@ -43,7 +42,6 @@ export type Asset = {
   collectionOwnerAddress: `0x${string}`;
   collectionCreatorFeeAddress: `0x${string}` | null;
   collectionIsCreatorFee: boolean;
-  collectionIsGoldVerified: boolean;
   collectionIsVerified: boolean;
   collectionIsCampaign202408Featured?: boolean;
   order: {
@@ -54,6 +52,4 @@ export type Asset = {
   exchangeAddress?: `0x${string}`;
   assetRarityRanking?: number;
   contractTotalSupply?: string;
-  collectionCanNativeTrade?: boolean;
-  collectionAllowCurrencies?: AllowCurrency[];
 };

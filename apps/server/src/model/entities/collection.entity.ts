@@ -200,20 +200,6 @@ export class Collection extends Model {
   })
   isVerified: boolean;
 
-  @Default(false)
-  @Column({
-    field: 'is_gold_verified',
-    type: DataType.BOOLEAN,
-  })
-  isGoldVerified: boolean;
-
-  @Default(false)
-  @Column({
-    field: 'is_rarity',
-    type: DataType.BOOLEAN,
-  })
-  isRarity: boolean;
-
   /**
    * 目前主要是 moralis 返回
    */
@@ -324,19 +310,6 @@ export class Collection extends Model {
   })
   isCampaign202408Featured: boolean;
 
-  @Default(true)
-  @Column({
-    field: 'can_native_trade',
-    type: DataType.BOOLEAN,
-  })
-  canNativeTrade: boolean;
-
-  @Column({
-    field: 'allow_erc20_trade_addresses',
-    type: DataType.ARRAY(DataType.STRING),
-  })
-  allowErc20TradeAddresses: string[];
-
   @AllowNull(true)
   @Default(null)
   @Column({
@@ -385,76 +358,6 @@ export class Collection extends Model {
   })
   CollectionVolumeToday: CollectionVolumeToday;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'safelist_status',
-  })
-  safelistStatus: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'category',
-  })
-  category: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: true,
-    field: 'is_disabled',
-  })
-  isDisabled: boolean;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: true,
-    field: 'is_nsfw',
-  })
-  isNsfw: boolean;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'project_url',
-  })
-  projectUrl: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'wiki_url',
-  })
-  wikiUrl: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'discord_url',
-  })
-  discordUrl: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'telegram_url',
-  })
-  telegramUrl: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'twitter_username',
-  })
-  twitterUsername: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'instagram_username',
-  })
-  instagramUsername: string;
-
   @BelongsTo(() => SeaportOrder, {
     foreignKey: 'bestCollectionOfferOrderId',
     targetKey: 'id',
@@ -466,78 +369,4 @@ export class Collection extends Model {
     field: 'best_collection_offer_order_id',
   })
   bestCollectionOfferOrderId: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: true,
-    field: 'is_revealable',
-    defaultValue: false,
-  })
-  isRevealable: boolean;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-    field: 'can_reveal_at',
-  })
-  canRevealAt: Date;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'reveal_url',
-  })
-  revealUrl: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: true,
-    field: 'is_stakeable',
-    defaultValue: false,
-  })
-  isStakeable: boolean;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'stake_url',
-  })
-  stakeUrl: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: true,
-    field: 'is_discord_verify',
-    defaultValue: false,
-  })
-  isDiscordVerify: boolean;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'discord_verify_url',
-  })
-  discordVerifyUrl: string;
-
-  @Column({
-    type: DataType.BOOLEAN,
-    allowNull: true,
-    field: 'is_redeemable',
-    defaultValue: false,
-  })
-  isRedeemable: boolean;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-    field: 'can_redeem_at',
-  })
-  canRedeemAt: Date;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: true,
-    field: 'redeem_url',
-  })
-  redeemUrl: string;
 }

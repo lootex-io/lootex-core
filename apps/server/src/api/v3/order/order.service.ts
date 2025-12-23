@@ -122,8 +122,6 @@ const ORDER_PLATFORM_TYPE = {
 import { AggregatorCoreDao } from '@/core/aggregator-core/aggregator-core-dao/aggregator-core-dao';
 import { getAddress } from 'ethers/lib/utils';
 import { SimpleException } from '@/common/utils/simple.util';
-import { SdkEnvService } from '@/core/sdk/service/sdk-env.service';
-import { SdkEnv } from '@/core/sdk/constants/env-constants';
 import {
   createPublicClient,
   defineChain,
@@ -183,8 +181,6 @@ export class OrderService {
     private globalValueRepository: typeof GlobalValue,
 
     private readonly configService: ConfigService,
-
-    private readonly sdkEnvService: SdkEnvService,
 
     private readonly blockchainService: BlockchainService,
 
@@ -4505,15 +4501,14 @@ export class OrderService {
     seconds: 60, // 1 min
   })
   async getPlatformFee() {
-    const [platformFee, platformFeeAddress] = await Promise.all([
-      this.sdkEnvService.getString(SdkEnv.PLATFORM_FEE),
-      this.sdkEnvService.getString(SdkEnv.PLATFORM_FEE_ADDRESS),
-    ]);
+    const [platformFee, platformFeeAddress] = [
+      '0',
+      '0x0000000000000000000000000000000000000000',
+    ];
 
     return {
-      platformFee: platformFee || '2',
-      platformFeeAddress:
-        platformFeeAddress || '0x44bC1E612e11d0Acd2c43218Ea55717aC28e3a40',
+      platformFee,
+      platformFeeAddress,
     };
   }
 
