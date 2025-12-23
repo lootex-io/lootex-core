@@ -173,41 +173,6 @@ export class Account extends Model {
   })
   privyUserId: string;
 
-  @AllowNull(true)
-  @Column({
-    field: 'last_login_at',
-    type: DataType.DATE,
-  })
-  lastLoginAt: Date;
-
-  @AllowNull(true)
-  @Column({
-    field: 'register_ip',
-    type: DataType.STRING,
-  })
-  registerIp: string;
-
-  @AllowNull(true)
-  @Column({
-    field: 'register_area',
-    type: DataType.STRING,
-  })
-  registerArea: string;
-
-  @AllowNull(true)
-  @Column({
-    field: 'last_login_ip',
-    type: DataType.STRING,
-  })
-  lastLoginIp: string;
-
-  @AllowNull(true)
-  @Column({
-    field: 'last_login_area',
-    type: DataType.STRING,
-  })
-  lastLoginArea: string;
-
   @HasMany(() => AccountBadge, {
     foreignKey: 'accountId',
     sourceKey: 'id',
