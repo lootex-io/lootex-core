@@ -5,9 +5,7 @@ import { erc20Abi } from 'viem';
 import { Client } from './index.js';
 
 test('create client', async () => {
-  const lootex = new Client({
-    environment: 'development',
-  });
+  const lootex = new Client({});
 
   const publicClient = lootex.getPublicClient({ chainId: 137 });
   const data = await publicClient.readContract({

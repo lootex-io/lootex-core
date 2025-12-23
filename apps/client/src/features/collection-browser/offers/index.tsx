@@ -23,7 +23,7 @@ export const Offers = ({
   className?: string;
 }) => {
   const [viewMode, setViewMode] = useState<'all-offers' | 'grouped-offers'>(
-    'all-offers',
+    'all-offers'
   );
   const [showMyOffers, setShowMyOffers] = useState(false);
   const { address } = useConnection();
@@ -61,7 +61,7 @@ export const Offers = ({
       itemsQuery.items?.reduce(
         (acc, order) => {
           const availableAmount = Number(
-            order.seaportOrder.parameters.consideration[0].availableAmount,
+            order.seaportOrder.parameters.consideration[0].availableAmount
           );
           const price = Number(order.perPrice);
           const symbol = order.priceSymbol;
@@ -91,8 +91,8 @@ export const Offers = ({
             quantity: number;
             usersCount: number;
           }
-        >,
-      ) ?? {},
+        >
+      ) ?? {}
     ).map(([_, { price, symbol, quantity, usersCount }]) => ({
       price: Number(price),
       symbol,

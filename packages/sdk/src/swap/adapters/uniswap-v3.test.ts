@@ -14,9 +14,7 @@ const usdc: Token = {
 };
 
 test('get exact input trade', async () => {
-  const client = new Client({
-    environment: 'development',
-  });
+  const client = new Client({});
 
   const weth = WETH9[8453];
   const loot = LOOT[8453];
@@ -35,7 +33,7 @@ test('get exact input trade', async () => {
     weth,
     100, // 1000 USDC
     '0x7D878A527e86321aECd80A493E584117A907A0AB',
-    1,
+    1
   );
   expect(exactInputTrade).toBeDefined();
 
@@ -44,7 +42,7 @@ test('get exact input trade', async () => {
     weth,
     1, // 1 WETH
     '0x7D878A527e86321aECd80A493E584117A907A0AB',
-    1,
+    1
   );
   expect(exactOutputTrade).toBeDefined();
 }, 10_000);

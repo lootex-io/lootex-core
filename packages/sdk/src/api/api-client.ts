@@ -14,10 +14,12 @@ export type ApiClient = ReturnType<typeof createApiClient>;
 export const createApiClient = ({
   client,
   customHeaders,
-}: { client: Client; customHeaders?: Record<string, string> }) => {
+}: {
+  client: Client;
+  customHeaders?: Record<string, string>;
+}) => {
   const request = createRequest({
     baseUrl: client.baseUrl,
-    apiKey: client.apiKey,
     customHeaders: {
       ...client.customHeaders,
       ...customHeaders,
