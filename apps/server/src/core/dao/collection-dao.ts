@@ -260,7 +260,7 @@ export class CollectionDao {
   ): Promise<string | null> {
     const defaultWallet = await this.walletRepository.findOne({
       where: {
-        address: this.configService.get('LOOTEX_ADMIN_WALLET').toLowerCase(),
+        address: '0x0000000000000000000000000000000000000000',
       },
     });
 
@@ -435,5 +435,4 @@ export class CollectionDao {
       }
     }
   }
-
 }

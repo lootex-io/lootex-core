@@ -64,6 +64,7 @@ import { AssetDao } from '@/core/dao/asset-dao';
 import { AssetExtraService } from './asset-extra.service';
 import { RealIP } from 'nestjs-real-ip';
 import { AssetProxyService } from '@/api/v3/asset/proxy/asset-proxy.service';
+import { ContractService } from '../contract/contract.service';
 
 @ApiTags('Asset')
 @ApiCookieAuth()
@@ -77,11 +78,12 @@ export class AssetController {
     private readonly assetService: AssetService,
     private readonly assetProxyService: AssetProxyService,
     private readonly assetExtraService: AssetExtraService,
+    private readonly contractService: ContractService,
 
     private readonly configService: ConfigService,
     private readonly libsService: LibsService,
     private readonly assetDao: AssetDao,
-  ) { }
+  ) {}
 
   @Get('assets/test/:chainId/:contractAddress/:tokenId')
   async test(
@@ -100,15 +102,16 @@ export class AssetController {
     try {
       const traitsKey = query.traits
         ? query.traits
-          .map((trait) => `${trait.traitType}:${trait.value}`)
-          .join('&')
+            .map((trait) => `${trait.traitType}:${trait.value}`)
+            .join('&')
         : '';
 
       // get your update assets queue in cache
-      const queueKey = `${OWNER_UPDATE_ASSETS_QUEUE}-${query.ownerAddress
-        ? query.ownerAddress.toLowerCase()
-        : query.ownerAddress
-        }-${traitsKey ? traitsKey + '-' : ''}${query.chainId}`;
+      const queueKey = `${OWNER_UPDATE_ASSETS_QUEUE}-${
+        query.ownerAddress
+          ? query.ownerAddress.toLowerCase()
+          : query.ownerAddress
+      }-${traitsKey ? traitsKey + '-' : ''}${query.chainId}`;
       const assetUpdateQueue: AssetUpdateQueue =
         await this.cacheService.getCache(queueKey);
       let queueStatus = assetUpdateQueue?.queueStatus || QUEUE_STATUS.CONFIRM;
@@ -265,8 +268,9 @@ export class AssetController {
   ): Promise<AssetListResponse> {
     try {
       // get your update assets queue in cache
-      const queueKey = `${OWNER_UPDATE_ASSETS_QUEUE}-${wallet.address.toLowerCase()}-${query.chainId
-        }`;
+      const queueKey = `${OWNER_UPDATE_ASSETS_QUEUE}-${wallet.address.toLowerCase()}-${
+        query.chainId
+      }`;
       const assetUpdateQueue: AssetUpdateQueue =
         await this.cacheService.getCache(queueKey);
       const queueStatus = assetUpdateQueue?.queueStatus || QUEUE_STATUS.PENDING;
@@ -366,49 +370,13 @@ export class AssetController {
     @Param() params: SyncAssetsByContractParamsDTO,
   ): Promise<void> {
     try {
-      const chainId = await this.libsService.findChainIdByChainShortName(
+      const chainId = (await this.libsService.findChainIdByChainShortName(
         params.chainShortName,
-      );
-
-      // get your update assets queue in cache
-      const queueKey = `${CONTRACT_UPDATE_ASSETS_QUEUE}-${params.contractAddress}-${chainId}`;
-      const cacheData: ContractCacheFormat =
-        await this.cacheService.getCache(queueKey);
-      const queueStatus = cacheData?.queueStatus || QUEUE_STATUS.PENDING;
-
-      if (cacheData) {
-        return await this.cacheService.getCache(queueKey);
-      }
-
-      // publish to queue
-      // await this.queueService.publish(QUEUE_CONTRACT_ASSET_NAME, {
-      //   queueStatus,
-      //   contractAddress: params.contractAddress,
-      //   chainId,
-      // });
-      // Queue removed
-      /*
-      await this.queueService.sendMessageToSqs(
-        this.configService.get('AWS_SQS_CONTRACT_ASSETS_URL'),
-        {
-          queueStatus,
-          contractAddress: params.contractAddress,
-          chainId,
-        },
-      );
-      */
-
-      await this.cacheService.setCache(
-        queueKey,
-        {
-          queueStatus,
-          contractAddress: params.contractAddress,
-          chainId: chainId,
-        },
-        this.configService.get(QUEUE_ENV.QUEUE_CONTRACT_ASSETS_EXPIRED),
-      );
-
-      return await this.cacheService.getCache(queueKey);
+      )) as any;
+      return await this.contractService.updateAssetsByQueue({
+        contractAddress: params.contractAddress,
+        chainId,
+      });
     } catch (err) {
       throw new HttpException(err.message, 400);
     }

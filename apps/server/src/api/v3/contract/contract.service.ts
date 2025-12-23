@@ -103,7 +103,7 @@ export class ContractService {
 
       if (isInBlacklist) {
         this.logger.warn(
-          `asset ${options.chainId}/${options.contractAddress}/${options.contractAddress} is in refresh blacklist`,
+          `asset ${options.chainId}/${options.contractAddress} is in refresh blacklist`,
         );
         return null;
       }
