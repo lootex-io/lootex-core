@@ -18,7 +18,6 @@ import { WalletModule } from '@/api/v3/wallet/wallet.module';
 import { ExploreModule } from '@/api/v3/explore/explore.module';
 import { CoreModule } from '@/core/core.module';
 import { PreviewReqInfoMiddleware } from '@/common/middleware/preview-req-info.middleware';
-import { StudioModule } from '@/api/v3/studio/studio.module';
 import { CurrencyPriceModule } from '@/microservice/currency-price/currency.price.module';
 
 @Module({
@@ -85,7 +84,6 @@ import { CurrencyPriceModule } from '@/microservice/currency-price/currency.pric
     OrderModule,
 
     WalletModule,
-    StudioModule,
     CurrencyPriceModule,
   ],
   controllers: [AppController],
