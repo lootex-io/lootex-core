@@ -15,10 +15,6 @@ import {
 import { IsEnum } from 'class-validator';
 import { BlockStatus } from '@/model/entities/constant-model';
 
-import { CollectionVolumeAllDays } from './collection-volume-all-days.entity';
-import { CollectionVolumeThirtyDays } from './collection-volume-thirty-days.entity';
-import { CollectionVolumeSevenDays } from './collection-volume-seven-days.entity';
-import { CollectionVolumeToday } from './collection-volume-today.entity';
 import { SeaportOrder } from './seaport-order.entity';
 
 export enum ChainShortNameEnum {
@@ -333,30 +329,6 @@ export class Collection extends Model {
     type: DataType.TIME(),
   })
   deletedAt: string;
-
-  @HasOne(() => CollectionVolumeAllDays, {
-    foreignKey: 'collectionId',
-    sourceKey: 'id',
-  })
-  CollectionVolumeAllDays: CollectionVolumeAllDays;
-
-  @HasOne(() => CollectionVolumeThirtyDays, {
-    foreignKey: 'collectionId',
-    sourceKey: 'id',
-  })
-  CollectionVolumeThirtyDays: CollectionVolumeThirtyDays;
-
-  @HasOne(() => CollectionVolumeSevenDays, {
-    foreignKey: 'collectionId',
-    sourceKey: 'id',
-  })
-  CollectionVolumeSevenDays: CollectionVolumeSevenDays;
-
-  @HasOne(() => CollectionVolumeToday, {
-    foreignKey: 'collectionId',
-    sourceKey: 'id',
-  })
-  CollectionVolumeToday: CollectionVolumeToday;
 
   @BelongsTo(() => SeaportOrder, {
     foreignKey: 'bestCollectionOfferOrderId',

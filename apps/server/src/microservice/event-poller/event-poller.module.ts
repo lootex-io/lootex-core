@@ -20,7 +20,6 @@ import { EventPollerWsService } from '@/microservice/event-poller/service/event-
 import { EventPollerRpcService } from '@/microservice/event-poller/service/event-poller-rpc.service';
 import { AccountService } from '@/api/v3/account/account.service';
 import { AssetExtraService } from '@/api/v3/asset/asset-extra.service';
-import { WalletService } from '@/api/v3/wallet/wallet.service';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
 
 @Module({
@@ -59,7 +58,6 @@ import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
     BlockchainService,
     EventPollerHandlerService,
     EventPollerRpcService,
-    WalletService,
     ThirdPartyCurrencyService,
     GatewayService,
     sequelizeProvider,

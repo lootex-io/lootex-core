@@ -11,8 +11,6 @@ import { EMAIL_BLACKLIST, UUID_V4_REGEX } from '@/common/utils/constants';
 import { EthAddress } from '@/external/blockchain';
 import { Account } from '@/model/entities/account.entity';
 import { Wallet } from '@/model/entities/wallet.entity';
-import { modifyGmail } from '@/common/utils/modify-gmail';
-import { Transform } from 'class-transformer';
 
 export const ERC1271_MATCH_VALUE = '0x1626ba7e';
 
@@ -120,7 +118,6 @@ export class LootexJwtPayload {
 
   // @dev standard claim, RFC-5322
   @IsNotEmpty()
-  @Transform(modifyGmail)
   @IsEmail({
     host_blacklist: EMAIL_BLACKLIST,
   })

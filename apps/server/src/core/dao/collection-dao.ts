@@ -4,7 +4,6 @@ import {
   AssetExtra,
   Blockchain,
   Collection,
-  CollectionVolumeAllDays,
   Contract,
   SeaportOrder,
   SeaportOrderAsset,
@@ -42,8 +41,6 @@ export class CollectionDao {
     private walletRepository: typeof Wallet,
     @InjectModel(SeaportOrder)
     private seaportOrderRepository: typeof SeaportOrder,
-    @InjectModel(CollectionVolumeAllDays)
-    private collectionVolumeAllDaysRepository: typeof CollectionVolumeAllDays,
     @Inject(ProviderTokens.Sequelize)
     private readonly sequelizeInstance: Sequelize,
 
@@ -336,18 +333,6 @@ export class CollectionDao {
         chainId: chainId,
       },
     });
-    const collectionTotalVolume =
-      await this.collectionVolumeAllDaysRepository.findOne({
-        where: {
-          collectionId: collection.id,
-        },
-      });
-
-    let totalVolume = 0;
-    if (collectionTotalVolume) {
-      totalVolume = collectionTotalVolume.volume;
-    }
-
     return {
       floorPrice: listing[0]?.perPrice || 0,
       bestOffer: offer[offer.length - 1]?.perPrice || 0,
@@ -355,7 +340,7 @@ export class CollectionDao {
       currentListing: listing.length,
       totalOffer: collection.totalOffer,
       totalListing: collection.totalListing,
-      totalVolume,
+      totalVolume: 0,
     };
   }
 

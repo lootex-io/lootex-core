@@ -3,7 +3,7 @@ import { sequelizeProvider } from '@/model/providers';
 import { ConfigurationModule } from '@/configuration';
 import { TraitController } from './trait.controller';
 import { TraitService } from './trait.service';
-import { StringTraits, NumberTraits, entities } from '@/model/entities';
+import { entities } from '@/model/entities';
 import { TestSequelizeModule } from '@/../test/utils/sequelize.test.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 
@@ -14,7 +14,7 @@ describe('TraitController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigurationModule,
-        TestSequelizeModule.forRootAsync([StringTraits, NumberTraits]),
+        TestSequelizeModule.forRootAsync(entities),
         SequelizeModule.forFeature(entities),
       ],
       controllers: [TraitController],

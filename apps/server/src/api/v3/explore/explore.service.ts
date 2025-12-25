@@ -2,14 +2,10 @@ import { ConfigService } from '@nestjs/config';
 import { HttpException, Inject, Injectable, Logger } from '@nestjs/common';
 import {
   Account,
-  AccountAccountFollow,
   Asset,
   AssetAsEthAccount,
   AssetExtra,
-  AvatarDecoration,
-  Badge,
   Collection,
-  CollectionVolumeAllDays,
   Contract,
   Currency,
   Wallet,
@@ -43,14 +39,12 @@ export class ExploreService {
   constructor(
     @InjectModel(Asset)
     private assetRepository: typeof Asset,
-    @Inject(ProviderTokens.AssetExtra)
+    @InjectModel(AssetExtra)
     private assetExtraRepository: typeof AssetExtra,
-    @Inject(ProviderTokens.Currency)
+    @InjectModel(Currency)
     private currencyRepository: typeof Currency,
     @InjectModel(AssetAsEthAccount)
     private assetAsEthAccountRepository: typeof AssetAsEthAccount,
-    @InjectModel(AccountAccountFollow)
-    private readonly accountAccountFollowRepository: typeof AccountAccountFollow,
     @InjectModel(Collection)
     private collectionRepository: typeof Collection,
     @InjectModel(Contract)
@@ -59,8 +53,6 @@ export class ExploreService {
     private readonly accountRepository: typeof Account,
     @InjectModel(Wallet)
     private readonly walletRepository: typeof Wallet,
-    @InjectModel(CollectionVolumeAllDays)
-    private collectionVolumeAllDaysProvider: typeof CollectionVolumeAllDays,
 
     private exploreCoreService: ExploreCoreService,
     private traitService: TraitService,
@@ -71,7 +63,7 @@ export class ExploreService {
 
     @Inject(ProviderTokens.Sequelize)
     private readonly sequelizeInstance: Sequelize,
-  ) { }
+  ) {}
 
   async assets(filter: keywordsAssetsQueryDTO) {
     try {
@@ -139,8 +131,8 @@ export class ExploreService {
         assetIds =
           assetIds.length > 0
             ? assetIds.filter((id) =>
-              (keywordAssetIds as any[]).map((e) => e.id).includes(id),
-            )
+                (keywordAssetIds as any[]).map((e) => e.id).includes(id),
+              )
             : (keywordAssetIds as any[]).map((e) => e.id);
         if (assetIds.length === 0) return { rows: [], count: 0 };
       }
@@ -437,7 +429,9 @@ export class ExploreService {
         if (keywords.startsWith('0x')) {
           // contract address
           // assetWhere.push(`contract.address = :contractAddress`);
-          whereSql.push(`encode(ae.contract_address, 'escape') = :contractAddress`);
+          whereSql.push(
+            `encode(ae.contract_address, 'escape') = :contractAddress`,
+          );
         } else {
           // assetWhere.push(`(lower(asset.name) like :keywordsLike)`);
           whereSql.push(`(lower(ae.asset_name) like :keywordsLike)`);
@@ -538,11 +532,13 @@ export class ExploreService {
       ) => {
         const _joinSql = [...joinsSql, ...orderJoinsSql];
         const _whereSql = [...whereSql, ...orderWhereSql];
-        return `${cteSql} select ${option.counting ? 'count(*) as count' : 'ae.asset_id as id'
-          } from asset_extra ae ${_joinSql.join(' ')} where ${_whereSql.join(
-            ' and ',
-          )} ${sorts.length > 0 ? 'order by ' + sorts.join(',') : ''}${option.paging ? ' limit :limit offset :offset' : ''
-          }`;
+        return `${cteSql} select ${
+          option.counting ? 'count(*) as count' : 'ae.asset_id as id'
+        } from asset_extra ae ${_joinSql.join(' ')} where ${_whereSql.join(
+          ' and ',
+        )} ${sorts.length > 0 ? 'order by ' + sorts.join(',') : ''}${
+          option.paging ? ' limit :limit offset :offset' : ''
+        }`;
       };
 
       const sqlOption = {
@@ -762,7 +758,8 @@ export class ExploreService {
           orderBys.push(sortByCreatedAtOrder);
         } else if (sortByRarityRanking) {
           orderBys.push(
-            `ae.rarity_ranking ${sortByRarityRanking.startsWith('-') ? 'DESC' : 'ASC'
+            `ae.rarity_ranking ${
+              sortByRarityRanking.startsWith('-') ? 'DESC' : 'ASC'
             }`,
           );
           orderBys.push(sortByCreatedAtOrder);
@@ -967,10 +964,11 @@ export class ExploreService {
     ) => {
       const _joinSql = [...joinsSql];
       const _whereSql = [...whereSql];
-      return `${cteSql} select ${option.counting ? 'count(*) as count' : 'ae.asset_id as id'
-        } from asset_extra ae ${_joinSql.join(' ')} where ${_whereSql.join(
-          ' and ',
-        )}${option.paging ? ' limit :limit offset :offset' : ''}`;
+      return `${cteSql} select ${
+        option.counting ? 'count(*) as count' : 'ae.asset_id as id'
+      } from asset_extra ae ${_joinSql.join(' ')} where ${_whereSql.join(
+        ' and ',
+      )}${option.paging ? ' limit :limit offset :offset' : ''}`;
     };
 
     const sqlOption = {
@@ -1166,7 +1164,8 @@ export class ExploreService {
         orderBys.push(sortByCreatedAtOrder);
       } else if (sortByRarityRanking) {
         orderBys.push(
-          `ae.rarity_ranking ${sortByRarityRanking.startsWith('-') ? 'DESC' : 'ASC'
+          `ae.rarity_ranking ${
+            sortByRarityRanking.startsWith('-') ? 'DESC' : 'ASC'
           }`,
         );
         orderBys.push(sortByCreatedAtOrder);
@@ -1218,27 +1217,8 @@ export class ExploreService {
     filter.limit = filter.limit > 16 ? 16 : filter.limit;
 
     // 根據用戶身份返回帶有isFollowing數據
-    const wrapAccounts = async (user, accounts: Account[]) => {
-      const res = await Promise.all(
-        accounts.map(async (account) => {
-          if (user) {
-            const accountAccountFollow =
-              await this.accountAccountFollowRepository.findOne({
-                where: {
-                  followerId: user.id,
-                  followingId: account.id,
-                  isFollow: true,
-                },
-              });
-            return {
-              ...account.toJSON(),
-              isFollowing: accountAccountFollow ? true : false,
-            };
-          }
-          return account;
-        }),
-      );
-      return res;
+    const wrapAccounts = async (_user, accounts: Account[]) => {
+      return accounts.map((account) => account.toJSON());
     };
 
     // 如果keywords為空的情況，返回推薦用戶（根據follower倒序）
@@ -1248,7 +1228,6 @@ export class ExploreService {
       }
       const { rows, count } = await this.accountRepository.findAndCountAll({
         where: { block: { [Op.not]: BlockStatus.BLOCKED } },
-        include: [{ model: AvatarDecoration }, { model: Badge }],
         limit: filter.limit,
         offset: (filter.page - 1) * filter.limit,
         order: [['follower', 'desc']],
@@ -1314,14 +1293,6 @@ export class ExploreService {
         id: accountIds,
         block: { [Op.not]: BlockStatus.BLOCKED },
       },
-      include: [
-        {
-          model: AvatarDecoration,
-        },
-        {
-          model: Badge,
-        },
-      ],
       limit: filter.limit,
       offset: (filter.page - 1) * filter.limit,
       order: accountOrder,

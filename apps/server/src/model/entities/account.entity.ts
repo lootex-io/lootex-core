@@ -14,14 +14,7 @@ import {
   HasMany,
   HasOne,
 } from 'sequelize-typescript';
-import {
-  AccountAvatarDecoration,
-  AccountBadge,
-  AccountSocialToken,
-  AvatarDecoration,
-  Badge,
-  Wallet,
-} from '@/model/entities';
+import { Wallet } from '@/model/entities';
 import { BlockStatus } from '@/model/entities/constant-model';
 
 @Table({
@@ -140,20 +133,6 @@ export class Account extends Model {
 
   @AllowNull(true)
   @Column({
-    field: 'badge_id',
-    type: DataType.UUID,
-  })
-  badgeId: string;
-
-  @AllowNull(true)
-  @Column({
-    field: 'avatar_decoration_id',
-    type: DataType.UUID,
-  })
-  avatarDecorationId: string;
-
-  @AllowNull(true)
-  @Column({
     field: 'referral_code',
     type: DataType.STRING,
   })
@@ -173,33 +152,4 @@ export class Account extends Model {
   })
   privyUserId: string;
 
-  @HasMany(() => AccountBadge, {
-    foreignKey: 'accountId',
-    sourceKey: 'id',
-  })
-  Badges: Array<AccountBadge>;
-
-  @HasOne(() => Badge, {
-    foreignKey: 'id',
-    sourceKey: 'badgeId',
-  })
-  Badge: Badge;
-
-  @HasOne(() => AvatarDecoration, {
-    foreignKey: 'id',
-    sourceKey: 'avatarDecorationId',
-  })
-  AvatarDecoration: AvatarDecoration;
-
-  @HasMany(() => AccountAvatarDecoration, {
-    foreignKey: 'accountId',
-    sourceKey: 'id',
-  })
-  AvatarDecorations: Array<AccountAvatarDecoration>;
-
-  @HasMany(() => AccountSocialToken, {
-    foreignKey: 'accountId',
-    sourceKey: 'id',
-  })
-  AccountSocialTokens: Array<AccountSocialToken>;
 }

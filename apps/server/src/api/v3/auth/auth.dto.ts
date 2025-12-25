@@ -21,7 +21,6 @@ import {
   AuthSupportedWalletTransport,
   SocialPlatform,
 } from './auth.interface';
-import { modifyGmail } from '@/common/utils/modify-gmail';
 import { EMAIL_BLACKLIST } from '@/common/utils';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotProfanity } from './auth.decorator';

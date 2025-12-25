@@ -451,13 +451,4 @@ export class CollectionController {
   }
 
   // updateCollectionTraits removed
-
-  @Get('/collections/:slug/drop')
-  @Cacheable({ key: 'collections:drop-info', seconds: 15 })
-  async getDropInfo(
-    @Param('slug') slug: string,
-    @Query('tokenId') tokenId?: string,
-  ) {
-    return await this.collectionService.getDropInfo(slug, tokenId);
-  }
 }

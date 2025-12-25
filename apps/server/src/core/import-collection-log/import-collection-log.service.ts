@@ -1,7 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
-import { ImportCollectionLog } from '@/model/entities/import-collection-log.entity';
-import { ImportCollectionErrorLog } from '@/model/entities/import-collection-error-log.entity';
 import { RpcQueryChain } from '@/common/libs/libs.service';
 import { CLOUDWATCH_LOGS } from '@/common/utils';
 import { ChainUtil } from '@/common/utils/chain.util';
@@ -16,12 +13,7 @@ export class ImportCollectionLogService {
   static CATEGORY_METADATA = 'metadata';
   static CATEGORY_OTHER = 'other';
 
-  constructor(
-    @InjectModel(ImportCollectionLog)
-    private readonly importCollectionLogRepository: typeof ImportCollectionLog,
-    @InjectModel(ImportCollectionErrorLog)
-    private readonly importCollectionErrorLogRepository: typeof ImportCollectionErrorLog,
-  ) {}
+  constructor() {}
 
   async createLog(options: {
     category: string;

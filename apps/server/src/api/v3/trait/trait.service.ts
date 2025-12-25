@@ -1,12 +1,7 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { literal, Op, QueryTypes } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import {
-  StringTraits,
-  NumberTraits,
-  AssetTraits,
-  Collection,
-} from '@/model/entities';
+import { AssetTraits, Collection } from '@/model/entities';
 import { GetTraitDTO, GetTraitsListDTO, GetTraitsTFDTO } from './trait.dto';
 import {
   GetAssetIdsByTrait,
@@ -875,7 +870,21 @@ export class TraitService {
 
   // TODO: no longer use
   async getTrait(query: GetTraitDTO) {
-    const [stringTraitRaw, numberTraitRaw] = await Promise.all([
+    type StringTraitRow = {
+      traitType: string;
+      displayType?: string;
+      value: string;
+      valueCount: number;
+    };
+    type NumberTraitRow = {
+      traitType: string;
+      displayType?: string;
+      valueMin: number;
+      valueMax: number;
+      valueCount: number;
+    };
+
+    const [stringTraitRaw, numberTraitRaw] = (await Promise.all([
       this.sequelizeInstance.query(
         `
           SELECT
@@ -901,8 +910,6 @@ export class TraitService {
               contractAddress: query.collectionAddress,
             }),
           },
-          model: StringTraits,
-          mapToModel: true,
           type: QueryTypes.SELECT,
         },
       ),
@@ -932,12 +939,10 @@ export class TraitService {
               contractAddress: query.collectionAddress,
             }),
           },
-          model: NumberTraits,
-          mapToModel: true,
           type: QueryTypes.SELECT,
         },
       ),
-    ]);
+    ])) as [StringTraitRow[], NumberTraitRow[]];
 
     const stringTraitGroup = groupBy((trait) => {
       return trait.traitType;

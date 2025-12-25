@@ -25,22 +25,16 @@
     "test:debug": "NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "NODE_ENV=test jest --config --runInBand ./test/jest-e2e.json",
     "queue": "nest start --config queue-cli.json",
-    "update-opensea-collection": "node -r dotenv/config ./scripts/main.js",
     "currency-price": "nest start --config currency-price-cli.json",
     "order-sync": "nest start --config order-sync-cli.json",
-    "task-paymaster": "nest start --config task-paymaster-cli.json",
-    "task-aggregator": "nest start --config task-aggregator-cli.json",
     "event-poller": "nest start --config event-poller-cli.json",
-    "event-poller-gp": "nest start --config event-poller-gp-cli.json",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
     "batch-owner-assets": "nest start --config batch-owner-assets-cli.json",
     "batch-asset-owners": "nest start --config batch-asset-owners-cli.json",
     "batch-contract-assets": "nest start --config batch-contract-assets-cli.json",
     "batch-asset-metadata": "nest start --config batch-asset-metadata-cli.json",
     "batch-collection-volume": "nest start --config batch-collection-volume-cli.json",
-    "studio-ipfs": "nest start --config task-studio-ipfs-cli.json",
     "collection-trading-data": "nest start --config collection-trading-data-cli.json",
-    "task-tx-tracking": "nest start --config task-tx-tracking-cli.json",
     "event-poller-nft-transfer": "nest start --config event-poller-nft-transfer-cli.json"
   },
   "dependencies": {
@@ -65,7 +59,6 @@
     "@nestjs/terminus": "^10.2.0",
     "@nestjs/throttler": "^4.2.1",
     "@privy-io/server-auth": "^1.6.1",
-    "@supercharge/request-ip": "^1.2.0",
     "@types/cookie": "^0.5.4",
     "@types/cron": "^2.4.0",
     "@types/mime-types": "^2.1.4",
@@ -148,8 +141,7 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "5.3.3",
-    "umzug": "^3.5.1",
-    "wrangler": "4.16.1"
+    "umzug": "^3.5.1"
   },
   "resolutions": {
     "rimraf": "^5.0.5",

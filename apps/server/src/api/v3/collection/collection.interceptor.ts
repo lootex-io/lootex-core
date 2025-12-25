@@ -26,19 +26,6 @@ export class CollectionListInterceptor implements NestInterceptor {
         collections: data.rows
           .filter((collection) => !!collection)
           .map((collection) => {
-            let collectionVolume;
-            if (collection.CollectionVolumeAllDays) {
-              collectionVolume = collection.CollectionVolumeAllDays;
-            } else if (collection.CollectionVolumeThirtyDays) {
-              collectionVolume = collection.CollectionVolumeThirtyDays;
-            } else if (collection.CollectionVolumeSevenDays) {
-              collectionVolume = collection.CollectionVolumeSevenDays;
-            } else if (collection.CollectionVolumeToday) {
-              collectionVolume = collection.CollectionVolumeToday;
-            } else {
-              collectionVolume = null;
-            }
-
             return {
               id: collection.id,
               ownerAccountId: collection.ownerAccountId,
@@ -66,9 +53,8 @@ export class CollectionListInterceptor implements NestInterceptor {
 
               totalOwners: collection.totalOwners,
               totalItems: collection.totalItems,
-              totalVolume:
-                collectionVolume?.volume || collection?.totalVolume || 0,
-              totalTradingCount: collectionVolume?.count || 0,
+              totalVolume: collection?.totalVolume || 0,
+              totalTradingCount: collection?.totalTradingCount || 0,
               featured: collection.randomAssets,
               floorPrice: collection?.floorPrice,
               orderInfo: collection?.orderInfo,

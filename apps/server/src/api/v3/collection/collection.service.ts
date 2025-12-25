@@ -21,10 +21,6 @@ import {
   Account,
   SeaportOrder,
   SeaportOrderAsset,
-  CollectionVolumeAllDays,
-  CollectionVolumeThirtyDays,
-  CollectionVolumeSevenDays,
-  CollectionVolumeToday,
   AssetExtra,
   CollectionTradingBoardOneHour,
   CollectionTradingBoardOneDay,
@@ -33,8 +29,6 @@ import {
   AssetTraits,
   TradingRecordLog,
   CollectionTradingData,
-  StudioContract,
-  StudioContractDrop,
 } from '@/model/entities';
 import { FindResponse } from '@/api/v3/asset/asset.interface';
 import {
@@ -42,7 +36,6 @@ import {
   CollectionFindResponse,
   CollectionExtends,
   ExploreCollectionsByOpt,
-  CollectionVolumeViewTableName,
   CollectionInfo,
   TimeRange,
 } from '@/api/v3/collection/collection.interface';
@@ -63,13 +56,11 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ProviderTokens } from '@/model/providers';
 import { logRunDuration } from '@/common/decorator/log-run-duration.decorator';
 import { BlockStatus } from '@/model/entities/constant-model';
-import { ContractStatus } from '@/api/v3/studio/studio.interface';
 import { CollectionDao } from '@/core/dao/collection-dao';
 import escapeString from 'escape-sql-string';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
 import { Cacheable } from '@/common/decorator/cacheable.decorator';
 import { TraitDao } from '@/core/dao/trait-dao';
-import axios from 'axios';
 import * as mimeTypes from 'mime-types';
 import { ethers } from 'ethers';
 import {
@@ -81,17 +72,11 @@ import { OrderDao } from '@/core/dao/order-dao';
 import { CollectionTradingBoard } from '@/model/entities/collection-trading-board/collection-trading-board.entity';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { AggregatorOpenSeaCollection } from '@/model/entities/aggregator/aggregator-watched-collection';
 import { Subject } from 'rxjs';
 import BigNumber from 'bignumber.js';
 
 const COLLECTION_MASTER_WALLET_ADDRESS =
   '0x0000000000000000000000000000000000000000';
-
-interface OpenSeaPrice {
-  value: number;
-  currency: string;
-}
 
 @Injectable()
 export class CollectionService implements OnModuleDestroy {
@@ -128,18 +113,6 @@ export class CollectionService implements OnModuleDestroy {
     @InjectModel(Account)
     private readonly accountRepository: typeof Account,
 
-    @InjectModel(CollectionVolumeAllDays)
-    private collectionVolumeAllDaysRepository: typeof CollectionVolumeAllDays,
-
-    @InjectModel(CollectionVolumeThirtyDays)
-    private collectionVolumeThirtyDaysRepository: typeof CollectionVolumeThirtyDays,
-
-    @InjectModel(CollectionVolumeSevenDays)
-    private collectionVolumeSevenDaysRepository: typeof CollectionVolumeSevenDays,
-
-    @InjectModel(CollectionVolumeToday)
-    private collectionVolumeTodayRepository: typeof CollectionVolumeToday,
-
     @InjectModel(CollectionTradingBoardOneHour)
     private collectionTradingBoardOneHourRepository: typeof CollectionTradingBoardOneHour,
 
@@ -162,9 +135,6 @@ export class CollectionService implements OnModuleDestroy {
     @InjectModel(CollectionTradingData)
     private collectionTradingDataRepository: typeof CollectionTradingData,
 
-    @InjectModel(StudioContract)
-    private studioContractRepository: typeof StudioContract,
-
     @Inject(ProviderTokens.Sequelize)
     private readonly sequelizeInstance: Sequelize,
 
@@ -178,8 +148,6 @@ export class CollectionService implements OnModuleDestroy {
     private readonly configService: ConfigurationService,
     private readonly cacheService: CacheService,
 
-    @InjectModel(AggregatorOpenSeaCollection)
-    private readonly openSeaCollectionRepository: typeof AggregatorOpenSeaCollection,
   ) { }
 
   // use to get account created collection
@@ -289,11 +257,6 @@ export class CollectionService implements OnModuleDestroy {
             row.id,
           );
           row.totalItems = await this.getCacheTotalItemsByCollectionId(row.id);
-          row.CollectionVolumeAllDays = {};
-          row.CollectionVolumeAllDays.volume = await this.totalVolume(row.id);
-          row.CollectionVolumeAllDays.count = await this.totalTradingCount(
-            row.id,
-          );
 
           return row;
         },
@@ -892,39 +855,13 @@ export class CollectionService implements OnModuleDestroy {
     seconds: 60 * 5,
   })
   async totalVolume(id: string): Promise<number> {
-    try {
-      const volume = await this.collectionVolumeAllDaysRepository.findOne({
-        attributes: ['volume'],
-        where: {
-          collectionId: id,
-        },
-      });
-
-      if (!volume) {
-        return 0;
-      }
-
-      return volume.volume;
-    } catch (err) {
-      this.logger.error(err);
-      return 0;
-    }
+    void id;
+    return 0;
   }
 
   async totalTradingCount(id: string): Promise<number> {
-    try {
-      const count = await this.collectionVolumeAllDaysRepository.findOne({
-        attributes: ['count'],
-        where: {
-          collectionId: id,
-        },
-      });
-
-      return count ? count.count : 0;
-    } catch (err) {
-      this.logger.error(err);
-      return 0;
-    }
+    void id;
+    return 0;
   }
 
   async getCacheTotalItemsByCollectionId(
@@ -1334,26 +1271,6 @@ export class CollectionService implements OnModuleDestroy {
         });
       }
 
-      // --- trading volume ---
-      let collectionTradingVolume = CollectionVolumeAllDays;
-      let collectionTradingVolumeTableName = `CollectionVolumeAllDays`;
-      if (opts.tradingDays == 'alldays') {
-        collectionTradingVolume = CollectionVolumeAllDays;
-        collectionTradingVolumeTableName = `CollectionVolumeAllDays`;
-      }
-      if (opts.tradingDays == '30days') {
-        collectionTradingVolume = CollectionVolumeThirtyDays;
-        collectionTradingVolumeTableName = `CollectionVolumeThirtyDays`;
-      }
-      if (opts.tradingDays == '7days') {
-        collectionTradingVolume = CollectionVolumeSevenDays;
-        collectionTradingVolumeTableName = `CollectionVolumeSevenDays`;
-      }
-      if (opts.tradingDays == 'today') {
-        collectionTradingVolume = CollectionVolumeToday;
-        collectionTradingVolumeTableName = `CollectionVolumeToday`;
-      }
-
       // --- sorting ---
       const collectionOrder: sequelize.Order = [['createdAt', 'DESC']];
       if (opts.keywords) {
@@ -1370,45 +1287,8 @@ export class CollectionService implements OnModuleDestroy {
         ]);
       }
 
-      if (opts.sortBy) {
-        if (
-          opts.sortBy[0] === 'tradingVolume' ||
-          opts.sortBy[0] === '-tradingVolume'
-        ) {
-          collectionOrder.unshift([
-            collectionTradingVolumeTableName,
-            'volume',
-            'DESC NULLS LAST',
-          ]);
-        }
-        if (opts.sortBy[0] === '+tradingVolume') {
-          collectionOrder.unshift([
-            collectionTradingVolumeTableName,
-            'volume',
-            'ASC NULLS FIRST',
-          ]);
-        }
-        if (
-          opts.sortBy[0] === 'tradingCount' ||
-          opts.sortBy[0] === '-tradingCount'
-        ) {
-          collectionOrder.unshift([
-            collectionTradingVolumeTableName,
-            'count',
-            'DESC NULLS LAST',
-          ]);
-        }
-        if (opts.sortBy[0] === '+tradingCount') {
-          collectionOrder.unshift([
-            collectionTradingVolumeTableName,
-            'count',
-            'ASC NULLS FIRST',
-          ]);
-        }
-
-        if (opts.sortBy[0] === 'isCampaign202408Featured') {
-          collectionOrder.unshift(['isCampaign202408Featured', 'DESC']);
-        }
+      if (opts.sortBy?.[0] === 'isCampaign202408Featured') {
+        collectionOrder.unshift(['isCampaign202408Featured', 'DESC']);
       }
 
       collectionOrder.unshift(['is_verified', 'DESC']);
@@ -1422,11 +1302,6 @@ export class CollectionService implements OnModuleDestroy {
             : [])[0],
           block: { [Op.not]: BlockStatus.BLOCKED },
         },
-        include: [
-          {
-            model: collectionTradingVolume,
-          },
-        ],
         limit: opts.limit,
         offset: (opts.page - 1) * opts.limit,
         order: collectionOrder,
@@ -1489,55 +1364,12 @@ export class CollectionService implements OnModuleDestroy {
     opts: ExploreCollectionsByOpt,
     searchAccount: Account,
   ) {
-    try {
-      const query: WhereOptions = {};
-      if (opts.chainId) {
-        const chainShortName =
-          await this.libsService.findChainShortNameByChainId(opts.chainId);
-        query.chainShortName = chainShortName;
-      }
-      const { rows, count } =
-        await this.collectionVolumeAllDaysRepository.findAndCountAll({
-          where: query,
-          distinct: true,
-          include: [
-            {
-              model: Collection,
-              as: 'Collection',
-              where: {
-                block: { [Op.not]: BlockStatus.BLOCKED },
-              },
-              include: [],
-            },
-          ],
-          order: [['volume', 'DESC']],
-          limit: opts.limit,
-          offset: (opts.page - 1) * opts.limit,
-        });
-
-      return {
-        rows: rows.map((row) => row.Collection),
-        count,
-      };
-    } catch (err) {
-      return promise.reject(err);
-    }
-  }
-
-  @logRunDuration(new Logger(CollectionService.name))
-  async updateCollectionVolumeByViewTableName(
-    viewTableName: CollectionVolumeViewTableName,
-  ) {
-    try {
-      this.logger.debug(
-        `update collection volume view table: ${viewTableName}`,
-      );
-      const query = `REFRESH MATERIALIZED VIEW ${viewTableName}`;
-      return await this.sequelizeInstance.query(query, { useMaster: true });
-    } catch (err) {
-      this.logger.error(err);
-      return promise.resolve();
-    }
+    void opts;
+    void searchAccount;
+    return {
+      rows: [],
+      count: 0,
+    };
   }
 
   async getAssetsFromChainIdAndAddress(
@@ -1767,15 +1599,7 @@ export class CollectionService implements OnModuleDestroy {
   }
 
   async getCollectionTotalVolume(collectionId) {
-    return (
-      (
-        await this.collectionVolumeAllDaysRepository.findOne({
-          where: {
-            collectionId,
-          },
-        })
-      )?.volume || 0
-    );
+    return 0;
   }
 
   async getCollectionBestListingFromCache(
@@ -2556,250 +2380,6 @@ export class CollectionService implements OnModuleDestroy {
     }
   }
 
-  async getOpenSeaListings(slug: string): Promise<Map<string, OpenSeaPrice>> {
-    try {
-      if (!slug) {
-        this.logger.warn('No OpenSea slug provided');
-        return new Map();
-      }
-
-      const openSeaTokenPrices = new Map<string, OpenSeaPrice>();
-      let next = '';
-      let page = 1;
-
-      while (true) {
-        try {
-          this.logger.debug(
-            `Fetching OpenSea listings page ${page} for slug: ${slug}`,
-          );
-          const url = `https://api.opensea.io/api/v2/listings/collection/${slug}/best?limit=100${next ? `&next=${encodeURIComponent(next)}` : ''}`;
-
-          const apiKeys = this.configService
-            .get<string>('OPENSEA_API_KEY')
-            .split(',');
-          if (!apiKeys?.length) {
-            this.logger.error('OpenSea API key is not configured');
-            return new Map();
-          }
-
-          const response = await firstValueFrom(
-            this.httpService.get(url, {
-              headers: {
-                accept: 'application/json',
-                'x-api-key': apiKeys[0],
-              },
-            }),
-          );
-
-          if (!response?.data?.listings) {
-            this.logger.warn(
-              'OpenSea API response has no listings:',
-              response.data,
-            );
-            break;
-          }
-
-          // 保存每个 token 的价格信息
-          response.data.listings.forEach((listing) => {
-            const price = {
-              value: parseFloat(listing.price.current.value),
-              currency: listing.price.current.currency,
-            };
-            listing.protocol_data.parameters.offer.forEach((offer) => {
-              const tokenId = offer.identifierOrCriteria;
-              // 只保存最低价格
-              if (
-                !openSeaTokenPrices.has(tokenId) ||
-                price.value < openSeaTokenPrices.get(tokenId).value
-              ) {
-                openSeaTokenPrices.set(tokenId, price);
-              }
-            });
-          });
-
-          if (response.data.next) {
-            next = response.data.next;
-            page++;
-          } else {
-            break;
-          }
-        } catch (error) {
-          this.logger.error(`Error fetching page ${page}:`, error);
-          if (error.response) {
-            this.logger.error('Response status:', error.response.status);
-            this.logger.error('Response data:', error.response.data);
-          }
-          break;
-        }
-      }
-
-      this.logger.debug(
-        `Found ${openSeaTokenPrices.size} OpenSea listings in total`,
-      );
-      return openSeaTokenPrices;
-    } catch (error) {
-      this.logger.error('Error in getOpenSeaListings:', error);
-      return new Map();
-    }
-  }
-
-  async syncOpenSeaCollectionListings(slug: string): Promise<any[]> {
-    const abortController = new AbortController();
-    this.activeRequests.add(abortController);
-
-    try {
-      if (!slug) {
-        throw new HttpException('Slug is required', HttpStatus.BAD_REQUEST);
-      }
-
-      const cacheKey = `sync-opensea-listings:${slug}`;
-      const cached = await this.cacheService.getCache(cacheKey);
-
-      if (cached) {
-        return cached as any[];
-      }
-      await this.cacheService.setCache(cacheKey, '11111', 10);
-
-      const collection = await this.getCollectionBySlug(slug);
-      if (!collection) {
-        throw new HttpException('Collection not found', HttpStatus.BAD_REQUEST);
-      }
-
-      const openseaAgg = await this.openSeaCollectionRepository.findOne({
-        attributes: ['slug'],
-        where: {
-          chain: collection.chainId,
-          address: collection.contractAddress,
-        },
-      });
-
-      const openSeaSlug = openseaAgg?.slug;
-
-      if (!openSeaSlug) {
-        this.logger.warn(
-          `No OpenSea slug found for collection ${collection.contractAddress}`,
-        );
-        return;
-      }
-
-      // 1. 获取 OpenSea listings 和价格
-      const openSeaTokenPrices = await this.getOpenSeaListings(openSeaSlug);
-      const openSeaTokens = Array.from(openSeaTokenPrices.keys()).slice(0, 30);
-
-      // 2. 获取 Lootex listings
-      const lootexTokenIds = await this.getLootexLocalListings(openSeaSlug);
-      const lootexFirst30 = lootexTokenIds.slice(0, 30);
-      // 3. 比较两个列表找出差异
-
-      this.logger.debug('openSeaTokens:', openSeaTokens.length);
-      this.logger.debug('lootexFirst30:', lootexFirst30.length);
-
-      const onlyInOpenSea = openSeaTokens.filter(
-        (id) => !lootexFirst30.includes(id),
-      );
-      const onlyInLootex = lootexFirst30.filter(
-        (id) => !openSeaTokens.includes(id),
-      );
-
-      if (onlyInOpenSea.length > 0 || onlyInLootex.length > 0) {
-        this.logger.debug('NEED SYNC: Differences found in listings');
-
-        if (onlyInOpenSea.length > 0) {
-          this.logger.debug('\nTokenIds only in OpenSea:');
-          this.logger.debug('----------------------------------------');
-          onlyInOpenSea.forEach((id) => {
-            const price = openSeaTokenPrices.get(id);
-            this.logger.debug(
-              `TokenId: ${id}, Price: ${price.value} ${price.currency}`,
-            );
-          });
-        }
-
-        if (onlyInLootex.length > 0) {
-          this.logger.debug('\nTokenIds only in Lootex:');
-          this.logger.debug('----------------------------------------');
-          onlyInLootex.forEach((id) => {
-            this.logger.debug(`TokenId: ${id}`);
-          });
-        }
-
-        // 4. 只同步需要更新的 tokenIds
-        const tokensToSync = [...onlyInOpenSea, ...onlyInLootex];
-        this.logger.debug(`Total tokens to sync: ${tokensToSync.length}`);
-
-        const orders = tokensToSync.map((tokenId) => ({
-          chainId: collection.chainId.toString(),
-          contractAddress: collection.contractAddress,
-          tokenId: tokenId.toString(),
-        }));
-
-        const { results, errors } = await this.rateLimitedSyncOrders(orders, {
-          signal: abortController.signal,
-        });
-
-        this.logger.debug(
-          `Sync completed - Success: ${results.filter((r) => r !== null).length}, Failed: ${errors.length}`,
-        );
-        return results;
-      } else {
-        this.logger.debug('All listings are in sync');
-        return [];
-      }
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        this.logger.warn('Request was aborted due to service shutdown');
-        return [];
-      }
-      throw error;
-    } finally {
-      this.activeRequests.delete(abortController);
-    }
-  }
-
-  async getLootexLocalListings(slug: string): Promise<string[]> {
-    try {
-      const baseUrl = this.configService.get('BASE_URL');
-      if (!baseUrl) {
-        this.logger.error('BASE_URL is not configured');
-        return [];
-      }
-
-      const url = `${baseUrl}/api/v3/aggregator/os/collection-nfts?slug=${slug}`;
-      this.logger.debug('Lootex API URL:', url);
-
-      const response = await axios.get(url, {
-        headers: {
-          'x-client-id': 'lootex',
-          'x-api-key': '0394ad1f-260c-4422-99f5-64383606a201',
-        },
-      });
-      this.logger.debug('Lootex API response status:', response.data);
-
-      if (!response?.data?.tokens) {
-        this.logger.warn('Lootex API response has no tokens:', response.data);
-        return [];
-      }
-
-      const validTokens = response.data.tokens.filter(
-        (tokenId) => tokenId != null,
-      );
-      this.logger.debug(`Found ${validTokens.length} valid tokens from Lootex`);
-
-      return validTokens;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        this.logger.error('Lootex API error:', {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message,
-        });
-      } else {
-        this.logger.error('Unknown error fetching Lootex listings:', error);
-      }
-      return [];
-    }
-  }
-
   private async rateLimitedSyncOrders(
     orders: Array<{
       chainId: string;
@@ -3177,131 +2757,4 @@ export class CollectionService implements OnModuleDestroy {
     return null;
   }
 
-  async getDropInfo(slug: string, tokenId?: string) {
-    const collection = await this.collectionRepository.findOne({
-      attributes: ['id', 'slug', 'contractAddress', 'chainId', 'block'],
-      where: {
-        slug,
-      },
-    });
-
-    if (!collection) {
-      throw SimpleException.fail({ debug: 'collection not found' });
-    }
-
-    if (collection.block === BlockStatus.BLOCKED) {
-      throw SimpleException.fail({ debug: 'collection is blocked' });
-    }
-
-    const contract = await this.studioContractRepository.findOne({
-      attributes: [
-        'id',
-        'name',
-        'address',
-        'dropName',
-        'dropDescription',
-        'dropUrls',
-        'schemaName',
-      ],
-      where: {
-        chainId: collection.chainId,
-        address: collection.contractAddress,
-      },
-      include: [
-        {
-          model: StudioContractDrop,
-          attributes: [
-            'id',
-            'allowlist',
-            'amount',
-            'price',
-            'currencyId',
-            'startTime',
-            'limitPerWallet',
-            'tokenId',
-          ],
-          // 如果有 tokenId 就用 tokenId 查詢
-          where: tokenId ? { tokenId } : {},
-          include: [
-            {
-              model: Currency,
-              attributes: ['symbol', 'address', 'decimals'],
-            },
-          ],
-          order: [['startTime', 'ASC']], // 按 startTime 排序
-          separate: true, // 單獨查詢以實現排序
-        },
-      ],
-    });
-
-    if (!contract) {
-      throw SimpleException.fail({ debug: 'contract not found' });
-    }
-
-    // 如果用戶在拿 collection drop 的時候，drop 還沒開始，就把狀態改成 Sale
-    if (contract.drops && contract.drops.length > 0 && new Date() > contract.drops[0].startTime) {
-      contract.status = ContractStatus.Sale;
-      await contract.save();
-    }
-
-    return {
-      contract,
-    };
-  }
-
-  @Cacheable({ key: 'collection:autoUpdate:isMintingTag', seconds: 60 })
-  async autoUpdateIsMintingTag(contractAddress: string, chainId: string) {
-    const studioContract = await this.studioContractRepository.findOne({
-      attributes: ['id', 'status'],
-      where: {
-        address: contractAddress,
-        chainId,
-      },
-    });
-
-    // 確保不是用 studio 的 contract 不會被影響（像是合作 minting 的 contract）
-    if (!studioContract) {
-      this.logger.debug(
-        `[autoUpdateIsMintingTag] studioContract not found ${contractAddress}:${chainId}`,
-      );
-      return;
-    }
-
-    const collection = await this.collectionRepository.findOne({
-      where: {
-        contractAddress,
-        chainId,
-      },
-    });
-    if (
-      studioContract.status === ContractStatus.Sale &&
-      !collection.isMinting
-    ) {
-      if (!collection) {
-        throw new Error('[autoUpdateIsMintingTag] collection not found');
-      }
-
-      collection.isMinting = true;
-      await collection.save();
-
-      this.logger.debug(
-        `[autoUpdateIsMintingTag] update collection ${collection.id} isMinting to true`,
-      );
-      return;
-    }
-
-    if (studioContract.status !== ContractStatus.Sale && collection.isMinting) {
-      if (!collection) {
-        throw new Error('[autoUpdateIsMintingTag] collection not found');
-      }
-
-      collection.isMinting = false;
-      await collection.save();
-
-      this.logger.debug(
-        `[autoUpdateIsMintingTag] update collection ${collection.id} isMinting to false`,
-      );
-      return;
-    }
-  }
 }

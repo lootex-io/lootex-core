@@ -9,7 +9,6 @@ import { LibsService } from '@/common/libs/libs.service';
 import { ContractService } from '@/api/v3/contract/contract.service';
 import {
   Account,
-  AccountSocialToken,
   Asset,
   AssetAsEthAccount,
   AssetExtra,
@@ -55,15 +54,10 @@ import { CollectionDao } from '@/core/dao/collection-dao';
 import { AssetDao } from '@/core/dao/asset-dao';
 import { RefreshBlacklist } from './constants';
 import { Cacheable } from '@/common/decorator/cacheable.decorator';
-import { MonitorAlertChannel } from '@/model/entities/monitor-alert-channel.entity';
 
 import { logRunDuration } from '@/common/decorator/log-run-duration.decorator';
 import { asyncConcurrent } from '@/common/utils/utils.pure';
 import { RpcEnd } from '@/core/third-party-api/rpc/interfaces';
-import {
-  AuthSupportedWalletProviderEnum,
-  SocialPlatform,
-} from '../auth/auth.interface';
 // binding asset collection
 const chainShortNames = {
   '1': 'ETH',
@@ -111,9 +105,6 @@ export class AssetService {
     @InjectModel(Account)
     private accountRepository: typeof Account,
 
-    @InjectModel(AccountSocialToken)
-    private accountSocialTokenRepository: typeof AccountSocialToken,
-
     @InjectModel(SeaportOrder)
     private seaportOrderRepository: typeof SeaportOrder,
 
@@ -137,9 +128,6 @@ export class AssetService {
     private readonly assetDao: AssetDao,
     private readonly collectionDao: CollectionDao,
     private readonly sequelizeInstance: Sequelize,
-
-    @InjectModel(MonitorAlertChannel)
-    private alertChannelRepository: typeof MonitorAlertChannel,
   ) { }
 
   @Cacheable({
@@ -2015,35 +2003,6 @@ export class AssetService {
           `syncCollection completed ${chainId} ${contractAddress} cost time ${timespan} second`,
         );
 
-        // Send syncCollection Completed message to Channel
-        const alertKey = this.generatorAlertKey(
-          'syncCollection',
-          MonitorAlertChannel.TYPE_SYNC_COLLECTION_RPC,
-          `${chainId} ${contractAddress}`,
-        );
-
-        this.logger.log(`syncCollection alertKey ${alertKey} `);
-
-        this.updateAlertChannel(alertKey, async () => {
-          await this.alertChannelRepository.create({
-            category: 'syncCollection',
-            alertKey: alertKey,
-            sum: 1,
-            alertAccount: null,
-            alertReason: `Collection Sync Complete: ${chainId}-${contractAddress} by ${user.username}`,
-            type: MonitorAlertChannel.TYPE_SYNC_COLLECTION_RPC,
-            status: 0,
-          });
-          const messages = [
-            'Collection Sync Complete',
-            'Report Type: Task Finished',
-            `Target : ${chainId}-${contractAddress}`,
-            `Time: ${new Date()}`,
-            `Detail: Query Count ${assets.length}, skipCount ${skipCount}, syncedCount ${syncedCount}`,
-            `Time Cost : ${timespan} second`,
-          ];
-          return messages;
-        });
       })
       .catch((e) => {
         // Send syncCollection Error message to Channel
@@ -2463,144 +2422,4 @@ export class AssetService {
     };
   }
 
-  generatorAlertKey(category: string, type: number, value: string) {
-    return `${category}_${type}_${value}`;
-  }
-
-  async updateAlertChannel(alertKey: string, run: () => Promise<string[]>) {
-    const alertChannel = await this.alertChannelRepository.findOne({
-      where: { alertKey: alertKey },
-    });
-
-    if (alertChannel) {
-      alertChannel.sum = alertChannel.sum + 1;
-      await alertChannel.save();
-    } else {
-      const messages = await run();
-    }
-  }
-
-  async getAccountHoldingSoneiumBadge(discordId: string): Promise<{
-    success: boolean;
-    message: string;
-    data: {
-      badgeName: string;
-      contractAddress: string;
-      holdingWalletAddresses: string[];
-    }[];
-  }> {
-    const accountSocialTokenRepository =
-      await this.accountSocialTokenRepository.findOne({
-        attributes: ['accountId'],
-        where: {
-          provider: SocialPlatform.DISCORD,
-          providerAccountId: discordId,
-        },
-      });
-
-    if (!accountSocialTokenRepository) {
-      return {
-        success: false,
-        message: 'not linked Discord on Lootex',
-        data: [],
-      };
-    }
-
-    const wallets = await this.walletRepository.findAll({
-      attributes: ['address'],
-      where: {
-        accountId: accountSocialTokenRepository.accountId,
-        // provider not AuthSupportedWalletProviderEnum.PRIVY_LIBRARY or PRIVY_LIBRARY_SA
-        // 因為 Soneium 不支援 Privy Library
-        [Op.not]: [
-          {
-            provider: AuthSupportedWalletProviderEnum.PRIVY_LIBRARY,
-          },
-          {
-            provider: AuthSupportedWalletProviderEnum.PRIVY_LIBRARY_SA,
-          },
-        ],
-      },
-    });
-
-    if (!wallets.length) {
-      return {
-        success: false,
-        message: 'not found wallet',
-        data: [],
-      };
-    }
-
-    // かんぱい! 0x1ded0cf7a76dfa20017f54edcb9283552a4254a6
-    // Cheers! 0x771570f2061d4496a8bf5763dacebf87837deb49
-    // ¡Salud! 0x7c3476829aab064d88be0c2e9656dbfbbc03409c
-    // Zô! 0x228d4e7799d146fc7a4a80c5cb2d7b92d892c340
-    // Υγειά μας! 0x964a727a7cdad2dcfff4415c1cd9459e05c58a0a
-    // 乾杯！ 0x76accfb47806ca2e93c2c143bc318dbd9d8d627d
-    interface holdingBadge {
-      badgeName: string;
-      contractAddress: string;
-      holdingWalletAddresses: string[];
-    }
-
-    const holdingBadges: holdingBadge[] = [
-      {
-        badgeName: 'かんぱい!',
-        contractAddress: '0x1ded0cf7a76dfa20017f54edcb9283552a4254a6',
-        holdingWalletAddresses: [],
-      },
-      {
-        badgeName: 'Cheers!',
-        contractAddress: '0x771570f2061d4496a8bf5763dacebf87837deb49',
-        holdingWalletAddresses: [],
-      },
-      {
-        badgeName: '¡Salud!',
-        contractAddress: '0x7c3476829aab064d88be0c2e9656dbfbbc03409c',
-        holdingWalletAddresses: [],
-      },
-      {
-        badgeName: 'Zô!',
-        contractAddress: '0x228d4e7799d146fc7a4a80c5cb2d7b92d892c340',
-        holdingWalletAddresses: [],
-      },
-      {
-        badgeName: 'Υγειά μας!',
-        contractAddress: '0x964a727a7cdad2dcfff4415c1cd9459e05c58a0a',
-        holdingWalletAddresses: [],
-      },
-      {
-        badgeName: '乾杯！',
-        contractAddress: '0x76accfb47806ca2e93c2c143bc318dbd9d8d627d',
-        holdingWalletAddresses: [],
-      },
-    ];
-
-    await promise.map(
-      wallets,
-      async (walletAddress) => {
-        await promise.map(
-          holdingBadges,
-          async (holdingBadge: holdingBadge) => {
-            const balance = await this.gatewayService.nativeGetBalanceOf(
-              '1868',
-              holdingBadge.contractAddress,
-              walletAddress.address,
-            );
-            if (balance?.toNumber() > 0) {
-              holdingBadge.holdingWalletAddresses.push(walletAddress.address);
-            }
-          },
-          { concurrency: 3 },
-        );
-      },
-      { concurrency: 3 },
-    );
-
-    return {
-      success: true,
-      message: 'success',
-      data: holdingBadges,
-    };
-  }
 }

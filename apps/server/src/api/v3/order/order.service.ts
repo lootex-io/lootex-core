@@ -33,15 +33,12 @@ import {
   AssetExtra,
   Blockchain,
   Collection,
-  CollectionVolumeAllDays,
   Contract,
   Currency,
-  GlobalValue,
   PollerProgress,
   SeaportOrder,
   SeaportOrderAsset,
   SeaportOrderHistory,
-  SwapHistory,
   Wallet,
 } from '@/model/entities';
 import BigNumber from 'bignumber.js';
@@ -119,7 +116,6 @@ const ORDER_PLATFORM_TYPE = {
   BLUR: 'blur',
   DEFAULT: 'default',
 };
-import { AggregatorCoreDao } from '@/core/aggregator-core/aggregator-core-dao/aggregator-core-dao';
 import { getAddress } from 'ethers/lib/utils';
 import { SimpleException } from '@/common/utils/simple.util';
 import {
@@ -171,15 +167,6 @@ export class OrderService {
     @InjectModel(PollerProgress)
     private pollerProgressRepository: typeof PollerProgress,
 
-    @InjectModel(SwapHistory)
-    private swapHistoryRepository: typeof SwapHistory,
-
-    @InjectModel(CollectionVolumeAllDays)
-    private collectionVolumeAllDaysRepository: typeof CollectionVolumeAllDays,
-
-    @InjectModel(GlobalValue)
-    private globalValueRepository: typeof GlobalValue,
-
     private readonly configService: ConfigService,
 
     private readonly blockchainService: BlockchainService,
@@ -202,8 +189,6 @@ export class OrderService {
 
     private orderDao: OrderDao,
     private collectionDao: CollectionDao,
-
-    private aggregatorCoreDao: AggregatorCoreDao,
 
     private collectionService: CollectionService,
 
@@ -1648,15 +1633,8 @@ export class OrderService {
   }
 
   async getCollectionTotalVolume(collectionId) {
-    return (
-      (
-        await this.collectionVolumeAllDaysRepository.findOne({
-          where: {
-            collectionId,
-          },
-        })
-      ).volume || 0
-    );
+    void collectionId;
+    return 0;
   }
 
   // 跟上面的 getCollectionOrderStatistic 一樣，這個理論上在大量訂單的 collection 會有比較好的效能，
@@ -3030,12 +3008,6 @@ export class OrderService {
             //     tokenId: string;
             //     fulfillStamp: number;
             // }]): Promise<void>
-
-            if (assets.length > 0) {
-              assets.forEach((asset) => {
-                this.aggregatorCoreDao.sendFulfillEventSqs([asset]);
-              });
-            }
           }
 
           return `[seaport:fulfilled] orderHash: ${orderFulfilledResponse.orderHash} offerer: ${orderFulfilledResponse.offerer} zone: ${orderFulfilledResponse.zone} recipient: ${orderFulfilledResponse.recipient} offer: ${orderFulfilledResponse.offer} consideration: ${orderFulfilledResponse.consideration}`;
@@ -3158,8 +3130,6 @@ export class OrderService {
             ip: dto.ip,
             area: dto.ipCountry,
           };
-
-          await this.swapHistoryRepository.create(recordData);
 
           return `FusionX v3 swap inToken: ${inToken} outToken: ${outToken} realInPrice: ${realInPrice} realOutPrice: ${realOutPrice}`;
         }

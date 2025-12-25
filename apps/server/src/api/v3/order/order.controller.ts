@@ -36,7 +36,6 @@ import { Cacheable } from '@/common/decorator/cacheable.decorator';
 import { ChainId } from '@/common/utils/types';
 import { NewAssetList } from '../asset/asset.interceptor';
 import * as promise from 'bluebird';
-import { CFIpCountry } from '@/common/decorator/cf-ip.decorator';
 import { RealIP } from 'nestjs-real-ip';
 
 @ApiTags('Order')
@@ -190,7 +189,6 @@ export class OrderController {
   @Put('orders/sync/:chainId/:txHash')
   async syncSeaportOrderByTxHash(
     @RealIP() ip,
-    @CFIpCountry() country,
     @Param('chainId')
     chainId: ChainId,
     @Param('txHash') txHash: string,
@@ -198,7 +196,7 @@ export class OrderController {
   ) {
     try {
       dto.ip = ip;
-      dto.ipCountry = country;
+      dto.ipCountry = null;
       return await this.orderService.syncSeaportOrderByTxHash(
         chainId,
         txHash,

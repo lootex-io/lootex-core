@@ -12,6 +12,7 @@ import { ProviderTokens } from '@/model/providers';
 import { OrderService } from '@/api/v3/order/order.service';
 import { CollectionService } from '../collection/collection.service';
 import { CollectionDao } from '@/core/dao/collection-dao';
+import { InjectModel } from '@nestjs/sequelize';
 
 /**
  * 放explore相关公用的方法
@@ -19,7 +20,7 @@ import { CollectionDao } from '@/core/dao/collection-dao';
 @Injectable()
 export class ExploreCoreService {
   constructor(
-    @Inject(ProviderTokens.AssetExtra)
+    @InjectModel(AssetExtra)
     private assetExtraRepository: typeof AssetExtra,
 
     private orderService: OrderService,
@@ -84,12 +85,12 @@ export class ExploreCoreService {
           // TODO: 如果有帶 slug 當查詢條件只要查一次，其他都用這次的就好
           const [bestCollectionOfferOrder, collectionFloorPrice] =
             await Promise.all([
-            this.orderService.getBestCollectionOffer(c.slug),
-            this.orderService.getCollectionBestListingFromCache(
-              c.contractAddress,
-              c.chainId.toString(),
-            ),
-          ]);
+              this.orderService.getBestCollectionOffer(c.slug),
+              this.orderService.getCollectionBestListingFromCache(
+                c.contractAddress,
+                c.chainId.toString(),
+              ),
+            ]);
           return {
             bestCollectionOfferOrder,
             collectionFloorPrice,

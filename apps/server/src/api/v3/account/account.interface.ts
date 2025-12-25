@@ -1,12 +1,5 @@
 import { Pagination } from '@/common/utils/utils.interface';
-import {
-  AccountAvatarDecoration,
-  AccountBadge,
-  AccountSocialToken,
-  AvatarDecoration,
-  Badge,
-  Wallet,
-} from '@/model/entities';
+import { Wallet } from '@/model/entities';
 
 
 export interface UploadFile {
@@ -40,18 +33,7 @@ export interface ReturnAccountResponse {
   updatedAt: Date;
   deletedAt: Date;
 
-  badgeId: string;
-  avatarDecorationId: string;
   referralCode: string;
-  Badges: Array<AccountBadge>;
-  Badge: Badge;
-  AvatarDecoration: AvatarDecoration;
-  AvatarDecorations: Array<AccountAvatarDecoration>;
-
-  AccountSocialTokens: Array<AccountSocialToken>;
-
-  follower: number;
-  following: number;
 }
 
 export interface GetAccountResponse extends ReturnAccountResponse {
@@ -80,27 +62,6 @@ export interface ExploreUsersByOpt {
   keywords: string[];
   limit: number;
   page: number;
-}
-
-export interface GetAccountFollow {
-  username: string;
-  limit: number;
-  page: number;
-}
-
-export interface FeaturedAssetSection {
-  name: string;
-  description: string;
-  rank: number;
-  featuredAssets: FeaturedAsset[];
-}
-
-export interface FeaturedAsset {
-  name: string;
-  description: string;
-  assetId: string;
-  rank: number;
-  asset?: any;
 }
 
 export const AccountAttributes = [

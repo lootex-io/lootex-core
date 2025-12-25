@@ -4,7 +4,6 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { entities } from '@/model/entities';
 import { CoreModule } from '@/core/core.module';
-import { WalletService } from '@/api/v3/wallet/wallet.service';
 import { CollectionService } from '@/api/v3/collection/collection.service';
 import { LibsService } from '@/common/libs/libs.service';
 import { ContractService } from '@/api/v3/contract/contract.service';
@@ -27,7 +26,6 @@ import { EventPollerNftTransferService } from './event-poller-nft-transfer.servi
     ContractService,
     LibsService,
     CollectionService,
-    WalletService,
     TraitService,
     AccountService,
     OrderService,

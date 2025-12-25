@@ -78,7 +78,6 @@ export const IPFS_GATEWAY = 'https://lootex.mypinata.cloud/ipfs/';
 // lootex admin
 export const LOOTEX_ADMIN_WALLET = '0x420Cb33bEE2774df6A8D2718DdBcBb57b0fdf3d3';
 
-
 // for update account assets
 export const MAIN_CHAIN_IDS = [
   1, 56, 137, 80001, 42161, 43114, 5000, 8453,
@@ -97,7 +96,6 @@ export enum CLOUDWATCH_LOGS {
   COMMON = 'common', // default
 }
 
-// 定义运行环境变量和值
 export const NODE_ENV = 'NODE_ENV';
 export const NODE_ENV_PRODUCTION = 'production';
 export const NODE_ENV_DEVELOPMENT = 'development';
@@ -106,4 +104,3 @@ export const SERVICE_FEE_ADDRESS = '0x44bc1e612e11d0acd2c43218ea55717ac28e3a40';
 
 export const SONEIUM_CONTRACT_ADDRESS =
   '0xcA11bde05977b3631167028862bE2a173976CA11';
-

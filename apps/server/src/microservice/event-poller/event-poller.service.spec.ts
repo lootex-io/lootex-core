@@ -4,7 +4,6 @@ import {
   Account,
   Wallet,
   AssetAsEthAccount,
-  EthAccount,
   Contract,
   Blockchain,
   SeaportOrder,
@@ -237,7 +236,6 @@ describe('EventPollerService', () => {
     await Account.destroy({ truncate: true, cascade: true });
     await Wallet.destroy({ truncate: true, cascade: true });
     await AssetAsEthAccount.destroy({ truncate: true, cascade: true });
-    await EthAccount.destroy({ truncate: true, cascade: true });
     await Contract.destroy({ truncate: true, cascade: true });
     await Blockchain.destroy({ truncate: true, cascade: true });
     await SeaportOrder.destroy({ truncate: true, cascade: true });

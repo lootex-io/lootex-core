@@ -5,7 +5,7 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
-import { GetLaunchpadListDTO, BiruMintLogPaginationDto } from './studio.dto';
+import { GetLaunchpadListDTO } from './studio.dto';
 import { StudioService } from './studio.service';
 import { StudioContractsListInterceptor } from './studio.interceptors';
 import { SimpleException } from '@/common/utils/simple.util';
@@ -35,16 +35,4 @@ export class StudioController {
     }
   }
 
-  @Get('contracts/mint')
-  @Cacheable({
-    key: 'contract:mint',
-    seconds: 10,
-  })
-  async getContractMintInfo(@Query() query: BiruMintLogPaginationDto) {
-    try {
-      return await this.studioService.getContractMintLog(query);
-    } catch (e) {
-      throw SimpleException.fail({ message: e.message });
-    }
-  }
 }

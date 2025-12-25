@@ -11,7 +11,6 @@ import {
   Asset,
   AssetAsEthAccount,
   Account,
-  EthAccount,
   Contract,
   Blockchain,
   entities,
@@ -79,7 +78,6 @@ describe('AssetService', () => {
   async function cleanup() {
     await AssetAsEthAccount.destroy({ truncate: true, cascade: true });
     await Asset.destroy({ truncate: true, cascade: true });
-    await EthAccount.destroy({ truncate: true, cascade: true });
     await Contract.destroy({ truncate: true, cascade: true });
     await Blockchain.destroy({ truncate: true, cascade: true });
   }
@@ -414,10 +412,6 @@ describe('AssetService', () => {
         chainId: chainId1,
       });
 
-      const user = await EthAccount.findOne({
-        where: { address: ownerAddress1 },
-      });
-      expect(user?.address).toBe(ownerAddress1);
       const contract = await Contract.findOne({
         where: { address: contract1.contractAddress },
       });

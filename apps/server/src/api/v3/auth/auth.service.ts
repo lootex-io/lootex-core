@@ -11,13 +11,8 @@ import {
 } from '@nestjs/common';
 import { CacheService } from '@/common/cache';
 import { ConfigurationService } from '@/configuration/configuration.service';
-import {
-  AUTH_CHALLENGE_CACHE_KEY_TEMPLATE,
-} from '@/common/utils/constants';
-import {
-  AccountAuthBaseDto,
-  AccountSignUpDto,
-} from './auth.dto';
+import { AUTH_CHALLENGE_CACHE_KEY_TEMPLATE } from '@/common/utils/constants';
+import { AccountAuthBaseDto, AccountSignUpDto } from './auth.dto';
 import {
   AuthSupportedAddress,
   AuthSupportedChainFamily,
@@ -35,7 +30,6 @@ import { BlockchainService, EthAddress } from '@/external/blockchain';
 import { StringOfLength } from '@/common/utils/utils.interface';
 import { JwtService } from '@nestjs/jwt';
 import { Op, Sequelize, Transaction } from 'sequelize';
-import { AccountReferral, AccountSocialToken } from '@/model/entities';
 import { firstValueFrom } from 'rxjs';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProviderTokens } from '@/model/providers';
@@ -50,7 +44,6 @@ import {
   createECDSAOwnershipValidationModule,
 } from '@biconomy/account';
 import * as promise from 'bluebird';
-import { modifyGmail } from '@/common/utils/modify-gmail';
 import { GatewayService } from '@/core/third-party-api/gateway/gateway.service';
 import { ChainId } from '@/common/utils/types';
 import { createPublicClient, http } from 'viem';
@@ -58,15 +51,9 @@ import { mainnet } from 'viem/chains';
 import { SimpleException, SimpleJson } from '@/common/utils/simple.util';
 import { RpcHandlerService } from '@/core/third-party-api/rpc/rpc-handler.service';
 
-import { BiruDiscordWallet } from '@/model/entities/biru/biru-wallet-discord.entity';
-
-
 @Injectable()
 export class AuthService {
-
   private readonly logger = new Logger(AuthService.name);
-
-
 
   constructor(
     @InjectModel(Account)
@@ -74,15 +61,6 @@ export class AuthService {
 
     @InjectModel(Wallet)
     private readonly walletsRepository: typeof Wallet,
-
-    @InjectModel(AccountReferral)
-    private readonly referralRepository: typeof AccountReferral,
-
-    @InjectModel(AccountSocialToken)
-    private readonly accountSocialTokenRepository: typeof AccountSocialToken,
-
-    @InjectModel(BiruDiscordWallet)
-    private readonly biruDiscordWalletRepository: typeof BiruDiscordWallet,
 
     @Inject(ProviderTokens.Sequelize)
     private readonly sequelizeInstance: Sequelize,
@@ -104,7 +82,6 @@ export class AuthService {
     // this.testGenerateJwtToken('icesimon', '180d').then((res) =>
     //   console.log('jwt-token ', res),
     // );
-
   }
 
   async testGenerateJwtToken(username: string, expiresIn = '4h') {
@@ -143,7 +120,6 @@ export class AuthService {
    * @return {Promise<Boolean>} isAlreadyUsed
    */
 
-
   /**
    * @private
    * @async
@@ -158,14 +134,12 @@ export class AuthService {
    * @return {Promise<[Account, Wallet]>} createdAccountAndWallet
    */
 
-
   /**
    * @function getSecureRandomNumber
    * @description generates a random number using native crypto module
    * @param {Number} length length of your random number, default: 6
    * @return {Number} n
    */
-
 
   // /**
   //  * @async
@@ -208,7 +182,6 @@ export class AuthService {
    * @param {AccountSignUpDto} accountSignUpDto sign up payload
    * @return {Promise<[Account, Wallet]>} [account, wallet]
    */
-
 
   /**
    * DANGER: This function is for internal use only, do not expose to the public

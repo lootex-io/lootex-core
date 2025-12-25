@@ -69,7 +69,6 @@ import {
   AssetExtraDao,
   UpdateAssetOrderCategory,
 } from '@/core/dao/asset-extra-dao';
-import { WalletService } from '@/api/v3/wallet/wallet.service';
 import { EventPollerDao } from '@/core/dao/event-poller.dao';
 
 import { TRANSFER_TOPIC0 } from '@/api/v3/wallet/constants';
@@ -146,7 +145,6 @@ export class EventPollerService {
 
     private cacheService: CacheService,
 
-    private walletService: WalletService,
 
     private gatewayService: GatewayService,
 
@@ -1099,15 +1097,6 @@ export class EventPollerService {
         );
       }
     });
-
-    // 因為有些時機會成交後沒有觸發 record wallet history，所以這邊再觸發一次
-    this.walletService.recodeWalletHistoryByTxHash(
-      chainId.toString() as ChainId,
-      txHash,
-      {
-        area: 'EVENT_POLLER',
-      },
-    );
 
     return updatedCount;
   }

@@ -494,8 +494,4 @@ export class AssetController {
     }
   }
 
-  @Get('assets/holding/soneium-badge')
-  async getAccountHoldingSoneiumBadge(@Query('discordId') discordId: string) {
-    return await this.assetService.getAccountHoldingSoneiumBadge(discordId);
-  }
 }

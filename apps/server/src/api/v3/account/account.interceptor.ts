@@ -32,10 +32,6 @@ export class AccountList implements NestInterceptor {
             avatarUrl: account.avatarUrl,
             introduction: account.introduction,
             externalLinks: account.externalLinks,
-            badge: account.Badge?.name || null,
-            avatarDecoration: account.AvatarDecoration?.name || null,
-            follower: account.follower,
-            isFollowing: account.isFollowing, // get account following and follower
             createdAt: account.createdAt,
             updatedAt: account.updatedAt,
           };
@@ -66,18 +62,8 @@ export class AccountInterceptor implements NestInterceptor {
           deletedAt: data.deletedAt,
           roles: data.roles,
 
-          badgeId: data.badgeId,
-          avatarDecorationId: data.avatarDecorationId,
           referralCode: data.referralCode,
-          Badges: data.Badges,
-          Badge: data.Badge,
-          AvatarDecoration: data.AvatarDecoration,
-          AvatarDecorations: data.AvatarDecorations,
           Campaign202306Mission: data.Campaign202306Mission,
-          AccountSocialTokens: data.AccountSocialTokens,
-
-          follower: data.follower,
-          following: data.following,
           chainDataVisibility: data.chainDataVisibility,
         };
       }),
@@ -106,20 +92,9 @@ export class AccountPrivateInterceptor implements NestInterceptor {
           deletedAt: data.deletedAt,
           roles: data.roles,
 
-          badgeId: data.badgeId,
-          avatarDecorationId: data.avatarDecorationId,
           referralCode: data.referralCode,
-          Badges: data.Badges,
-          Badge: data.Badge,
-          AvatarDecoration: data.AvatarDecoration,
-          AvatarDecorations: data.AvatarDecorations,
           Campaign202306Mission: data.Campaign202306Mission,
-          AccountSocialTokens: data.AccountSocialTokens,
-
-          follower: data.follower,
-          following: data.following,
           chainDataVisibility: data.chainDataVisibility,
-          renameCount: data?.renameCount,
         };
       }),
     );
@@ -139,25 +114,6 @@ export class OwnerList implements NestInterceptor {
     return next.handle().pipe(
       map((data) => ({
         queueStatus: data.queueStatus,
-        accounts: data.accounts,
-        pagination: pagination(data.count, page, limit),
-      })),
-    );
-  }
-}
-
-@Injectable()
-export class ReferralAccountList implements NestInterceptor {
-  intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<AccountsResponse> {
-    const requestQuery = context.switchToHttp().getRequest().query;
-    const page = parseInt(requestQuery.page, 10);
-    const limit = parseLimit(requestQuery.limit);
-
-    return next.handle().pipe(
-      map((data) => ({
         accounts: data.accounts,
         pagination: pagination(data.count, page, limit),
       })),

@@ -20,7 +20,6 @@ import {
   Account,
   Wallet,
   AssetAsEthAccount,
-  EthAccount,
   Contract,
   Blockchain,
   SeaportOrder,
@@ -134,7 +133,6 @@ describe('OrderController', () => {
     await Wallet.destroy({ truncate: true, cascade: true, force: true });
     await AssetAsEthAccount.destroy({ truncate: true, cascade: true });
     await Asset.destroy({ truncate: true, cascade: true });
-    await EthAccount.destroy({ truncate: true, cascade: true });
     await Contract.destroy({ truncate: true, cascade: true });
     await Blockchain.destroy({ truncate: true, cascade: true });
     await SeaportOrder.destroy({ truncate: true, cascade: true });

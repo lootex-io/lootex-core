@@ -26,7 +26,6 @@ import { OrderDao } from '@/core/dao/order-dao';
 import { LogService } from '@/core/log/log.service';
 
 import { providers } from '@/model/providers';
-import { AggregatorCoreDao } from '@/core/aggregator-core/aggregator-core-dao/aggregator-core-dao';
 
 import { EventPollerDao } from '@/core/dao/event-poller.dao';
 import { MoralisNftApiService } from '@/core/third-party-api/moralis/moralis-nft-api.service';
@@ -163,7 +162,6 @@ export class CoreModule {
         ImportCollectionLogService,
         CWLogService,
         LogService,
-        AggregatorCoreDao,
 
         EventPollerDao,
 
@@ -192,7 +190,6 @@ export class CoreModule {
         MoralisNftApiService,
         AlchemyNftApiService,
         NftscanNftApiService,
-        AggregatorCoreDao,
 
         EventPollerDao,
 

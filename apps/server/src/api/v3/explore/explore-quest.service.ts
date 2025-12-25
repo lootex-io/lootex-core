@@ -8,6 +8,7 @@ import * as moment from 'moment';
 import { ExploreCoreService } from '@/api/v3/explore/explore-core.service';
 import { CacheService } from '@/common/cache';
 import { ConfigService } from '@nestjs/config';
+import { InjectModel } from '@nestjs/sequelize/dist/common/sequelize.decorators';
 
 @Injectable()
 export class ExploreQuestService {
@@ -15,7 +16,7 @@ export class ExploreQuestService {
     (e) => ChainMap[e].id,
   );
   constructor(
-    @Inject(ProviderTokens.AssetExtra)
+    @InjectModel(AssetExtra)
     private assetExtraRepository: typeof AssetExtra,
     @Inject(ProviderTokens.Sequelize)
     private readonly sequelizeInstance: Sequelize,
