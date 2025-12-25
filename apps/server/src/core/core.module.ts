@@ -15,7 +15,6 @@ import { LibsDao } from '@/core/dao/libs-dao';
 import { LibsService } from '@/common/libs/libs.service';
 import { AssetExtraDao } from '@/core/dao/asset-extra-dao';
 import { TraitDao } from '@/core/dao/trait-dao';
-import { ImportCollectionLogService } from '@/core/import-collection-log/import-collection-log.service';
 import { CWLogService } from '@/core/third-party-api/cloudwatch-log/cw-log.service';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionFilter } from '@/core/exception/all-exception.filter';
@@ -159,7 +158,6 @@ export class CoreModule {
         RpcHandlerService,
         GatewayService,
         CurrencyService,
-        ImportCollectionLogService,
         CWLogService,
         LogService,
 
@@ -184,7 +182,6 @@ export class CoreModule {
         RpcHandlerService,
         GatewayService,
         CurrencyService,
-        ImportCollectionLogService,
         CWLogService,
         LogService,
         MoralisNftApiService,

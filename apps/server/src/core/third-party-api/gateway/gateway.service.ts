@@ -11,7 +11,6 @@ import {
 } from './gateway.interface';
 import { Chain, ChainIdMap, ChainMap } from '@/common/libs/libs.service';
 import { ChainId } from '@/common/utils/types';
-import { ImportCollectionLogService } from '@/core/import-collection-log/import-collection-log.service';
 import { ethers } from 'ethers';
 import { RpcEnd } from '@/core/third-party-api/rpc/interfaces';
 import { Cacheable } from '@/common/decorator/cacheable.decorator';
@@ -29,7 +28,6 @@ export class GatewayService {
     private readonly moralisNftApiService: MoralisNftApiService,
     // private readonly covalentService: CovalentService,
     private readonly rpcService: RpcService,
-    private readonly collectionLogService: ImportCollectionLogService,
   ) {}
 
   /**
@@ -255,13 +253,6 @@ export class GatewayService {
       throw new Error(`chain: ${chain} not support`);
     }
 
-    this.collectionLogService.createRpcLog({
-      chainId: getRpcChain(chain),
-      address: contractAddress,
-      tokenId: '',
-      funName: 'getContractInfo',
-      funParameter: '',
-    });
     return await this.rpcService.getContractInfo(getRpcChain(chain), [
       contractAddress,
     ]);
