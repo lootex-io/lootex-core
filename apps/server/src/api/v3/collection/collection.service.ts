@@ -878,7 +878,6 @@ export class CollectionService implements OnModuleDestroy {
         'contractAddress',
         'chainShortName',
         'chainId',
-        'isMinting',
       ],
       where: {
         id: collectionId,
@@ -887,11 +886,6 @@ export class CollectionService implements OnModuleDestroy {
 
     if (!collection) {
       throw new Error('collection not found');
-    }
-
-    // 如果是 minting collection，就算沒有 force update 也要更新
-    if (collection.isMinting) {
-      this.totalItems(collectionId, true);
     }
 
     const cacheTotalItems = +(await this.cacheService.getCache(
@@ -1285,10 +1279,6 @@ export class CollectionService implements OnModuleDestroy {
           sequelize.literal(`CASE WHEN ${keywordOrderQuery} THEN 1 ELSE 2 END`),
           'ASC',
         ]);
-      }
-
-      if (opts.sortBy?.[0] === 'isCampaign202408Featured') {
-        collectionOrder.unshift(['isCampaign202408Featured', 'DESC']);
       }
 
       collectionOrder.unshift(['is_verified', 'DESC']);

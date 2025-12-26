@@ -267,21 +267,6 @@ export class Collection extends Model {
   })
   officialAddress: string;
 
-  @AllowNull(true)
-  @Default(false)
-  @Column({
-    field: 'is_minting',
-    type: DataType.BOOLEAN,
-  })
-  isMinting: boolean;
-
-  @Default(false)
-  @Column({
-    field: 'is_drop',
-    type: DataType.BOOLEAN,
-  })
-  isDrop: boolean;
-
   // 总listing订单数
   @Default(0)
   @Column({
@@ -297,14 +282,6 @@ export class Collection extends Model {
     type: DataType.INTEGER,
   })
   totalOffer: number;
-
-  @AllowNull(true)
-  @Default(false)
-  @Column({
-    field: 'is_campaign_202408_featured',
-    type: DataType.BOOLEAN,
-  })
-  isCampaign202408Featured: boolean;
 
   @AllowNull(true)
   @Default(null)

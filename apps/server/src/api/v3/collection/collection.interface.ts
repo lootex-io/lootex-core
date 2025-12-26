@@ -25,9 +25,6 @@ export interface CollectionInfo {
   externalLinks?: Array<ExternalLink | any> | string;
   isVerified: boolean;
   isSensitive: boolean;
-  isMinting: boolean;
-  isCampaign202408Featured?: boolean;
-  isDrop?: boolean;
   serviceFee: number;
   creatorFee: number;
   creatorFeeAddress?: string;
@@ -109,13 +106,6 @@ export interface ExploreCollectionsByOpt {
   isVerified?: boolean;
   isSimple?: boolean;
   walletAddress?: string;
-}
-
-export enum CollectionVolumeViewTableName {
-  ALL_DAY = 'collection_volume_all_days',
-  SEVEN_DAY = 'collection_volume_seven_days',
-  THIRTY_DAY = 'collection_volume_thirty_days',
-  TODAY = 'collection_volume_today',
 }
 
 export enum TimeRange {

@@ -1833,8 +1833,6 @@ export class AssetService {
       collectionLogoImageUrl: asset.Collection?.logoImageUrl,
       collectionExternalLinks: asset.Collection?.externalLinks,
       collectionIsVerified: asset.Collection?.isVerified,
-      collectionIsCampaign202408Featured:
-        asset.Collection?.isCampaign202408Featured,
       owners: asset.AssetAsEthAccount?.map((owner) => {
         return {
           username: owner.Wallet?.Account?.username,

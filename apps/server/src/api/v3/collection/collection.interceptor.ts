@@ -42,8 +42,6 @@ export class CollectionListInterceptor implements NestInterceptor {
               externalLinks: collection.externalLinks,
               isVerified: collection.isVerified,
               isSensitive: collection.isSensitive,
-              isMinting: collection.isMinting,
-              isCampaign202408Featured: collection.isCampaign202408Featured,
               serviceFee: collection.serviceFee,
               creatorFee: collection.creatorFee,
               createdAt: collection.createdAt,
