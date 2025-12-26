@@ -7,6 +7,15 @@ export type AssetTrait = {
   rarity_percent?: number;
 };
 
+export type AllowCurrency = {
+  address: `0x${string}`;
+  decimals: number;
+  id: string;
+  isNative: boolean;
+  isWrapped: boolean;
+  symbol: string;
+};
+
 export type Asset = {
   id: string;
   assetId: string;
@@ -52,4 +61,6 @@ export type Asset = {
   exchangeAddress?: `0x${string}`;
   assetRarityRanking?: number;
   contractTotalSupply?: string;
+  collectionCanNativeTrade?: boolean;
+  collectionAllowCurrencies?: AllowCurrency[];
 };

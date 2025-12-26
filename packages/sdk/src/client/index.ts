@@ -16,7 +16,7 @@ export class Client {
   readonly getRpcUrl?: (chainId: number) => string;
   readonly customHeaders?: Record<string, string>;
   constructor(config: ClientConfig) {
-    this.baseUrl = config.baseUrl ?? 'http://localhost:2999/';
+    this.baseUrl = config.baseUrl ?? 'http://localhost:2999/api';
     this.customHeaders = config.customHeaders;
     this.getRpcUrl = config.getRpcUrl;
   }

@@ -1,3 +1,4 @@
+import { AllowCurrency } from '../asset/types.js';
 import type { LootexOrder } from '../order/types.js';
 
 export type CollectionFeaturedAsset = {
@@ -73,6 +74,7 @@ export type LootexCollection = {
   };
   isDrop?: boolean;
   isCreatorFee: boolean;
+  allowCurrencies: AllowCurrency[];
 };
 
 export type LootexCollectionMetadata = Omit<
