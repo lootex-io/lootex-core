@@ -26,8 +26,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useConnection } from 'wagmi';
 import { useSelectionStore } from '../collection-browser/selection-store';
 import { useSendTransaction } from '../wallet/use-send-transaction';
-
-// ...
+import { config } from '@/lib/config';
 
 export const PurchaseModal = ({
   orders,
@@ -468,8 +467,8 @@ export const PurchaseModal = ({
             <ProgressSteps currentStep={executeStep}>
               <ProgressStep title="Approve Currency">
                 <p>
-                  Approve {approveCurrency?.symbol} for purchases on Biru
-                  (one-time only)
+                  Approve {approveCurrency?.symbol} for purchases on{' '}
+                  {config.appName} (one-time only)
                 </p>
                 <Button
                   onClick={() => approveMutation.mutate()}

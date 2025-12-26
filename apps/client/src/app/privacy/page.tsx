@@ -1,5 +1,6 @@
 import MarkdownPage from '@/components/markdown-page';
 import { getMarkdownContent } from '@/lib/markdown';
+import { config } from '@/lib/config';
 
 export const metadata = {
   title: 'Privacy Policy',
@@ -7,6 +8,6 @@ export const metadata = {
 };
 
 export default async function PrivacyPage() {
-  const content = await getMarkdownContent('privacy.md');
+  const content = await getMarkdownContent(config.privacyMarkdown);
   return <MarkdownPage content={content} />;
 }

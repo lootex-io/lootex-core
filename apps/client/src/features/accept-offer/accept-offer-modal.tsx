@@ -23,6 +23,7 @@ import { useSelectionStore } from '../collection-browser/selection-store';
 import { useSendTransaction } from '../wallet/use-send-transaction';
 import { ReviewItemsStep } from './review-items-step';
 import { SelectItemsStep } from './select-items-step';
+import { config } from '@/lib/config';
 
 export const AcceptOfferModal = ({
   order,
@@ -381,7 +382,7 @@ export const AcceptOfferModal = ({
                 <p>
                   Approve{' '}
                   <span className="font-bold">{assets[0]?.collectionName}</span>{' '}
-                  for selling on Biru (one-time only)
+                  for selling on {config.appName} (one-time only)
                 </p>
                 <Button
                   onClick={() => approveMutation.mutate()}

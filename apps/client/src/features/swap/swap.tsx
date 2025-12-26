@@ -29,9 +29,7 @@ import { useSendTransaction } from '../wallet/use-send-transaction';
 import { AmountInput } from './amount-input';
 import { schema, tokens } from './constants';
 import { CurrencySelect } from './currency-select';
-import { SonexLogo } from './sonex-logo';
-
-// ...
+import { config } from '@/lib/config';
 
 export const Swap = ({
   isOpen,
@@ -494,7 +492,7 @@ export const Swap = ({
 
             <ProgressSteps currentStep={executeStep}>
               <ProgressStep title="Approve">
-                <p>Approve token for swap on Biru (one-time only)</p>
+                <p>Approve token for swap on {config.appName} (one-time only)</p>
                 <Button
                   onClick={() => approveMutation.mutate()}
                   size="lg"

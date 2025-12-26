@@ -1,40 +1,28 @@
 'use client';
 
 import './globals.css';
-import biruLogo from '@/assets/logo.svg';
 import { ConnectButton } from '@/components/connect-button';
-import { useModal } from '@/components/modal-manager';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import SocialLinks from '@/features/homepage/social-links';
 import { SearchBar } from '@/features/search-bar/search-bar';
-import { useAuthGuard } from '@/hooks/use-auth-guard';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { defaultChain } from '@/lib/wagmi';
-import { ChevronDown, ExternalLinkIcon, Menu, WalletIcon } from 'lucide-react';
+import { Menu, WalletIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useConnection } from 'wagmi';
+import { config } from '@/lib/config';
 
 export const Header = () => {
   const { address } = useConnection();
   const account = address ? { address } : undefined;
-  const authGuard = useAuthGuard();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { onOpen: onOpenSwap } = useModal('swap');
-
   const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -44,48 +32,18 @@ export const Header = () => {
       <div className="flex items-center gap-4">
         <Link href="/" className="flex items-center shrink-0 gap-2">
           <div className="h-[20px] w-[66px] md:h-[36px] md:w-[118px] relative">
-            <Image src={biruLogo} alt="Biru Logo" fill />
+            <Image src={config.appLogo} alt={config.appName} fill />
           </div>
-          <Badge className="bg-[#E8E8E8] hover:bg-[#E8E8E8] font-body text-xs text-muted-foreground">
-            Beta
-          </Badge>
         </Link>
 
         <div className="hidden lg:flex">
-          <Button variant="ghost" asChild className="font-brand">
-            <Link href="/collections" className="font-brand">
-              Collections
-            </Link>
-          </Button>
-          <DropdownMenu
-            // important! modal mode will block pointer-event when swap modal closed
-            modal={false}
-          >
-            <DropdownMenuTrigger className="font-brand text-sm flex items-center gap-1 px-4">
-              More <ChevronDown className="w-4 h-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="bottom" align="start" sideOffset={-4}>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={(e) => {
-                  authGuard(() => {
-                    onOpenSwap({ fromToken: 'ETH', toToken: 'WETH' });
-                  });
-                }}
-              >
-                Swap
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href="https://superbridge.app/soneium"
-                  className="flex items-center gap-1 cursor-pointer"
-                  target="_blank"
-                >
-                  Bridge <ExternalLinkIcon className="w-4 h-4" />
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {config.header.links.map((link) => (
+            <Button variant="ghost" asChild className="font-brand">
+              <Link href={link.url} className="font-brand">
+                {link.label}
+              </Link>
+            </Button>
+          ))}
         </div>
       </div>
       <div className="flex items-center gap-1">
@@ -118,41 +76,18 @@ export const Header = () => {
           </SheetTrigger>
           <SheetContent side="right" className="flex">
             <div className="flex flex-col items-start gap-2 mt-8 flex-1 self-stretch">
-              <Button
-                variant="ghost"
-                asChild
-                className="font-brand"
-                onClick={() => setIsSheetOpen(false)}
-              >
-                <Link href="/collections" className="font-brand">
-                  Collections
-                </Link>
-              </Button>
-              <Button
-                variant="ghost"
-                asChild
-                className="font-brand cursor-pointer"
-                onClick={() => {
-                  setIsSheetOpen(false);
-                  onOpenSwap({});
-                }}
-              >
-                Swap
-              </Button>
-              <Button
-                variant="ghost"
-                asChild
-                className="font-brand"
-                onClick={() => setIsSheetOpen(false)}
-              >
-                <Link
-                  href="https://superbridge.app/soneium"
-                  className="flex items-center gap-1"
-                  target="_blank"
+              {config.header.links.map((link) => (
+                <Button
+                  variant="ghost"
+                  asChild
+                  className="font-brand"
+                  onClick={() => setIsSheetOpen(false)}
                 >
-                  Bridge <ExternalLinkIcon className="w-4 h-4" />
+                <Link href={link.url} className="font-brand">
+                  {link.label}
                 </Link>
               </Button>
+              ))}
               <SocialLinks className="mt-auto self-stretch justify-end pt-2 border-t" />
             </div>
           </SheetContent>

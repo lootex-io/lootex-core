@@ -51,6 +51,7 @@ import { z } from 'zod';
 import { useSelectionStore } from '../collection-browser/selection-store';
 import { SwapButton } from '../swap/swap-button';
 import { useSendTransaction } from '../wallet/use-send-transaction';
+import { config } from '@/lib/config';
 
 const durationOptions = [
   { id: '24_HOURS', value: 1000 * 60 * 60 * 24 * 1, label: '24H' },
@@ -581,8 +582,8 @@ export const MakeOfferModal = ({
             <ProgressSteps currentStep={executeStep}>
               <ProgressStep title={`Approve ${currency.symbol}`}>
                 <p>
-                  Approve {currency.symbol} for making offers on Biru (one-time
-                  only)
+                  Approve {currency.symbol} for making offers on{' '}
+                  {config.appName} (one-time only)
                 </p>
                 <Button
                   onClick={() => approveMutation.mutate()}

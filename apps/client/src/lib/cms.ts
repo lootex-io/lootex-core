@@ -82,44 +82,6 @@ export const launchpadData = {
 
 export const homepageData: HomepageType = {
   id: 'TnBNQDwRRqiGzBj9JuFJLg',
-  title: 'Jump Into Soneium Playground and Explore! Cheers!',
-  description:
-    'Lootex proudly presents Biru, the most playful and interactive NFT marketplace on Soneium—where you can mint, trade, and connect with a vibrant community, all in one place!',
-  partnersTitle: 'Our Partners and Backers...',
-  featuresTitle: 'Coming Soon..!!',
-  featuresBlocks: [
-    {
-      id: 'dif7BjdGQ-WlnA7Muz2R0g',
-      title: 'Reward System',
-      description:
-        'Earn reward points by participating in activities, trades, and community interactions.',
-    },
-    {
-      id: 'TLpZqOtPQIGjjpcGird5XA',
-      title: 'Community Mini-Games',
-      description:
-        'Enjoy mini-games to interact and compete, boosting community engagement.',
-    },
-    {
-      id: 'Kk6wW-uvSeCbL448B2qIyA',
-      title: 'Entertainment Center',
-      description:
-        'Explore fun projects, rankings, and personalized recommendations to find exciting opportunities!',
-    },
-    {
-      id: 'YSlhSMvXRfGTHMlmvli0QA',
-      title: 'Community Mini-Games',
-      description:
-        'Enjoy mini-games to interact and compete, boosting community engagement.',
-    },
-    {
-      id: 'NfUCs0s6T3KvADlYy5Im3g',
-      title: 'Entertainment Event Center',
-      description:
-        'Discover various fun projects, enjoy regular rankings, and get personalized recommendations to uncover exciting new opportunities.',
-    },
-  ],
-  footerCopyright: 'Copyright © 2025 Biru. All rights reserved.',
   heroBanners: [
     {
       id: 'SmtHMnw6STqxLxDvf3bmqw',
@@ -202,16 +164,6 @@ export const homepageData: HomepageType = {
 
 export type HomepageType = {
   id: string;
-  title: string;
-  description: string;
-  partnersTitle: string;
-  featuresTitle: string;
-  featuresBlocks: {
-    id: string;
-    title: string;
-    description: string;
-  }[];
-  footerCopyright: string;
   heroBanners: HeroBannerType[];
 };
 

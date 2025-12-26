@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import env from '@/lib/env';
 import { apiClient } from '@/lib/lootex';
 import { defaultChain } from '@/lib/wagmi';
 import { useItemsQuery } from '@/lib/use-items-query';
@@ -60,7 +59,7 @@ export const Offers = ({
 
   const [selectedOfferType, setSelectedOfferType] = useState<
     'offer' | 'collection_offer'
-  >(env.receivedCollectionOffersEnabled ? 'collection_offer' : 'offer');
+  >('collection_offer');
 
   const receivedAssetOffersParams = {
     chainId: defaultChain.id,
@@ -107,7 +106,6 @@ export const Offers = ({
             />
           </TabsContent>
           <TabsContent value="received" className="h-full mt-0 flex flex-col">
-            {env.receivedCollectionOffersEnabled && (
               <Select
                 value={selectedOfferType}
                 onValueChange={(value) =>
@@ -124,7 +122,6 @@ export const Offers = ({
                   <SelectItem value="offer">Direct Offer</SelectItem>
                 </SelectContent>
               </Select>
-            )}
             <DataTable
               columns={
                 selectedOfferType === 'collection_offer'

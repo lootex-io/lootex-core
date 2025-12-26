@@ -12,9 +12,7 @@ import {
 import { ProgressStep, ProgressSteps } from '@/components/ui/progress-steps';
 import { ViewTransactionLink } from '@/components/view-transaction-link';
 import { useToast } from '@/hooks/use-toast';
-import env from '@/lib/env';
 import { apiClient, lootex } from '@/lib/lootex';
-import { defaultChain } from '@/lib/wagmi';
 import { extractTransferedTokensFromLogs } from '@/utils/transaction';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import confetti from 'canvas-confetti';

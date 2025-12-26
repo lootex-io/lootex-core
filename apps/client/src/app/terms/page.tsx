@@ -1,5 +1,6 @@
 import MarkdownPage from '@/components/markdown-page';
 import { getMarkdownContent } from '@/lib/markdown';
+import { config } from '@/lib/config';
 
 export const metadata = {
   title: 'Terms of Service',
@@ -7,6 +8,6 @@ export const metadata = {
 };
 
 export default async function TermsPage() {
-  const content = await getMarkdownContent('terms.md');
+  const content = await getMarkdownContent(config.termsMarkdown);
   return <MarkdownPage content={content} />;
 }

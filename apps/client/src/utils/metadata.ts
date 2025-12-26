@@ -1,13 +1,12 @@
 import { getCloudfrontUrl } from '@/lib/image';
 import type { Metadata } from 'next';
+import { config } from '@/lib/config';
 
-const origin = process.env.NEXT_PUBLIC_DEPLOY_ORIGIN || 'https://biru.gg';
-const isProduction =
-  process.env.NEXT_PUBLIC_LOOTEX_ENVIRONMENT === 'production';
-const titleSuffix = ' | Biru - Soneium NFT Marketplace';
-const defaultTitle = 'Biru: Soneium NFT Marketplace - Mint, Trade & Have Fun';
-const defaultDescription =
-  'Explore the most playful & interactive NFT marketplace on Soneium! Mint, trade, and connect with a vibrant community—all in one place. CHEERS! 🍻';
+const origin = process.env.NEXT_PUBLIC_DEPLOY_ORIGIN || config.appUrl;
+const titleSuffix = ` | ${config.appName}`;
+const defaultTitle = config.appName;
+const defaultDescription = config.appDescription;
+const defaultImageUrl = config.appOgImage;
 
 export const populateMetadata = ({
   title,
@@ -35,7 +34,7 @@ export const populateMetadata = ({
             q: 75,
           },
         })
-    : '/og.png';
+    : defaultImageUrl;
 
   let canonicalUrl: string | undefined;
   if (canonicalPath) {
@@ -70,9 +69,6 @@ export const populateMetadata = ({
       description: _description,
       images: [_imageUrl],
     },
-    robots: isProduction
-      ? { index: true, follow: true }
-      : { index: false, follow: false },
     ...(canonicalUrl && {
       alternates: {
         canonical: canonicalUrl,

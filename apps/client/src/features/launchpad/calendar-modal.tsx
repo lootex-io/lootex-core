@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-
 import {
   Dialog,
   DialogContent,
@@ -9,10 +8,10 @@ import {
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
-
 import { DropWithStatus } from './mint-schedule';
 import { useState } from 'react';
 import { LootexCollection } from '@lootex-core/sdk/collection';
+import { config } from '@/lib/config';
 
 export type CalendarEventParams = {
   title: string;
@@ -107,15 +106,15 @@ const addToCalendar = ({
 
     const uid =
       typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-        ? `${crypto.randomUUID()}@biru.gg`
-        : `${Date.now()}@biru.gg`;
+        ? `${crypto.randomUUID()}@${config.appName}`
+        : `${Date.now()}@${config.appName}`;
     const dtStamp = formatICSDate(new Date());
     const dtStart = formatICSDate(start);
     const dtEnd = formatICSDate(end);
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:biru.gg',
+      `PRODID:${config.appName}`,
       'BEGIN:VEVENT',
       `UID:${uid}`,
       `DTSTAMP:${dtStamp}`,

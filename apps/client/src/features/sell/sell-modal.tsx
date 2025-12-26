@@ -53,6 +53,7 @@ import { parseErc6492Signature } from 'viem';
 import { z } from 'zod';
 import { useSelectionStore } from '../collection-browser/selection-store';
 import { useSendTransaction } from '../wallet/use-send-transaction';
+import { config } from '@/lib/config';
 
 const durationOptions = [
   { id: '24_HOURS', value: 1000 * 60 * 60 * 24 * 1, label: '24H' },
@@ -752,7 +753,7 @@ export const SellModal = ({
 
             <ProgressSteps currentStep={executeStep}>
               <ProgressStep title="Approve Collection">
-                <p>Approve collections for listing on Biru (one-time only)</p>
+                <p>Approve collections for listing on {config.appName} (one-time only)</p>
                 <Button
                   onClick={() => approveMutation.mutate()}
                   size="lg"
