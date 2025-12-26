@@ -10,7 +10,6 @@ import {
 
 import {
   keywordsAssetsQueryDTO,
-  keywordsBaseQueryDTO,
   collectionQueryDTO,
 } from '@/api/v3/explore/explore.dto';
 import { AssetService } from '@/api/v3/asset/asset.service';
@@ -22,7 +21,6 @@ import {
   NewAssetSimpleList,
 } from '@/api/v3/asset/asset.interceptor';
 import { CollectionListInterceptor } from '@/api/v3/collection/collection.interceptor';
-import { AccountList } from '../account/account.interceptor';
 import { ExploreService } from '@/api/v3/explore/explore.service';
 
 import { AuthJwtGuard, AuthJwtGuardOptional } from '../auth/auth.jwt.guard';
@@ -44,7 +42,7 @@ export class ExploreController {
     private readonly exploreProxyService: ExploreProxyService,
     private readonly accountService: AccountService,
     private readonly collectionService: CollectionService,
-  ) {}
+  ) { }
 
   @Get('/explore/assets_old')
   @UseInterceptors(AssetList)
@@ -62,24 +60,7 @@ export class ExploreController {
     }
   }
 
-  @Throttle(50, 60)
-  @Get('/explore/users')
-  @UseInterceptors(AccountList)
-  @UseGuards(AuthJwtGuardOptional)
-  async getUsers(
-    @CurrentUser() user: Account,
-    @Query() query: keywordsBaseQueryDTO,
-  ) {
-    try {
-      const { rows: accounts, count } = await this.exploreService.users(
-        user,
-        query,
-      );
-      return { accounts, count };
-    } catch (err) {
-      throw new HttpException(err.message, 400);
-    }
-  }
+  // getUsers removed as exploreService.users was removed due to missing social features in Core
 
   @Get('/explore/collections')
   @UseGuards(AuthJwtGuardOptional)
