@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { OrderService } from '@/api/v3/order/order.service';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { AssetExtra, SeaportOrder, SeaportOrderAsset } from '@/model/entities';
 import { InjectModel } from '@nestjs/sequelize';
+import { InjectConnection } from '@nestjs/sequelize';
 import { logRunDuration } from '@/common/decorator/log-run-duration.decorator';
 import { UpdateAssetOrderCategory } from '@/core/dao/asset-extra-dao';
 import { OrderQueueService } from '@/core/bull-queue/queue/order-queue.service';
@@ -22,9 +23,12 @@ export class OrderTasksService {
     @InjectModel(SeaportOrderAsset)
     private seaportOrderAssetRepository: typeof SeaportOrderAsset,
 
+    @InjectConnection()
+    private sequelize: Sequelize,
+
     private readonly orderService: OrderService,
     private readonly orderQueueService: OrderQueueService,
-  ) {}
+  ) { }
 
   @Cron('*/30 * * * * *')
   async handleCron() {
@@ -37,48 +41,42 @@ export class OrderTasksService {
 
   @logRunDuration(new Logger(OrderTasksService.name))
   async _checkExtraOrder() {
+    // 策略：使用子查詢直接找出引用失效訂單的資產
+    // 這樣可以避免先查詢所有失效訂單(可能數萬筆),更精確且高效
+
+    // 查詢引用了失效 listing 訂單的資產
     const extras0 = await this.assetExtraRepository.findAll({
       attributes: ['assetId'],
       where: {
-        [Op.or]: [
-          { '$bestListingOrder.is_fillable$': false },
-          { '$bestListingOrder.is_expired$': true },
-        ],
-        bestListingOrderId: { [Op.not]: null },
-      },
-      include: [
-        {
-          model: SeaportOrder,
-          as: 'bestListingOrder',
-          required: true,
-          attributes: [],
+        bestListingOrderId: {
+          [Op.in]: this.sequelize.literal(`(
+            SELECT id FROM seaport_order 
+            WHERE (is_fillable = false OR is_expired = true)
+            LIMIT 1000
+          )`),
         },
-      ],
+      },
       limit: 200,
     });
 
+    // 查詢引用了失效 offer 訂單的資產
     const extras1 = await this.assetExtraRepository.findAll({
       attributes: ['assetId'],
       where: {
-        [Op.or]: [
-          { '$bestOfferOrder.is_fillable$': false },
-          { '$bestOfferOrder.is_expired$': true },
-        ],
-        bestOfferOrderId: { [Op.not]: null },
-      },
-      include: [
-        {
-          model: SeaportOrder,
-          as: 'bestOfferOrder',
-          required: true,
-          attributes: [],
+        bestOfferOrderId: {
+          [Op.in]: this.sequelize.literal(`(
+            SELECT id FROM seaport_order 
+            WHERE (is_fillable = false OR is_expired = true)
+            LIMIT 1000
+          )`),
         },
-      ],
-      limit: 10,
+      },
+      limit: 200,
     });
 
     const extras = [...extras0, ...extras1];
-    this.logger.debug(`_checkExtraOrder extras ${JSON.stringify(extras)}`);
+    this.logger.debug(`_checkExtraOrder found ${extras.length} assets to update`);
+
     for (const extra of extras) {
       const assetId = extra.assetId;
       await this.orderQueueService.updateAssetBestOrder(
@@ -86,7 +84,6 @@ export class OrderTasksService {
         null,
         UpdateAssetOrderCategory.ListingAndOffer,
       );
-      // await this.assetExtraDao.updateAssetExtraBestOrderByAssetId(assetId);
     }
   }
 }

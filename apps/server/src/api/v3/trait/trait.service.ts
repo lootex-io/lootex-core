@@ -28,7 +28,7 @@ export class TraitService {
 
     @InjectModel(Collection)
     private readonly collectionRepository: typeof Collection,
-  ) {}
+  ) { }
 
   async updateAssetsTraits(
     assets: {
@@ -535,6 +535,135 @@ export class TraitService {
     return assetIds;
   }
 
+  /**
+   * Refactored method to return SQL conditions for filtering assets by traits.
+   * This allows ExploreService to use efficient EXISTS subqueries or JOINs.
+   */
+  async getTraitsQueryOptions(query: GetAssetIdsByTrait): Promise<{
+    whereClauses: string[];
+    replacements: any;
+    joins: string[];
+  }> {
+    let collectionId: string = null;
+    let collection: Collection = null;
+
+    if (query.collectionId) {
+      collectionId = query.collectionId;
+      collection = await this.collectionRepository.findByPk(collectionId);
+    } else if (query.collectionSlug) {
+      collection = await this.collectionRepository.findOne({
+        where: {
+          slug: query.collectionSlug,
+        },
+      });
+      collectionId = collection?.id;
+    }
+
+    if (!collection) {
+      return { whereClauses: ['1=0'], replacements: {}, joins: [] };
+    }
+
+    // Get contract_id from contract table using address and chainId
+    const contract = (await this.sequelizeInstance.query(
+      `SELECT id FROM contract WHERE address = :address AND chain_id = :chainId`,
+      {
+        replacements: {
+          address: collection.contractAddress,
+          chainId: collection.chainId,
+        },
+        type: QueryTypes.SELECT,
+        plain: true,
+      },
+    )) as { id: string };
+
+    if (!contract) {
+      return { whereClauses: ['1=0'], replacements: {}, joins: [] };
+    }
+
+    const contractId = contract.id;
+    const groupedTraits = groupBy((trait) => {
+      return trait.traitType;
+    }, query.traits);
+
+    const whereClauses: string[] = [];
+    const replacements: any = { contractId };
+    const joins: string[] = [];
+
+    await promise.map(
+      Object.keys(groupedTraits),
+      async (key, index) => {
+        let isRangeQuery = false;
+        // Check if Number trait (for range query)
+        if (groupedTraits[key].length === 2) {
+          const displayType = (await this.sequelizeInstance.query(
+            `SELECT DISTINCT(display_type)
+            FROM asset_traits
+            WHERE collection_id = :collectionId
+                AND trait_type = :traitType`,
+            {
+              replacements: {
+                collectionId,
+                traitType: groupedTraits[key][0].traitType,
+              },
+              type: QueryTypes.SELECT,
+            },
+          )) as any as { display_type: string }[];
+
+          if (
+            displayType.length > 0 &&
+            displayType[0].display_type === 'number'
+          ) {
+            isRangeQuery = true;
+            const traitTypeParam = `traitType_range_${index}`;
+            const minParam = `min_${index}`;
+            const maxParam = `max_${index}`;
+            replacements[traitTypeParam] = groupedTraits[key][0].traitType;
+            replacements[minParam] = groupedTraits[key][0].value;
+            replacements[maxParam] = groupedTraits[key][1].value;
+
+            whereClauses.push(`
+              EXISTS (
+                SELECT 1 FROM asset_traits at
+                WHERE at.asset_id = ae.asset_id
+                  AND at.collection_id = :traitCollectionId
+                  AND at.trait_type = :${traitTypeParam}
+                  AND at.value::NUMERIC(78) >= :${minParam}
+                  AND at.value::NUMERIC(78) <= :${maxParam}
+              )
+            `);
+          }
+        }
+
+        if (!isRangeQuery) {
+          const traitTypeParam = `traitType_${index}_exact`;
+          replacements[traitTypeParam] = groupedTraits[key][0].traitType;
+
+          const orConditions: string[] = [];
+          groupedTraits[key].forEach((trait, valIndex) => {
+            const paramName = `val_${index}_${valIndex}`;
+            orConditions.push(`at2.value = :${paramName}`);
+            replacements[paramName] = trait.value;
+          });
+
+          whereClauses.push(`
+              EXISTS (
+                SELECT 1 FROM asset_traits at2
+                WHERE at2.asset_id = ae.asset_id
+                  AND at2.collection_id = :traitCollectionId
+                  AND at2.trait_type = :${traitTypeParam}
+                  AND (${orConditions.join(' OR ')})
+              )
+            `);
+        }
+      },
+      { concurrency: 5 },
+    );
+
+    replacements['traitCollectionId'] = collectionId;
+
+    return { whereClauses, replacements, joins };
+  }
+
   normalizeTraits(traits: any): ThirdPartyAttribute[] {
     if (traits === null) {
       return [];
@@ -722,7 +851,7 @@ export class TraitService {
 
     const ownerCollectionSlugs = query.ownerAddress
       ? await this.sequelizeInstance.query(
-          `
+        `
         SELECT slug AS slug
         FROM collections
         WHERE slug IN (
@@ -739,15 +868,15 @@ export class TraitService {
           )
         );
       `,
-          {
-            replacements: {
-              ownerAddress: query.ownerAddress,
-            },
-            model: Collection,
-            mapToModel: true,
-            type: QueryTypes.SELECT,
+        {
+          replacements: {
+            ownerAddress: query.ownerAddress,
           },
-        )
+          model: Collection,
+          mapToModel: true,
+          type: QueryTypes.SELECT,
+        },
+      )
       : [];
 
     // ownerSlugs came from DB
@@ -1073,29 +1202,29 @@ export class TraitService {
     let stringTraitLength = 0;
     const stringParamArray = query.stringTraits
       ? Object.keys(query.stringTraits).map((key) => {
-          const param = {
-            [`stringTraitKey${stringTraitLength}`]: key,
-            [`stringTraitValue${stringTraitLength}`]: query.stringTraits[key],
-          };
-          stringTraitLength++;
+        const param = {
+          [`stringTraitKey${stringTraitLength}`]: key,
+          [`stringTraitValue${stringTraitLength}`]: query.stringTraits[key],
+        };
+        stringTraitLength++;
 
-          return param;
-        })
+        return param;
+      })
       : [];
 
     let numberTraitLength = 0;
     const numberParamArray = query.numberTraits
       ? Object.keys(query.numberTraits).map((key) => {
-          const [min, max] = query.numberTraits[key];
-          const param = {
-            [`numberTraitKey${numberTraitLength}`]: key,
-            [`numberTraitMin${numberTraitLength}`]: min,
-            [`numberTraitMax${numberTraitLength}`]: max,
-          };
-          numberTraitLength++;
+        const [min, max] = query.numberTraits[key];
+        const param = {
+          [`numberTraitKey${numberTraitLength}`]: key,
+          [`numberTraitMin${numberTraitLength}`]: min,
+          [`numberTraitMax${numberTraitLength}`]: max,
+        };
+        numberTraitLength++;
 
-          return param;
-        })
+        return param;
+      })
       : [];
 
     // Array to Object
@@ -1142,15 +1271,15 @@ export class TraitService {
     // where traitType = :stringTraitKey1
     const stringTrait = query.stringTraits
       ? Object.keys(query.stringTraits)
-          .map(() => {
-            const str = `
+        .map(() => {
+          const str = `
             select id from string_traits
             where traitType = :stringTraitKey${stringTraitLength}
             and value in (:stringTraitValue${stringTraitLength})`;
-            stringTraitLength++;
-            return str;
-          })
-          .join(' intersect')
+          stringTraitLength++;
+          return str;
+        })
+        .join(' intersect')
       : '';
 
     let numberTraitLength = 0;
@@ -1159,15 +1288,15 @@ export class TraitService {
     // and value between :numberTraitMin0 and :numberTraitMax0
     const numberTraits = query.numberTraits
       ? Object.keys(query.numberTraits)
-          .map(() => {
-            const str = `
+        .map(() => {
+          const str = `
             select id from number_traits
             where traitType = :numberTraitKey${numberTraitLength}
             and value between :numberTraitMin${numberTraitLength} and :numberTraitMax${numberTraitLength}`;
-            numberTraitLength++;
-            return str;
-          })
-          .join(' intersect')
+          numberTraitLength++;
+          return str;
+        })
+        .join(' intersect')
       : '';
 
     const traits = [stringTrait, numberTraits]
