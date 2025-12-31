@@ -1,0 +1,178 @@
+networks:
+  app-net:
+
+
+volumes:
+  pg_data:
+  pnpm_store:
+
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_DB: dex-mainnet
+      POSTGRES_USER: lootex
+      POSTGRES_PASSWORD: lootexpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - app-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U lootex -d dex-mainnet" ]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app-net
+
+  migrate:
+    image: golang:1.22-alpine
+    container_name: migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-net
+    working_dir: /migrations
+    volumes:
+      - ./db/migrations:/migrations:ro
+    environment:
+      GOOSE_DRIVER: postgres
+      GOOSE_DBSTRING: "postgres://lootex:lootexpassword@postgres:5432/dex-mainnet?sslmode=disable"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        echo "PATH=$PATH"
+        ls -l /usr/local/go/bin/go
+        /usr/local/go/bin/go version
+        apk add --no-cache git
+        /usr/local/go/bin/go install github.com/pressly/goose/v3/cmd/goose@v3.18.0
+        /go/bin/goose -dir /migrations up
+    restart: "no"
+
+  backend-api:
+    image: node:20-alpine
+    container_name: backend-api
+    networks: [ app-net ]
+    working_dir: /app/apps/server
+    volumes:
+      - ./:/app
+      - pnpm_store:/pnpm-store
+    env_file:
+      - ./apps/server/configs/.env
+    environment:
+      NODE_ENV: development
+      PNPM_STORE_PATH: /pnpm-store
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+    command: >
+      sh -lc "
+        corepack enable &&
+        corepack prepare pnpm@9 --activate &&
+        pnpm config set store-dir /pnpm-store &&
+        pnpm install &&
+        pnpm run dev
+      "
+    ports:
+      - "2999:2999"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+
+  event-poller-nft-transfer:
+    image: node:20-alpine
+    container_name: event-poller-nft-transfer
+    networks: [ app-net ]
+    working_dir: /app/apps/server
+    volumes:
+      - ./:/app
+      - pnpm_store:/pnpm-store
+    env_file:
+      - ./apps/server/configs/.env
+    environment:
+      NODE_ENV: development
+      PNPM_STORE_PATH: /pnpm-store
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+    command: >
+      sh -lc "
+        corepack enable &&
+        corepack prepare pnpm@9 --activate &&
+        pnpm config set store-dir /pnpm-store &&
+        pnpm install &&
+        pnpm run event-poller-nft-transfer
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  # frontend-init:
+  #   image: node:20-alpine
+  #   container_name: frontend-init
+  #   depends_on:
+  #     backend-init:
+  #       condition: service_completed_successfully
+  #   networks:
+  #     - app-net
+  #   working_dir: /app
+  #   volumes:
+  #     - ./frontend:/app
+  #     - pnpm_store:/pnpm-store
+  #   environment:
+  #     PNPM_STORE_PATH: /pnpm-store
+  #   command: >
+  #     sh -lc "
+  #       corepack enable &&
+  #       corepack prepare pnpm@9 --activate &&
+  #       pnpm config set store-dir /pnpm-store &&
+  #       pnpm install &&
+  #       pnpm run init
+  #     "
+  #   restart: "no"
+
+  frontend:
+    image: node:20-alpine
+    container_name: frontend
+    networks:
+      - app-net
+    working_dir: /app/apps/client
+    volumes:
+      - ./:/app
+      - pnpm_store:/pnpm-store
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_LOOTEX_API_BASE_URL: http://localhost:2999/api
+      API_INTERNAL_BASE_URL: http://backend-api:2999/api
+      NEXT_PUBLIC_ORIGIN: http://frontend:3000
+      PNPM_STORE_PATH: /pnpm-store
+    command: >
+      sh -lc "
+        corepack enable &&
+        corepack prepare pnpm@9 --activate &&
+        pnpm config set store-dir /pnpm-store &&
+        pnpm install &&
+        pnpm dev -p 3000
+      "
+    ports:
+      - "3000:3000"

@@ -1,0 +1,147 @@
+{
+  "name": "@lootex-core/sdk",
+  "version": "0.0.1",
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch --noCheck --module es2020 --moduleResolution node --outDir ./dist/esm && printf '{\"type\": \"module\",\"sideEffects\":false}' > ./dist/esm/package.json",
+    "build": "npm run build:types && npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc --noCheck --module commonjs --moduleResolution node --outDir ./dist/cjs --verbatimModuleSyntax false && printf '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
+    "build:esm": "tsc --noCheck --module es2020 --moduleResolution node --outDir ./dist/esm && printf '{\"type\": \"module\",\"sideEffects\":false}' > ./dist/esm/package.json",
+    "build:types": "tsc --declarationDir ./dist/types --emitDeclarationOnly --declaration --declarationMap",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "format": "biome format ./src --write",
+    "lint": "biome check ./src && tsc --module esnext --noEmit",
+    "fix": "biome check ./src --fix"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/exports/lootex.d.ts",
+      "import": "./dist/esm/exports/lootex.js",
+      "default": "./dist/cjs/exports/lootex.js"
+    },
+    "./abi": {
+      "types": "./dist/types/exports/abi.d.ts",
+      "import": "./dist/esm/exports/abi.js",
+      "default": "./dist/cjs/exports/abi.js"
+    },
+    "./account": {
+      "types": "./dist/types/exports/account.d.ts",
+      "import": "./dist/esm/exports/account.js",
+      "default": "./dist/cjs/exports/account.js"
+    },
+    "./aggregator": {
+      "types": "./dist/types/exports/aggregator.d.ts",
+      "import": "./dist/esm/exports/aggregator.js",
+      "default": "./dist/cjs/exports/aggregator.js"
+    },
+    "./api": {
+      "types": "./dist/types/exports/api.d.ts",
+      "import": "./dist/esm/exports/api/index.js",
+      "default": "./dist/cjs/exports/api/index.js"
+    },
+    "./api/endpoints/*": {
+      "types": "./dist/types/exports/api/endpoints/*.d.ts",
+      "import": "./dist/esm/exports/api/endpoints/*.js",
+      "default": "./dist/cjs/exports/api/endpoints/*.js"
+    },
+    "./asset": {
+      "types": "./dist/types/exports/asset.d.ts",
+      "import": "./dist/esm/exports/asset.js",
+      "default": "./dist/cjs/exports/asset.js"
+    },
+    "./auth": {
+      "types": "./dist/types/exports/auth.d.ts",
+      "import": "./dist/esm/exports/auth.js",
+      "default": "./dist/cjs/exports/auth.js"
+    },
+    "./chains": {
+      "types": "./dist/types/exports/chains.d.ts",
+      "import": "./dist/esm/exports/chains.js",
+      "default": "./dist/cjs/exports/chains.js"
+    },
+    "./collection": {
+      "types": "./dist/types/exports/collection.d.ts",
+      "import": "./dist/esm/exports/collection.js",
+      "default": "./dist/cjs/exports/collection.js"
+    },
+    "./drop": {
+      "types": "./dist/types/exports/drop.d.ts",
+      "import": "./dist/esm/exports/drop.js",
+      "default": "./dist/cjs/exports/drop.js"
+    },
+    "./game": {
+      "types": "./dist/types/exports/game.d.ts",
+      "import": "./dist/esm/exports/game.js",
+      "default": "./dist/cjs/exports/game.js"
+    },
+    "./marketplace": {
+      "types": "./dist/types/exports/marketplace.d.ts",
+      "import": "./dist/esm/exports/marketplace.js",
+      "default": "./dist/cjs/exports/marketplace.js"
+    },
+    "./order": {
+      "types": "./dist/types/exports/order.d.ts",
+      "import": "./dist/esm/exports/order.js",
+      "default": "./dist/cjs/exports/order.js"
+    },
+    "./seaport": {
+      "types": "./dist/types/exports/seaport.d.ts",
+      "import": "./dist/esm/exports/seaport.js",
+      "default": "./dist/cjs/exports/seaport.js"
+    },
+    "./studio": {
+      "types": "./dist/types/exports/studio.d.ts",
+      "import": "./dist/esm/exports/studio.js",
+      "default": "./dist/cjs/exports/studio.js"
+    },
+    "./swap": {
+      "types": "./dist/types/exports/swap.d.ts",
+      "import": "./dist/esm/exports/swap.js",
+      "default": "./dist/cjs/exports/swap.js"
+    },
+    "./token": {
+      "types": "./dist/types/exports/token.d.ts",
+      "import": "./dist/esm/exports/token.js",
+      "default": "./dist/cjs/exports/token.js"
+    },
+    "./utils": {
+      "types": "./dist/types/exports/utils.d.ts",
+      "import": "./dist/esm/exports/utils.js",
+      "default": "./dist/cjs/exports/utils.js"
+    },
+    "./wallet": {
+      "types": "./dist/types/exports/wallet.d.ts",
+      "import": "./dist/esm/exports/wallet.js",
+      "default": "./dist/cjs/exports/wallet.js"
+    }
+  },
+  "dependencies": {
+    "ethers-v6": "npm:ethers@^6.9.0",
+    "merkletreejs": "^0.4.0",
+    "viem": "^2.23.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "@vitest/coverage-v8": "^3.0.7",
+    "jsdom": "^25.0.1",
+    "rimraf": "6.0.1",
+    "typescript": "^5.6.3",
+    "vitest": "^3.0.7"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.27.2"
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "README.md"
+  ]
+}

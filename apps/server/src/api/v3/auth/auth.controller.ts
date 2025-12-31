@@ -1,0 +1,84 @@
+import { Promise } from 'bluebird';
+import { CookieSerializeOptions } from 'cookie';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Body,
+  HttpException,
+  Headers,
+  Res,
+  UseGuards,
+  Delete,
+  HttpStatus,
+  Param,
+  Put,
+  Logger,
+  Ip,
+  Req,
+  UseInterceptors,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigurationService } from '@/configuration/configuration.service';
+import {
+  ResponseWithCookie,
+  LootexJwtPayload,
+  AuthSignUpResult,
+  AuthGetAccountInfoResult,
+  AuthGetChallengeResult,
+  AuthSupportedWalletProviderEnum,
+  AuthSupportedWalletTransport,
+  AuthSupportedChainFamily,
+} from '@/api/v3/auth/auth.interface';
+import {
+  GetChallengeDto,
+  AccountAuthBaseDto,
+  AccountSignUpDto,
+  IsWalletBoundDto,
+  QueryByUsernameBaseDto,
+  QueryByAddressBaseDto,
+  AccountPrivySignUpDto,
+  GetChallengePlusDto,
+} from '@/api/v3/auth/auth.dto';
+import { AuthService } from './auth.service';
+import {
+  AUTH_COOKIE_EXPIRE_DATE,
+  WEB3_SUPPORTED_CHAIN_FAMILIES,
+  DEV_ENVIRONMENT_HOST_REGEX,
+} from '@/common/utils/constants';
+import { AuthJwtGuard } from './auth.jwt.guard';
+import { Account, Wallet } from '@/model/entities';
+import { CurrentUser, CurrentWallet, FlexCookieOption } from './auth.decorator';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { HttpService } from '@nestjs/axios';
+import { CacheService } from '@/common/cache';
+import axios from 'axios';
+import { randomBytes, createHash } from 'crypto';
+import { stringify } from 'querystring';
+import { Response } from 'express';
+import { InjectModel } from '@nestjs/sequelize';
+import { AuthGuard } from '@nestjs/passport';
+import { AccountService } from '../account/account.service';
+import { AccountPrivateInterceptor } from '../account/account.interceptor';
+
+@ApiTags('Auth')
+@ApiCookieAuth()
+@Controller('api/v3/auth')
+export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
+
+  constructor(
+    @InjectModel(Account)
+    private readonly accountRepository: typeof Account,
+    @InjectModel(Wallet)
+    private readonly walletsRepository: typeof Wallet,
+
+    private readonly configurationService: ConfigurationService,
+    private readonly accountService: AccountService,
+    private readonly jwtService: JwtService,
+    private readonly authService: AuthService,
+    private readonly httpService: HttpService,
+    private readonly cacheService: CacheService,
+  ) {}
+}
