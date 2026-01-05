@@ -92,17 +92,7 @@ lootex-core/
 pnpm install
 ```
 
-### 2. 啟動基礎設施
-
-在開發之前，請先使用 Docker 啟動 PostgreSQL 與其他依賴服務：
-
-```bash
-docker-compose up -d
-```
-
-此指令會啟動一個 PostgreSQL 資料庫 (`dex-mainnet`)，帳號密碼預設為 `lootex` / `lootexpassword`。
-
-### 3. 設定環境變數
+### 2. 設定環境變數
 
 請參考後端範例設定檔並建立 `.env`：
 
@@ -115,25 +105,16 @@ cp apps/server/configs/.env.example apps/server/configs/.env
 - `ALCHEMY_API_KEY` / `MORAILS_API_KEY`: 第三方數據服務金鑰。
 - `POSTGRES_*`: 資料庫連線資訊（若使用預設 Docker 設定則無需修改）。
 
-### 4. 執行資料庫遷移
+### 3. 啟動服務
 
-確保資料庫 schema 是最新的：
-
-```bash
-# 在根目錄執行
-goose -dir db/migrations postgres "postgres://lootex:lootexpassword@localhost:5432/dex-mainnet?sslmode=disable" up
-```
-
-### 5. 啟動開發伺服器
-
-同時啟動前端與後端：
+完成 `.env` 設定後，使用 Docker Compose 一次啟動所有服務（Postgres、Redis、migrations、後端、前端）：
 
 ```bash
-pnpm dev
+docker compose up
 ```
 
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:3001 (預設，視配置而定)
+- **Backend API**: http://localhost:2999 (視配置而定)
 
 ## ⚙️ 環境變數設定
 

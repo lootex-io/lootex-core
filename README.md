@@ -91,17 +91,7 @@ Before starting, ensuring you have the following tools installed:
 pnpm install
 ```
 
-### 2. Start Infrastructure
-
-Before development, start PostgreSQL and other dependent services using Docker:
-
-```bash
-docker-compose up -d
-```
-
-This command starts a PostgreSQL database (`dex-mainnet`) with default credentials `lootex` / `lootexpassword`.
-
-### 3. Configure Environment Variables
+### 2. Configure Environment Variables
 
 Create `.env` based on the backend example configuration:
 
@@ -114,25 +104,16 @@ cp apps/server/configs/.env.example apps/server/configs/.env
 - `ALCHEMY_API_KEY` / `MORAILS_API_KEY`: Third-party data service keys.
 - `POSTGRES_*`: Database connection info (no change needed if using default Docker config).
 
-### 4. Run Database Migrations
+### 3. Start Services
 
-Ensure the database schema is up to date:
-
-```bash
-# Run in the root directory
-goose -dir db/migrations postgres "postgres://lootex:lootexpassword@localhost:5432/dex-mainnet?sslmode=disable" up
-```
-
-### 5. Start Development Server
-
-Start both frontend and backend:
+After `.env` is configured, start everything via Docker Compose (Postgres, Redis, migrations, backend, frontend):
 
 ```bash
-pnpm dev
+docker compose up
 ```
 
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:3001 (default, depends on config)
+- **Backend API**: http://localhost:2999 (depends on config)
 
 ## ⚙️ Configuration
 
