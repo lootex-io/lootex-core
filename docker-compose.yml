@@ -73,7 +73,7 @@ services:
     env_file:
       - ./apps/server/configs/.env
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PNPM_STORE_PATH: /pnpm-store
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
@@ -83,7 +83,8 @@ services:
         corepack prepare pnpm@9 --activate &&
         pnpm config set store-dir /pnpm-store &&
         pnpm install &&
-        pnpm run dev
+        pnpm run build &&
+        pnpm run start:prod
       "
     ports:
       - "2999:2999"
@@ -106,7 +107,7 @@ services:
     env_file:
       - ./apps/server/configs/.env
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PNPM_STORE_PATH: /pnpm-store
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
@@ -116,7 +117,8 @@ services:
         corepack prepare pnpm@9 --activate &&
         pnpm config set store-dir /pnpm-store &&
         pnpm install &&
-        pnpm run event-poller-nft-transfer
+        pnpm run build &&
+        node dist/event-poller-nft-transfer
       "
     depends_on:
       postgres:
@@ -161,7 +163,7 @@ services:
       - ./:/app
       - pnpm_store:/pnpm-store
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       NEXT_PUBLIC_LOOTEX_API_BASE_URL: http://localhost:2999/api
       API_INTERNAL_BASE_URL: http://backend-api:2999/api
       NEXT_PUBLIC_ORIGIN: http://frontend:3000
@@ -172,7 +174,9 @@ services:
         corepack prepare pnpm@9 --activate &&
         pnpm config set store-dir /pnpm-store &&
         pnpm install &&
-        pnpm dev -p 3000
+        pnpm --filter @lootex-core/sdk build &&
+        pnpm build &&
+        pnpm start -p 3000
       "
     ports:
       - "3000:3000"
