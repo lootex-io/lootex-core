@@ -7,7 +7,7 @@ import { Image } from '@/components/image';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import type { LootexCollection } from '@lootex-core/sdk/collection';
+import type { LootexCollection } from '@/sdk/exports/collection';
 import Link from 'next/link';
 
 export const LaunchpadCard = ({

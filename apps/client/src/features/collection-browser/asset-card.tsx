@@ -4,7 +4,7 @@ import { useModal } from '@/components/modal-manager';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import type { Asset } from '@lootex-core/sdk/asset';
+import type { Asset } from '@/sdk/exports/asset';
 import { PlusIcon } from 'lucide-react';
 import { CheckIcon } from 'lucide-react';
 import { PurchaseButton } from '../purchase/purchase-button';

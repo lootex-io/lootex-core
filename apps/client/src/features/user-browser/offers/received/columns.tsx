@@ -5,7 +5,7 @@ import { useModal } from '@/components/modal-manager';
 import { AcceptOfferButton } from '@/features/accept-offer/accept-offer-button';
 import { formatRelativeTime } from '@/utils/format';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { Asset } from '@lootex-core/sdk/asset';
+import type { Asset } from '@/sdk/exports/asset';
 
 export const columns: ColumnDef<Asset>[] = [
   {

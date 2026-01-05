@@ -1,6 +1,6 @@
 import UserBrowser from '@/features/user-browser';
 import { populateMetadata } from '@/utils/metadata';
-import { formatAddress } from '@lootex-core/sdk/utils';
+import { formatAddress } from '@/sdk/exports/utils';
 
 export const generateMetadata = ({
   params,

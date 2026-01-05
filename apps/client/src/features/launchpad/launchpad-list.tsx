@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils';
 import type {
   PaginatedParams,
   PaginatedResponse,
-} from '@lootex-core/sdk/api/endpoints/utils';
-import type { LootexCollection } from '@lootex-core/sdk/collection';
+} from '@/sdk/exports/api/endpoints/utils';
+import type { LootexCollection } from '@/sdk/exports/collection';
 import { Loader2 } from 'lucide-react';
 import { HeroBannerCarousel } from './hero-banner-carousel';
 import { LaunchpadCard, LaunchpadCardSkeleton } from './launchpad-card';

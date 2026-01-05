@@ -1,11 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import type { GetCollectionDropInfoResponse } from '@lootex-core/sdk/api/endpoints/collection';
+import type { GetCollectionDropInfoResponse } from '@/sdk/exports/api/endpoints/collection';
 import type {
   ExternalLink,
   LootexCollection,
-} from '@lootex-core/sdk/collection';
+} from '@/sdk/exports/collection';
 import { ExternalLinkIcon, GlobeIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 

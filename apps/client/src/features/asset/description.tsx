@@ -1,4 +1,4 @@
-import type { Asset } from '@lootex-core/sdk/asset';
+import type { Asset } from '@/sdk/exports/asset';
 import { AssetAccordion } from './accordion';
 
 export const Description = ({

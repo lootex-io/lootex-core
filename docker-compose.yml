@@ -174,7 +174,6 @@ services:
         corepack prepare pnpm@9 --activate &&
         pnpm config set store-dir /pnpm-store &&
         pnpm install &&
-        pnpm --filter @lootex-core/sdk build &&
         pnpm build &&
         pnpm start -p 3000
       "

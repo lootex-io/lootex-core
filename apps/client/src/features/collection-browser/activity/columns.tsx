@@ -5,7 +5,7 @@ import { useModal } from '@/components/modal-manager';
 import { ViewTransactionLink } from '@/components/view-transaction-link';
 import { formatRelativeTime } from '@/utils/format';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { GetOrdersHistoryResponse } from '@lootex-core/sdk/api/endpoints/order';
+import type { GetOrdersHistoryResponse } from '@/sdk/exports/api/endpoints/order';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

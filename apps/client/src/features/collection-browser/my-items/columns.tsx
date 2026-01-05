@@ -5,7 +5,7 @@ import { useModal } from '@/components/modal-manager';
 import { Checkbox } from '@/components/ui/checkbox';
 import { SellButton } from '@/features/sell/sell-button';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { Asset } from '@lootex-core/sdk/asset';
+import type { Asset } from '@/sdk/exports/asset';
 
 const maxSelected = 20;
 

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Asset } from '@lootex-core/sdk/asset';
+import type { Asset } from '@/sdk/exports/asset';
 import { Image as ImageIcon } from 'lucide-react';
 
 import dynamic from 'next/dynamic';

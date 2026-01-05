@@ -2,7 +2,7 @@ import { type QueryKey, useInfiniteQuery } from '@tanstack/react-query';
 import type {
   PaginatedParams,
   PaginatedResponse,
-} from '@lootex-core/sdk/api/endpoints/utils';
+} from '@/sdk/exports/api/endpoints/utils';
 
 export const useItemsQuery = <
   F extends (params: P) => Promise<PaginatedResponse<T, K>>,

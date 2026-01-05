@@ -18,11 +18,11 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { columns } from './columns';
-import { PaginatedParams } from '@lootex-core/sdk/api/endpoints/utils';
+import { PaginatedParams } from '@/sdk/exports/api/endpoints/utils';
 import { useItemsQuery } from '@/lib/use-items-query';
-import { PaginatedResponse } from '@lootex-core/sdk/api/endpoints/utils';
+import { PaginatedResponse } from '@/sdk/exports/api/endpoints/utils';
 import { apiClient } from '@/lib/lootex';
-import { LootexCollection } from '@lootex-core/sdk/collection';
+import { LootexCollection } from '@/sdk/exports/collection';
 
 export type History = {
   id: string;

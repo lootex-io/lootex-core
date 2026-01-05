@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { formatAddress } from '@lootex-core/sdk/utils';
+import { formatAddress } from '@/sdk/exports/utils';
 import { useToast } from '@/hooks/use-toast';
 import { PriceCell } from './data-cells';
 import { config } from '@/lib/wagmi';
