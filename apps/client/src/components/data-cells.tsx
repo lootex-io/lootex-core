@@ -5,8 +5,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import type { LootexCollection } from '@lootex-core/sdk/collection';
-import { Fraction } from '@lootex-core/sdk/utils';
+import type { LootexCollection } from '@/sdk/exports/collection';
+import { Fraction } from '@/sdk/exports/utils';
 import NextLink from 'next/link';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { Image } from './image';

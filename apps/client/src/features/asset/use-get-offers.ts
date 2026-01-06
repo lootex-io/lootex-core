@@ -1,8 +1,8 @@
 import { apiClient } from '@/lib/lootex';
 import { useItemsQuery } from '@/lib/use-items-query';
-import type { Asset } from '@lootex-core/sdk/asset';
-import { getChain } from '@lootex-core/sdk/chains';
-import type { LootexOrder } from '@lootex-core/sdk/order';
+import type { Asset } from '@/sdk/exports/asset';
+import { getChain } from '@/sdk/exports/chains';
+import type { LootexOrder } from '@/sdk/exports/order';
 
 export const useGetOffers = ({
   asset,

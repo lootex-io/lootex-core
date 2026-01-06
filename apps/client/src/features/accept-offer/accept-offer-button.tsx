@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiClient } from '@/lib/lootex';
 import { cn } from '@/lib/utils';
 import { useMutation } from '@tanstack/react-query';
-import type { Asset } from '@lootex-core/sdk/asset';
+import type { Asset } from '@/sdk/exports/asset';
 import { useConnection } from 'wagmi';
 
 export const AcceptOfferButton = ({

@@ -9,8 +9,8 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { lootex } from '@/lib/lootex';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createAggregator } from '@lootex-core/sdk/aggregator';
-import type { LootexOrder } from '@lootex-core/sdk/order';
+import { createAggregator } from '@/sdk/exports/aggregator';
+import type { LootexOrder } from '@/sdk/exports/order';
 import { useSendTransaction } from '../wallet/use-send-transaction';
 
 export const CancelListingModal = ({

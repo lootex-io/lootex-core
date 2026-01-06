@@ -4,7 +4,7 @@ import { ItemCell } from '@/components/data-cells';
 import { useModal } from '@/components/modal-manager';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { Asset } from '@lootex-core/sdk/asset';
+import type { Asset } from '@/sdk/exports/asset';
 
 export const columns: ColumnDef<Asset & { maxSelected: number }>[] = [
   {

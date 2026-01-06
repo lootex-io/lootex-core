@@ -1,8 +1,8 @@
 import { lootex } from '@/lib/lootex';
 import { defaultChain } from '@/lib/wagmi';
 import { useQuery } from '@tanstack/react-query';
-import { erc1155Abi } from '@lootex-core/sdk/abi';
-import { type Asset, isErc1155Asset } from '@lootex-core/sdk/asset';
+import { erc1155Abi } from '@/sdk/exports/abi';
+import { type Asset, isErc1155Asset } from '@/sdk/exports/asset';
 
 export const useGetErc1155Balance = ({
   asset,

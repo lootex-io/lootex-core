@@ -1,7 +1,7 @@
 import CollectionBrowser from '@/features/collection-browser';
 import { apiClient } from '@/lib/lootex';
 import { populateMetadata } from '@/utils/metadata';
-import type { LootexCollection } from '@lootex-core/sdk/collection';
+import type { LootexCollection } from '@/sdk/exports/collection';
 import { notFound } from 'next/navigation';
 
 export const revalidate = 30;

@@ -1,4 +1,4 @@
-import { getChain } from '@lootex-core/sdk/chains';
+import { getChain } from '@/sdk/exports/chains';
 
 export const getBlockExplorerUrl = (
   chainIdOrShortName: number | string,

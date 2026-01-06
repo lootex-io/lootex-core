@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { DropWithStatus } from './mint-schedule';
 import { useState } from 'react';
-import { LootexCollection } from '@lootex-core/sdk/collection';
+import { LootexCollection } from '@/sdk/exports/collection';
 import { config } from '@/lib/config';
 
 export type CalendarEventParams = {

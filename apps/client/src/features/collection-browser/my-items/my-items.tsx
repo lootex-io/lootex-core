@@ -5,7 +5,7 @@ import { useModal } from '@/components/modal-manager';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { RowSelectionState } from '@tanstack/react-table';
-import type { LootexCollection } from '@lootex-core/sdk/collection';
+import type { LootexCollection } from '@/sdk/exports/collection';
 import { MaximizeIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useUiStore } from '../browser-store';
