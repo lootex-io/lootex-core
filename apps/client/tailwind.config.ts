@@ -12,6 +12,7 @@ const config: Config = {
     fontFamily: {
       body: ['var(--font-lato)'],
       brand: ['var(--font-poetsen-one)'],
+      mono: 'monospace',
     },
     fontSize: {
       xs: '0.75rem',
